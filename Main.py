@@ -32,46 +32,56 @@ class MainWebPage:
         self.last_gif_name = ''
 
     def load_message_stream(self):
-        try:
-            urllib.request.urlretrieve(self.url_prefix + self.dates[0]+'webstream.csv', 'webstream.csv')
-            df = pd.read_csv('webstream.csv')
-            df = df[df['Event Num'] != 0]
-
-            df = df.drop(['Unnamed: 0', 'Feeder Name'], axis="columns")
-            df = df.reset_index(drop=True)
-            df = df.sort_values(by='Date Time', ascending=False)
+        # build empty df
+        date = self.dates[0]  # init dates field for except processing
+        df = pd.DataFrame({
+            'Unnamed: 0': pd.series(dtype='str'),
+            'Feeder Name': pd.series(dtype='str'),
+            'Event Num': pd.Series(dtype='int'),
+            'Message Type': pd.Series(dtype='str'),
+            'Date Time': pd.Series(dtype='str'),
+            'Message': pd.Series(dtype='str'),
+            'Image Name': pd.Series(dtype='str')})
+        try:  # read csvs from web, 3 days and concat
+            for date in self.dates:
+                urllib.request.urlretrieve(self.url_prefix + date + 'webstream.csv', 'webstream.csv')
+                df_read = pd.read_csv('webstream.csv')
+                df = pd.concat([df, df_read])
         except FileNotFoundError:
-            print('No web stream found, creating empty stream')
-            df = pd.DataFrame({
-                # 'Feeder Name': pd.series(dtype='str'),
-                'Event Num': pd.Series(dtype='int'),
-                # 'Message Type': pd.Series(dtype='str'),
-                'Date Time': pd.Series(dtype='str'),
-                'Message': pd.Series(dtype='str'),
-                'Image Name': pd.Series(dtype='str')})
+            print(f'No web stream found for {date}')
             pass
+
         return df
 
     def load_bird_occurrences(self):
+        date = datetime.now()  # init for error handling
         cname_list = []
-        try:
-            urllib.request.urlretrieve(self.url_prefix + self.dates[0] + 'web_occurrences.csv', 'web_occurrences.csv')
-            df = pd.read_csv('web_occurrences.csv')
-            df['Date Time'] = pd.to_datetime(df['Date Time'])
-            df['Hour'] = pd.to_numeric(df['Date Time'].dt.strftime('%H')) + \
-                pd.to_numeric(df['Date Time'].dt.strftime('%M')) / 60
-            for sname in df['Species']:
-                sname = sname[sname.find(' ') + 1:] if sname.find(' ') >= 0 else sname  # remove index number
-                cname = sname[sname.find('(') + 1: sname.find(')')] if sname.find('(') >= 0 else sname  # common name
-                cname_list.append(cname)
-            df['Common Name'] = cname_list
+        df = pd.DataFrame({
+            'Unnamed: 0': pd.series(dtype='str'),
+            'Feeder Name': pd.series(dtype='str'),
+            'Species': pd.Series(dtype='str'),
+            'Date Time': pd.Series(dtype='str'),
+            'Hour': pd.Series(dtype='int')})
+        df['Common Name'] = cname_list
+        df['Date Time'] = pd.to_datetime(df['Date Time'])
+
+        try:  # read 3 days of files
+            for date in self.dates:
+                urllib.request.urlretrieve(self.url_prefix + date + 'web_occurrences.csv', 'web_occurrences.csv')
+                df_read = pd.read_csv('web_occurrences.csv')
+                df_read['Date Time'] = pd.to_datetime(df_read['Date Time'])
+                df_read['Hour'] = pd.to_numeric(df_read['Date Time'].dt.strftime('%H')) + \
+                    pd.to_numeric(df_read['Date Time'].dt.strftime('%M')) / 60
+                for sname in df_read['Species']:
+                    sname = sname[sname.find(' ') + 1:] if sname.find(' ') >= 0 else sname  # remove index number
+                    cname = sname[sname.find('(') + 1: sname.find(')')] if sname.find('(') >= 0 else sname  # common nme
+                    cname_list.append(cname)
+                df_read['Common Name'] = cname_list
+
+                df = df.concat([df, df_read])
         except FileNotFoundError:
-            print('no web occurences found, loading empty occurences')
-            df = pd.DataFrame({
-                'Species': pd.Series(dtype='str'),
-                'Date Time': pd.Series(dtype='str'),
-                'Hour': pd.Series(dtype='int')})
-            df['Common Name'] = cname_list  # null list
+            print(f'no web occurences found for {date}')
+
         return df
 
     def last_gif(self):
