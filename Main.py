@@ -98,7 +98,7 @@ class MainWebPage:
         fig1 = px.histogram(self.df_occurrences, x="Hour", color='Common Name', range_x=[self.min_hr, self.max_hr],
                             nbins=36, width=650, height=300)
         fig1['layout']['xaxis'].update(autorange=True)
-        fig1  # write out figure to web
+        st.write(fig1)  # write out figure to web
 
         # multi select filters
         self.message_options = st.multiselect(
@@ -111,7 +111,7 @@ class MainWebPage:
         self.image_names = list(self.df_msg_stream["Image Name"])
         self.available_dates = list(self.df_msg_stream["Date Time"])
         self.last_gif_name = self.last_gif()
-        self.df_msg_stream  # write out message table to web
+        st.write(self.df_msg_stream)  # write out message table to web
 
         # write last 10 images from stream
         st.write('Last Ten Images: Most Recent to Least Recent')
