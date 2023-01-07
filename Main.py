@@ -34,14 +34,8 @@ class MainWebPage:
     def load_message_stream(self):
         # build empty df
         date = self.dates[0]  # init dates field for except processing
-        df = pd.DataFrame({
-            'Unnamed: 0': pd.series(dtype='str'),
-            'Feeder Name': pd.series(dtype='str'),
-            'Event Num': pd.Series(dtype='int'),
-            'Message Type': pd.Series(dtype='str'),
-            'Date Time': pd.Series(dtype='str'),
-            'Message': pd.Series(dtype='str'),
-            'Image Name': pd.Series(dtype='str')})
+        df = pd.DataFrame(data=None, columns=['Unnamed: 0','Feeder Name', 'Event Num', 'Message Type',
+                                              'Date Time', 'Message', 'Image Name'], dtype=None)
         try:  # read csvs from web, 3 days and concat
             for date in self.dates:
                 urllib.request.urlretrieve(self.url_prefix + date + 'webstream.csv', 'webstream.csv')
@@ -56,12 +50,8 @@ class MainWebPage:
     def load_bird_occurrences(self):
         date = datetime.now()  # init for error handling
         cname_list = []
-        df = pd.DataFrame({
-            'Unnamed: 0': pd.series(dtype='str'),
-            'Feeder Name': pd.series(dtype='str'),
-            'Species': pd.Series(dtype='str'),
-            'Date Time': pd.Series(dtype='str'),
-            'Hour': pd.Series(dtype='int')})
+        df = pd.DataFrame(data=None, columns=['Unnamed: 0','Feeder Name', 'Species',
+                                              'Date Time', 'Hour'], dtype=None)
         df['Common Name'] = cname_list
         df['Date Time'] = pd.to_datetime(df['Date Time'])
 
@@ -72,13 +62,13 @@ class MainWebPage:
                 df_read['Date Time'] = pd.to_datetime(df_read['Date Time'])
                 df_read['Hour'] = pd.to_numeric(df_read['Date Time'].dt.strftime('%H')) + \
                     pd.to_numeric(df_read['Date Time'].dt.strftime('%M')) / 60
-                for sname in df_read['Species']:
-                    sname = sname[sname.find(' ') + 1:] if sname.find(' ') >= 0 else sname  # remove index number
-                    cname = sname[sname.find('(') + 1: sname.find(')')] if sname.find('(') >= 0 else sname  # common nme
-                    cname_list.append(cname)
-                df_read['Common Name'] = cname_list
+                df_read['Common Name'] = df_read['Species']
+                df_read['Common Name'] = [name[name.find(' ') + 1:] if name.find(' ') >= 0 else name
+                                          for name in df_read['Common Name']]
+                df_read['Common Name'] = [name[name.find('(') + 1: name.find(')')] if name.find('(') >= 0 else name
+                                          for name in df_read['Common Name']]
 
-                df = df.concat([df, df_read])
+                df = pd.concat([df, df_read])
         except FileNotFoundError:
             print(f'no web occurences found for {date}')
 
