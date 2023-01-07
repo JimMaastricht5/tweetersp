@@ -87,20 +87,19 @@ class MainWebPage:
         self.df_msg_stream = self.df_msg_stream[self.df_msg_stream['Message Type'].isin(message_options)]
         return self.df_msg_stream
 
-    def publish_row_of_images(self):
-        try:  # catch error with less than 10 images for a day
-            cols = st.columns(self.num_image_cols)
-            for col in range(0, self.num_image_cols):  # cols 0 to 4
-                # cols[col].subheader(f'{DATES[col][DATES[col].find(",")+1:]}')
+    def publish_row_of_images(self, starting_col=0):
+        try:  # catch error with less than X images for row
+            cols = st.columns(self.num_image_cols)  # set web page with x number of images
+            for col in range(0, self.num_image_cols):  # cols 0 to 5 for 5 columns
                 try:  # catch missing image
-                    urllib.request.urlretrieve(self.url_prefix + self.image_names[col], 'imgfile')
+                    urllib.request.urlretrieve(self.url_prefix + self.image_names[col+starting_col], 'imgfile')
                     img = Image.open('imgfile')
                     cols[col].image(img, use_column_width=True,
                                     caption=f'Time: {self.dates[col][self.dates[col].find(",") + 1:]} '
-                                            f'Image: {self.image_names[col]}')
+                                            f'Image: {self.image_names[col+starting_col]}')
                 except Exception as e:  # missing file
-                    cols[col].write(f'missing file {self.image_names[col]}')
-                    print(self.image_names[col])
+                    cols[col].write(f'missing file {self.image_names[col+starting_col]}')
+                    print(self.image_names[col+starting_col])
                     print(e)
         except Exception as e:
             print(e)
@@ -136,21 +135,8 @@ class MainWebPage:
 
         # write last 10 images from stream
         st.write('Last Ten Images: Most Recent to Least Recent')
-        self.publish_row_of_images()
-        # try:  # catch error with less than 10 images for a day
-        #     cols = st.columns(5)
-        #     for col in range(0, 5):  # cols 0 to 4
-        #         # cols[col].subheader(f'{DATES[col][DATES[col].find(",")+1:]}')
-        #         try:  # catch missing image
-        #             urllib.request.urlretrieve(self.url_prefix + self.image_names[col], 'imgfile')
-        #             img = Image.open('imgfile')
-        #             cols[col].image(img, use_column_width=True,
-        #                             caption=f'Time: {self.dates[col][self.dates[col].find(",") + 1:]} '
-        #                                     f'Image: {self.image_names[col]}')
-        #         except Exception as e:  # likely missing file
-        #             cols[col].write(f'Missing file {self.image_names[col]}')
-        #             print(self.image_names[col])
-        #             print(e)
+        self.publish_row_of_images(starting_col=0)
+        self.publish_row_of_images(starting_col=0 + self.num_image_cols)
         try:
             # row 2 of images
             cols = st.columns(5)
