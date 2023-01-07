@@ -122,7 +122,7 @@ class MainWebPage:
 
         # multi select filters
         date_options = st.multiselect(
-            'Dates:',[self.dates],[self.dates])  # dates available and all selected
+            'Dates:', self.dates, self.dates)  # dates available and all selected
 
         message_options = st.multiselect(
             'Message Types:',
