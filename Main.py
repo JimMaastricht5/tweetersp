@@ -28,10 +28,6 @@ class MainWebPage:
         self.image_names = []
         self.available_dates = []
         self.last_gif_name = ''
-        self.message_options = st.multiselect(
-            'Message Types:',
-            ['possible', 'spotted', 'message'],
-            ['spotted'])
 
     def load_message_stream(self):
         try:
@@ -97,11 +93,18 @@ class MainWebPage:
         # ****************** format page ********************
         st.header('Tweeters Web Page')
 
+        # text and graph
         st.write(f'Interactive Chart: Birds Spotted as of {self.dates[0]}')
         fig1 = px.histogram(self.df_occurrences, x="Hour", color='Common Name', range_x=[self.min_hr, self.max_hr],
                             nbins=36, width=650, height=300)
         fig1['layout']['xaxis'].update(autorange=True)
         fig1  # write out figure to web
+
+        # multi select filters
+        self.message_options = st.multiselect(
+            'Message Types:',
+            ['possible', 'spotted', 'message'],
+            ['spotted'])
 
         # write out contents of prediction stream
         self.df_msg_stream = self.filter_message_stream(self.df_msg_stream)
