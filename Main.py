@@ -116,7 +116,7 @@ class MainWebPage:
         # text and graph
         st.write(f'Interactive Chart: Birds Spotted as of {self.dates[0]}')
         fig1 = px.histogram(self.df_occurrences, x="Hour", color='Common Name', range_x=[self.min_hr, self.max_hr],
-                            nbins=36, width=650, height=300)
+                            nbins=36, width=650, height=400)
         fig1['layout']['xaxis'].update(autorange=True)
         st.write(fig1)  # write out figure to web
 
