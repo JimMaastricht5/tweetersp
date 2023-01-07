@@ -9,11 +9,13 @@ import plotly.express as px
 
 # sample link format https://storage.googleapis.com/tweeterssp-web-site-contents/2022-12-29-11-57-29227.jpg
 class MainWebPage:
-    def __init__(self, min_hr=6, max_hr=18, url_prefix='https://storage.googleapis.com/tweeterssp-web-site-contents/'):
+    def __init__(self, min_hr=6, max_hr=18, num_image_cols=5,
+                 url_prefix='https://storage.googleapis.com/tweeterssp-web-site-contents/'):
         # set default values
         self.min_hr = min_hr
         self.max_hr = max_hr
         self.url_prefix = url_prefix
+        self.num_image_cols = num_image_cols
 
         # load date range for web data, currently 3 days of data retained
         self.dates = []
@@ -81,9 +83,28 @@ class MainWebPage:
                 break
         return last_name
 
-    def filter_message_stream(self, df_msgs):
-        df = df_msgs[df_msgs['Message Type'].isin(self.message_options)]
-        return df
+    def filter_message_stream(self, message_options):
+        self.df_msg_stream = self.df_msg_stream[self.df_msg_stream['Message Type'].isin(message_options)]
+        return self.df_msg_stream
+
+    def publish_row_of_images(self):
+        try:  # catch error with less than 10 images for a day
+            cols = st.columns(self.num_image_cols)
+            for col in range(0, self.num_image_cols):  # cols 0 to 4
+                # cols[col].subheader(f'{DATES[col][DATES[col].find(",")+1:]}')
+                try:  # catch missing image
+                    urllib.request.urlretrieve(self.url_prefix + self.image_names[col], 'imgfile')
+                    img = Image.open('imgfile')
+                    cols[col].image(img, use_column_width=True,
+                                    caption=f'Time: {self.dates[col][self.dates[col].find(",") + 1:]} '
+                                            f'Image: {self.image_names[col]}')
+                except Exception as e:  # missing file
+                    cols[col].write(f'missing file {self.image_names[col]}')
+                    print(self.image_names[col])
+                    print(e)
+        except Exception as e:
+            print(e)
+        return
 
     def main_page(self):
         self.df_occurrences = self.load_bird_occurrences()  # test stream of bird occurrences for graph
@@ -101,13 +122,13 @@ class MainWebPage:
         st.write(fig1)  # write out figure to web
 
         # multi select filters
-        self.message_options = st.multiselect(
+        message_options = st.multiselect(
             'Message Types:',
             ['possible', 'spotted', 'message'],
             ['spotted'])
 
         # write out contents of prediction stream
-        self.df_msg_stream = self.filter_message_stream(self.df_msg_stream)
+        self.df_msg_stream = self.filter_message_stream(message_options)
         self.image_names = list(self.df_msg_stream["Image Name"])
         self.available_dates = list(self.df_msg_stream["Date Time"])
         self.last_gif_name = self.last_gif()
@@ -115,21 +136,22 @@ class MainWebPage:
 
         # write last 10 images from stream
         st.write('Last Ten Images: Most Recent to Least Recent')
-        try:  # catch error with less than 10 images for a day
-            cols = st.columns(5)
-            for col in range(0, 5):  # cols 0 to 4
-                # cols[col].subheader(f'{DATES[col][DATES[col].find(",")+1:]}')
-                try:  # catch missing image
-                    urllib.request.urlretrieve(self.url_prefix + self.image_names[col], 'imgfile')
-                    img = Image.open('imgfile')
-                    cols[col].image(img, use_column_width=True,
-                                    caption=f'Time: {self.dates[col][self.dates[col].find(",") + 1:]} '
-                                            f'Image: {self.image_names[col]}')
-                except Exception as e:  # likely missing file
-                    cols[col].write(f'Missing file {self.image_names[col]}')
-                    print(self.image_names[col])
-                    print(e)
-
+        self.publish_row_of_images()
+        # try:  # catch error with less than 10 images for a day
+        #     cols = st.columns(5)
+        #     for col in range(0, 5):  # cols 0 to 4
+        #         # cols[col].subheader(f'{DATES[col][DATES[col].find(",")+1:]}')
+        #         try:  # catch missing image
+        #             urllib.request.urlretrieve(self.url_prefix + self.image_names[col], 'imgfile')
+        #             img = Image.open('imgfile')
+        #             cols[col].image(img, use_column_width=True,
+        #                             caption=f'Time: {self.dates[col][self.dates[col].find(",") + 1:]} '
+        #                                     f'Image: {self.image_names[col]}')
+        #         except Exception as e:  # likely missing file
+        #             cols[col].write(f'Missing file {self.image_names[col]}')
+        #             print(self.image_names[col])
+        #             print(e)
+        try:
             # row 2 of images
             cols = st.columns(5)
             for col in range(0, 5):  # cols 0 to 4
