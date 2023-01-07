@@ -83,7 +83,7 @@ class MainWebPage:
                 break
         return last_name
 
-    def filter_message_stream(self, message_options):
+    def filter_message_stream(self, message_options, date_options):
         self.df_msg_stream = self.df_msg_stream[self.df_msg_stream['Message Type'].isin(message_options)]
         return self.df_msg_stream
 
@@ -121,13 +121,16 @@ class MainWebPage:
         st.write(fig1)  # write out figure to web
 
         # multi select filters
+        date_options = st.multiselect(
+            'Dates:',[self.dates],[self.dates])  # dates available and all selected
+
         message_options = st.multiselect(
             'Message Types:',
             ['possible', 'spotted', 'message'],
             ['spotted'])
 
         # write out contents of prediction stream
-        self.df_msg_stream = self.filter_message_stream(message_options)
+        self.df_msg_stream = self.filter_message_stream(message_options, date_options)
         self.image_names = list(self.df_msg_stream["Image Name"])
         self.available_dates = list(self.df_msg_stream["Date Time"])
         self.last_gif_name = self.last_gif()
@@ -135,28 +138,28 @@ class MainWebPage:
 
         # write last 10 images from stream
         st.write('Last Ten Images: Most Recent to Least Recent')
-        self.publish_row_of_images(starting_col=0)
-        self.publish_row_of_images(starting_col=0 + self.num_image_cols)
-        try:
-            # row 2 of images
-            cols = st.columns(5)
-            for col in range(0, 5):  # cols 0 to 4
-                # cols[col].subheader(f'{DATES[col+5][DATES[col+5].find(",")+1:]}')
-                try:  # catch missing image
-                    urllib.request.urlretrieve(self.url_prefix + self.image_names[col + 5], 'imgfile')
-                    img = Image.open('imgfile')
-                    cols[col].image(img, use_column_width=True,
-                                    caption=f'Time: {self.dates[col][self.dates[col].find(",") + 1:]} '
-                                            f'Image: {self.image_names[col + 5]}')
-                except Exception as e:  # likely missing file
-                    cols[col].write(f'Missing file {self.image_names[col + 5]}')
-                    print(self.image_names[col + 5])
-                    print(e)
-        except IndexError:
-            pass  # web hasn't generated enough files to file all 10 spots
-        except Exception as e:
-            print(e)
-            pass
+        self.publish_row_of_images(starting_col=0)  # row 1 of 5
+        self.publish_row_of_images(starting_col=0 + self.num_image_cols)  # row 2 of 5
+        # try:
+        #     # row 2 of images
+        #     cols = st.columns(5)
+        #     for col in range(0, 5):  # cols 0 to 4
+        #         # cols[col].subheader(f'{DATES[col+5][DATES[col+5].find(",")+1:]}')
+        #         try:  # catch missing image
+        #             urllib.request.urlretrieve(self.url_prefix + self.image_names[col + 5], 'imgfile')
+        #             img = Image.open('imgfile')
+        #             cols[col].image(img, use_column_width=True,
+        #                             caption=f'Time: {self.dates[col][self.dates[col].find(",") + 1:]} '
+        #                                     f'Image: {self.image_names[col + 5]}')
+        #         except Exception as e:  # likely missing file
+        #             cols[col].write(f'Missing file {self.image_names[col + 5]}')
+        #             print(self.image_names[col + 5])
+        #             print(e)
+        # except IndexError:
+        #     pass  # web hasn't generated enough files to file all 10 spots
+        # except Exception as e:
+        #     print(e)
+        #     pass
 
         return
 
