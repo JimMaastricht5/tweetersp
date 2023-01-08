@@ -88,15 +88,19 @@ class MainWebPage:
             cols = st.columns(self.num_image_cols)  # set web page with x number of images
             for col in range(0, self.num_image_cols):  # cols 0 to 5 for 5 columns
                 try:  # catch missing image
+                    # print(f'{self.url_prefix + self.image_names[col+starting_col]}')
                     urllib.request.urlretrieve(self.url_prefix + self.image_names[col+starting_col], 'imgfile')
                     img = Image.open('imgfile')
                     cols[col].image(img, use_column_width=True,
-                                    caption=f'Time: {self.available_dates[col][self.available_dates[col].find(",") + 1:]} '
+                                    caption=f'Time: {str(self.available_dates[col])[str(self.available_dates[col]).find(",") + 1:]} '
                                             f'Image: {self.image_names[col+starting_col]}')
-                except Exception as e:  # missing file
+                except FileNotFoundError:  # missing file
                     cols[col].write(f'missing file {self.image_names[col+starting_col]}')
+                except Exception as e:  # missing file
                     print(self.image_names[col+starting_col])
                     print(e)
+        except IndexError: # less than x images for row skip the error
+            pass
         except Exception as e:
             print(e)
         return
