@@ -91,7 +91,7 @@ class MainWebPage:
                     urllib.request.urlretrieve(self.url_prefix + self.image_names[col+starting_col], 'imgfile')
                     img = Image.open('imgfile')
                     cols[col].image(img, use_column_width=True,
-                                    caption=f'Time: {self.dates[col][self.dates[col].find(",") + 1:]} '
+                                    caption=f'Time: {self.available_dates[col][self.available_dates[col].find(",") + 1:]} '
                                             f'Image: {self.image_names[col+starting_col]}')
                 except Exception as e:  # missing file
                     cols[col].write(f'missing file {self.image_names[col+starting_col]}')
@@ -118,7 +118,7 @@ class MainWebPage:
         st.header('Tweeters Web Page')
 
         # text and graph
-        st.write(f'Interactive Chart: Birds Spotted as of {min(self.available_dates)} to {max(self.available_dates)}')
+        st.write(f'Interactive Chart of Birds: {min(self.available_dates)} to {max(self.available_dates)}')
         fig1 = px.histogram(self.df_occurrences, x="Hour", color='Common Name', range_x=[self.min_hr, self.max_hr],
                             nbins=36, width=650, height=400)
         fig1['layout']['xaxis'].update(autorange=True)
