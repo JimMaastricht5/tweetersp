@@ -83,14 +83,6 @@ class MainWebPage:
                 break
         return last_name
 
-    def filter_message_stream(self, message_options, date_options):
-        df = self.df_msg_stream[self.df_msg_stream['Message Type'].isin(message_options)]
-        df = df[df['Date Time'].isin(date_options)]
-        self.image_names = list(df["Image Name"])
-        self.available_dates = list(df["Date Time"])
-        self.last_gif_name = self.last_gif()  # uses self.image names
-        return df
-
     def publish_row_of_images(self, starting_col=0):
         try:  # catch error with less than X images for row
             cols = st.columns(self.num_image_cols)  # set web page with x number of images
@@ -108,6 +100,14 @@ class MainWebPage:
         except Exception as e:
             print(e)
         return
+
+    def filter_message_stream(self, message_options, date_options):
+        df = self.df_msg_stream[self.df_msg_stream['Message Type'].isin(message_options)]
+        df = df[df['Date Time'].strftime('%Y-%m-%d').isin(date_options)]  # compare y m d to date selection y m d
+        self.image_names = list(df["Image Name"])
+        self.available_dates = list(df["Date Time"])
+        self.last_gif_name = self.last_gif()  # uses self.image names
+        return df
 
     def main_page(self):
         self.df_occurrences = self.load_bird_occurrences()  # test stream of bird occurrences for graph
