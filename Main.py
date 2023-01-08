@@ -45,7 +45,7 @@ class MainWebPage:
             print(f'No web stream found for {date}')
             pass
 
-        return df
+        return df.sort_values('Date Time', ascending=False)
 
     def load_bird_occurrences(self):
         date = datetime.now()  # init for error handling
@@ -84,8 +84,12 @@ class MainWebPage:
         return last_name
 
     def filter_message_stream(self, message_options, date_options):
-        self.df_msg_stream = self.df_msg_stream[self.df_msg_stream['Message Type'].isin(message_options)]
-        return self.df_msg_stream
+        df = self.df_msg_stream[self.df_msg_stream['Message Type'].isin(message_options)]
+        df = df[df['Date Time'].isin(date_options)]
+        self.image_names = list(df["Image Name"])
+        self.available_dates = list(df["Date Time"])
+        self.last_gif_name = self.last_gif()  # uses self.image names
+        return df
 
     def publish_row_of_images(self, starting_col=0):
         try:  # catch error with less than X images for row
@@ -130,11 +134,12 @@ class MainWebPage:
             ['spotted'])
 
         # write out contents of prediction stream
-        self.df_msg_stream = self.filter_message_stream(message_options, date_options)
-        self.image_names = list(self.df_msg_stream["Image Name"])
-        self.available_dates = list(self.df_msg_stream["Date Time"])
-        self.last_gif_name = self.last_gif()
-        st.write(self.df_msg_stream)  # write out message table to web
+        # self.df_msg_stream = self.filter_message_stream(message_options, date_options)
+        # self.image_names = list(self.df_msg_stream["Image Name"])
+        # self.available_dates = list(self.df_msg_stream["Date Time"])
+        # self.last_gif_name = self.last_gif()
+        # st.write(self.df_msg_stream)  # write out message table to web
+        st.write(self.filter_message_stream(message_options, date_options))  # use filtered list and persve stream
 
         # write last 10 images from stream
         st.write('Last Ten Images: Most Recent to Least Recent')
