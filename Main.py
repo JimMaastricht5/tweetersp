@@ -49,6 +49,7 @@ class MainWebPage:
         df['Date Time'] = pd.to_datetime(df['Date Time'])
         df = df.drop(['Unnamed: 0'], axis='columns')
         self.feeders = list(df['Feeder Name'].unique())
+        self.feeders.append('default')  # add default feeder name in case one was not provided
         return df.sort_values('Date Time', ascending=False)
 
     def load_bird_occurrences(self):
