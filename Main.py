@@ -28,7 +28,7 @@ class MainWebPage:
         self.df_msg_stream = pd.DataFrame()
         self.birds = []
         self.image_names = []
-        self.available_dates = []
+        self.available_dates = self.dates
         self.last_gif_name = ''
 
     def load_message_stream(self):
@@ -118,7 +118,7 @@ class MainWebPage:
         st.header('Tweeters Web Page')
 
         # text and graph
-        st.write(f'Interactive Chart: Birds Spotted as of {self.dates[0]}')
+        st.write(f'Interactive Chart: Birds Spotted as of {min(self.available_dates)} to {max(self.available_dates)}')
         fig1 = px.histogram(self.df_occurrences, x="Hour", color='Common Name', range_x=[self.min_hr, self.max_hr],
                             nbins=36, width=650, height=400)
         fig1['layout']['xaxis'].update(autorange=True)
