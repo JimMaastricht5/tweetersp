@@ -103,7 +103,7 @@ class MainWebPage:
 
     def filter_message_stream(self, message_options, date_options):
         df = self.df_msg_stream[self.df_msg_stream['Message Type'].isin(message_options)]
-        df = df[df['Date Time'].strftime('%Y-%m-%d').isin(date_options)]  # compare y m d to date selection y m d
+        df = df[df['Date Time'].dt.strftime('%Y-%m-%d').isin(date_options)]  # compare y m d to date selection y m d
         self.image_names = list(df["Image Name"])
         self.available_dates = list(df["Date Time"])
         self.last_gif_name = self.last_gif()  # uses self.image names
