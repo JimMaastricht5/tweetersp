@@ -34,7 +34,7 @@ class MainWebPage:
     def load_message_stream(self):
         # build empty df
         date = self.dates[0]  # init dates field for except processing
-        df = pd.DataFrame(data=None, columns=['Unnamed: 0','Feeder Name', 'Event Num', 'Message Type',
+        df = pd.DataFrame(data=None, columns=['Unnamed: 0', 'Feeder Name', 'Event Num', 'Message Type',
                                               'Date Time', 'Message', 'Image Name'], dtype=None)
         try:  # read csvs from web, 3 days and concat
             for date in self.dates:
@@ -50,7 +50,7 @@ class MainWebPage:
     def load_bird_occurrences(self):
         date = datetime.now()  # init for error handling
         cname_list = []
-        df = pd.DataFrame(data=None, columns=['Unnamed: 0','Feeder Name', 'Species',
+        df = pd.DataFrame(data=None, columns=['Unnamed: 0', 'Feeder Name', 'Species',
                                               'Date Time', 'Hour'], dtype=None)
         df['Common Name'] = cname_list
         df['Date Time'] = pd.to_datetime(df['Date Time'])
@@ -99,11 +99,16 @@ class MainWebPage:
                 except Exception as e:  # missing file
                     print(self.image_names[col+starting_col])
                     print(e)
-        except IndexError: # less than x images for row skip the error
+        except IndexError:  # less than x images for row skip the error
             pass
         except Exception as e:
             print(e)
         return
+
+    def filter_occurences(self, date_options):
+        df = self.df_occurrences
+        df = df[df['Date Time'].dt.strftime('%Y-%m-%d').isin(date_options)]  # compare y m d to date selection y m d
+        return df
 
     def filter_message_stream(self, message_options, date_options):
         df = self.df_msg_stream[self.df_msg_stream['Message Type'].isin(message_options)]
@@ -121,54 +126,30 @@ class MainWebPage:
         # ****************** format page ********************
         st.header('Tweeters Web Page')
 
+        # feeder multi select filters
+        date_options = st.multiselect(
+            'Dates:', self.dates, self.dates)  # dates available and all selected
+
         # text and graph
         st.write(f'Interactive Chart of Birds: {min(self.available_dates)} to {max(self.available_dates)}')
-        fig1 = px.histogram(self.df_occurrences, x="Hour", color='Common Name', range_x=[self.min_hr, self.max_hr],
+        fig1 = px.histogram(self.filter_occurences(date_options),
+                            x="Hour", color='Common Name', range_x=[self.min_hr, self.max_hr],
                             nbins=36, width=650, height=400)
         fig1['layout']['xaxis'].update(autorange=True)
         st.write(fig1)  # write out figure to web
 
-        # multi select filters
-        date_options = st.multiselect(
-            'Dates:', self.dates, self.dates)  # dates available and all selected
-
+        # image and message stream multi-select filters
         message_options = st.multiselect(
             'Message Types:',
             ['possible', 'spotted', 'message'],
             ['spotted'])
 
-        # write out contents of prediction stream
-        # self.df_msg_stream = self.filter_message_stream(message_options, date_options)
-        # self.image_names = list(self.df_msg_stream["Image Name"])
-        # self.available_dates = list(self.df_msg_stream["Date Time"])
-        # self.last_gif_name = self.last_gif()
-        # st.write(self.df_msg_stream)  # write out message table to web
-        st.write(self.filter_message_stream(message_options, date_options))  # use filtered list and persve stream
+        st.write(self.filter_message_stream(message_options, date_options))  # use filtered list and keep org stream
 
         # write last 10 images from stream
         st.write('Last Ten Images: Most Recent to Least Recent')
         self.publish_row_of_images(starting_col=0)  # row 1 of 5
         self.publish_row_of_images(starting_col=0 + self.num_image_cols)  # row 2 of 5
-        # try:
-        #     # row 2 of images
-        #     cols = st.columns(5)
-        #     for col in range(0, 5):  # cols 0 to 4
-        #         # cols[col].subheader(f'{DATES[col+5][DATES[col+5].find(",")+1:]}')
-        #         try:  # catch missing image
-        #             urllib.request.urlretrieve(self.url_prefix + self.image_names[col + 5], 'imgfile')
-        #             img = Image.open('imgfile')
-        #             cols[col].image(img, use_column_width=True,
-        #                             caption=f'Time: {self.dates[col][self.dates[col].find(",") + 1:]} '
-        #                                     f'Image: {self.image_names[col + 5]}')
-        #         except Exception as e:  # likely missing file
-        #             cols[col].write(f'Missing file {self.image_names[col + 5]}')
-        #             print(self.image_names[col + 5])
-        #             print(e)
-        # except IndexError:
-        #     pass  # web hasn't generated enough files to file all 10 spots
-        # except Exception as e:
-        #     print(e)
-        #     pass
 
         return
 
