@@ -44,7 +44,7 @@ class MainWebPage:
         except FileNotFoundError:
             print(f'No web stream found for {date}')
             pass
-
+        df['Date Time'] = pd.to_datetime(df['Date Time'])
         return df.sort_values('Date Time', ascending=False)
 
     def load_bird_occurrences(self):
