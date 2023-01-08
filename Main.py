@@ -28,6 +28,7 @@ class MainWebPage:
         self.df_msg_stream = pd.DataFrame()
         self.birds = []
         self.image_names = []
+        self.feeders = []
         self.available_dates = self.dates
         self.last_gif_name = ''
 
@@ -44,7 +45,10 @@ class MainWebPage:
         except FileNotFoundError:
             print(f'No web stream found for {date}')
             pass
+
         df['Date Time'] = pd.to_datetime(df['Date Time'])
+        df = df.drop(['Unnamed: 0'], axis='columns')
+        self.feeders = list(df['Feeder Name'].unique())
         return df.sort_values('Date Time', ascending=False)
 
     def load_bird_occurrences(self):
@@ -71,7 +75,7 @@ class MainWebPage:
                 df = pd.concat([df, df_read])
         except FileNotFoundError:
             print(f'no web occurences found for {date}')
-
+        df = df.drop(['Unnamed: 0'], axis='columns')
         return df
 
     def last_gif(self):
@@ -105,13 +109,15 @@ class MainWebPage:
             print(e)
         return
 
-    def filter_occurences(self, date_options):
+    def filter_occurences(self, feeder_options, date_options):
         df = self.df_occurrences
+        df = df[df['Feeder Name'].isin(feeder_options)]
         df = df[df['Date Time'].dt.strftime('%Y-%m-%d').isin(date_options)]  # compare y m d to date selection y m d
         return df
 
-    def filter_message_stream(self, message_options, date_options):
+    def filter_message_stream(self, feeder_options, date_options, message_options):
         df = self.df_msg_stream[self.df_msg_stream['Message Type'].isin(message_options)]
+        df = df[df['Feeder Name'].isin(feeder_options)]
         df = df[df['Date Time'].dt.strftime('%Y-%m-%d').isin(date_options)]  # compare y m d to date selection y m d
         self.image_names = list(df["Image Name"])
         self.available_dates = list(df["Date Time"])
@@ -127,12 +133,12 @@ class MainWebPage:
         st.header('Tweeters Web Page')
 
         # feeder multi select filters
-        date_options = st.multiselect(
-            'Dates:', self.dates, self.dates)  # dates available and all selected
+        feeder_options = st.multiselect('Feeders:', self.feeders, self.feeders)  # feeders available and all selected
+        date_options = st.multiselect('Dates:', self.dates, self.dates)  # dates available and all selected
 
         # text and graph
         st.write(f'Interactive Chart of Birds: {min(self.available_dates)} to {max(self.available_dates)}')
-        fig1 = px.histogram(self.filter_occurences(date_options),
+        fig1 = px.histogram(self.filter_occurences(feeder_options, date_options),
                             x="Hour", color='Common Name', range_x=[self.min_hr, self.max_hr],
                             nbins=36, width=650, height=400)
         fig1['layout']['xaxis'].update(autorange=True)
@@ -144,7 +150,7 @@ class MainWebPage:
             ['possible', 'spotted', 'message'],
             ['spotted'])
 
-        st.write(self.filter_message_stream(message_options, date_options))  # use filtered list and keep org stream
+        st.write(self.filter_message_stream(feeder_options, date_options, message_options))  # keep org stream
 
         # write last 10 images from stream
         st.write('Last Ten Images: Most Recent to Least Recent')
