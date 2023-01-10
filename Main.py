@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from PIL import Image
 import urllib.request
+from urllib.error import HTTPError
 from datetime import datetime
 from datetime import timedelta
 import plotly.express as px
@@ -42,8 +43,9 @@ class MainWebPage:
                 urllib.request.urlretrieve(self.url_prefix + date + 'webstream.csv', 'webstream.csv')
                 df_read = pd.read_csv('webstream.csv')
                 df = pd.concat([df, df_read])
-        except FileNotFoundError:
-            print(f'No web stream found for {date}')
+        except Exception as e:  # FileNotFoundError or HTTPError
+            print(f'no web stream found for {date}')
+            print(e)
             pass
 
         df['Date Time'] = pd.to_datetime(df['Date Time'])
@@ -74,8 +76,9 @@ class MainWebPage:
                                           for name in df_read['Common Name']]
 
                 df = pd.concat([df, df_read])
-        except FileNotFoundError:
+        except Exception as e:  # FileNotFoundError or HTTPError
             print(f'no web occurences found for {date}')
+            print(e)
         df = df.drop(['Unnamed: 0'], axis='columns')
         return df
 
@@ -97,7 +100,7 @@ class MainWebPage:
                     urllib.request.urlretrieve(self.url_prefix + self.image_names[col+starting_col], 'imgfile')
                     img = Image.open('imgfile')
                     cols[col].image(img, use_column_width=True,
-                                    caption=f'Time: {str(self.available_dates[col+starting_col])[str(self.available_dates[col+starting_col]).find(",") + 1:]} '
+                                    caption=f'{str(self.available_dates[col+starting_col])[str(self.available_dates[col+starting_col]).find(",") + 1:]} '
                                             f'Image: {self.image_names[col+starting_col]}')
                 except FileNotFoundError:  # missing file
                     cols[col].write(f'missing file {self.image_names[col+starting_col]}')
