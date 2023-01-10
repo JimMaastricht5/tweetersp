@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from PIL import Image
 import urllib.request
-# from urllib.error import HTTPError
+from urllib.error import HTTPError
 from datetime import datetime
 from datetime import timedelta
 import pytz
@@ -44,10 +44,11 @@ class MainWebPage:
                 urllib.request.urlretrieve(self.url_prefix + date + 'webstream.csv', 'webstream.csv')
                 df_read = pd.read_csv('webstream.csv')
                 df = pd.concat([df, df_read])
-            except Exception as e:  # FileNotFoundError or HTTPError
+            except urllib.error.URLError as e:
+            # except Exception as e:  # FileNotFoundError or HTTPError
                 print(f'no web stream found for {date}')
                 print(e)
-                self.dates.remove(date)
+                self.dates.remove(date)  # remove date if not found
                 pass
         df['Date Time'] = pd.to_datetime(df['Date Time'])
         df = df.drop(['Unnamed: 0'], axis='columns')
@@ -77,7 +78,7 @@ class MainWebPage:
             except Exception as e:  # FileNotFoundError or HTTPError
                 print(f'no web occurences found for {date}')
                 print(e)
-                self.dates.remove(date)
+                self.dates.remove(date)  # remove date if not found
         df = df.drop(['Unnamed: 0'], axis='columns')
         return df
 
