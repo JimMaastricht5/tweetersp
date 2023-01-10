@@ -34,6 +34,14 @@ class MainWebPage:
         self.available_dates = self.dates
         self.last_gif_name = ''
 
+    def build_common_name(self, df, target_col):
+        df['Common Name'] = df[target_col]
+        df['Common Name'] = [name[name.find(' ') + 1:] if name.find(' ') >= 0 else name
+                             for name in df['Common Name']]
+        df['Common Name'] = [name[name.find('(') + 1: name.find(')')] if name.find('(') >= 0 else name
+                             for name in df['Common Name']]
+        return df
+
     def load_message_stream(self):
         # build empty df
         df = pd.DataFrame(data=None, columns=['Unnamed: 0', 'Feeder Name', 'Event Num', 'Message Type',
@@ -49,16 +57,16 @@ class MainWebPage:
                 self.dates.remove(date)  # remove date if not found
                 pass
         df['Date Time'] = pd.to_datetime(df['Date Time'])
+        df = self.build_common_name(df, 'Message')
         df = df.drop(['Unnamed: 0'], axis='columns')
         self.feeders = list(df['Feeder Name'].unique())
         self.feeders.append('default')  # add default feeder name in case one was not provided, need until 1/11 or 1/12
         return df.sort_values('Date Time', ascending=False)
 
     def load_bird_occurrences(self):
-        cname_list = []
+        # setup df like file
         df = pd.DataFrame(data=None, columns=['Unnamed: 0', 'Feeder Name', 'Species',
                                               'Date Time', 'Hour'], dtype=None)
-        df['Common Name'] = cname_list
         df['Date Time'] = pd.to_datetime(df['Date Time'])
         for date in self.dates:
             try:  # read 3 days of files
@@ -67,16 +75,17 @@ class MainWebPage:
                 df_read['Date Time'] = pd.to_datetime(df_read['Date Time'])
                 df_read['Hour'] = pd.to_numeric(df_read['Date Time'].dt.strftime('%H')) + \
                     pd.to_numeric(df_read['Date Time'].dt.strftime('%M')) / 60
-                df_read['Common Name'] = df_read['Species']
-                df_read['Common Name'] = [name[name.find(' ') + 1:] if name.find(' ') >= 0 else name
-                                          for name in df_read['Common Name']]
-                df_read['Common Name'] = [name[name.find('(') + 1: name.find(')')] if name.find('(') >= 0 else name
-                                          for name in df_read['Common Name']]
+                # df_read['Common Name'] = df_read['Species']
+                # df_read['Common Name'] = [name[name.find(' ') + 1:] if name.find(' ') >= 0 else name
+                #                           for name in df_read['Common Name']]
+                # df_read['Common Name'] = [name[name.find('(') + 1: name.find(')')] if name.find('(') >= 0 else name
+                #                           for name in df_read['Common Name']]
                 df = pd.concat([df, df_read])
             except urllib.error.URLError as e:
                 print(f'no web occurences found for {date}')
                 print(e)
                 self.dates.remove(date)  # remove date if not found
+        df = self.build_common_name(df, 'Species')  # build common name for merged df
         df = df.drop(['Unnamed: 0'], axis='columns')
         return df
 
@@ -111,16 +120,18 @@ class MainWebPage:
             print(e)
         return
 
-    def filter_occurences(self, feeder_options, date_options):
+    def filter_occurences(self, feeder_options, date_options, bird_options):
         df = self.df_occurrences
         df = df[df['Feeder Name'].isin(feeder_options)]
         df = df[df['Date Time'].dt.strftime('%Y-%m-%d').isin(date_options)]  # compare y m d to date selection y m d
+        df = df[df['Common Name'].isin(bird_options)]
         return df
 
-    def filter_message_stream(self, feeder_options, date_options, message_options):
+    def filter_message_stream(self, feeder_options, date_options, bird_options, message_options):
         df = self.df_msg_stream[self.df_msg_stream['Message Type'].isin(message_options)]
         df = df[df['Feeder Name'].isin(feeder_options)]
         df = df[df['Date Time'].dt.strftime('%Y-%m-%d').isin(date_options)]  # compare y m d to date selection y m d
+        df = df[df['Common Name'].isin(bird_options)]
         self.image_names = list(df["Image Name"])
         self.available_dates = list(df["Date Time"])
         self.last_gif_name = self.last_gif()  # uses self.image names
@@ -136,15 +147,17 @@ class MainWebPage:
         st.header('Tweeters Web Page')
 
         # feeder multi select filters
-        dropdown_cols = st.columns(2)
+        dropdown_cols = st.columns(3)
         with dropdown_cols[0]:
             feeder_options = st.multiselect('Feeders:', self.feeders, self.feeders)  # feeders available all selected
         with dropdown_cols[1]:
             date_options = st.multiselect('Dates:', self.dates, self.dates)  # dates available and all selected
+        with dropdown_cols[2]:
+            bird_options = st.multiselect('Birds:', self.birds, self.birds)  # all birds common names and all selected
 
         # text and graph
         st.write(f'Interactive Chart of Birds: {min(self.available_dates)} to {max(self.available_dates)}')
-        fig1 = px.histogram(self.filter_occurences(feeder_options, date_options),
+        fig1 = px.histogram(self.filter_occurences(feeder_options, date_options, bird_options),
                             x="Hour", color='Common Name', range_x=[self.min_hr, self.max_hr],
                             nbins=36, width=650, height=400)
         fig1['layout']['xaxis'].update(autorange=True)
@@ -157,7 +170,7 @@ class MainWebPage:
             ['possible', 'spotted', 'message'],
             ['spotted'])
 
-        st.write(self.filter_message_stream(feeder_options, date_options, message_options))  # keep org stream
+        st.write(self.filter_message_stream(feeder_options, date_options, bird_options, message_options))
 
         # write last 10 images from stream
         st.write('Last Ten Images: Most Recent to Least Recent')
