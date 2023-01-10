@@ -185,5 +185,6 @@ import WebClass
 #         return
 
 # init class and call main page
+# rename page 1_main
 webpage = WebClass.WebPages()
 webpage.main_page()
