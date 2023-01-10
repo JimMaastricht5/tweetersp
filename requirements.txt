@@ -1,6 +1,5 @@
 pandas~=1.5.2
 streamlit
-Pillow
 urllib3
 plotly
 pytz

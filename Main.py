@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-from PIL import Image
 import urllib.request
 from urllib.error import HTTPError
 from datetime import datetime
@@ -97,8 +96,7 @@ class MainWebPage:
                 try:  # catch missing image
                     # print(f'{self.url_prefix + self.image_names[col+starting_col]}')
                     urllib.request.urlretrieve(self.url_prefix + self.image_names[col+starting_col], 'imgfile')
-                    img = Image.open('imgfile')
-                    # cols[col].image(img, use_column_width=True,
+                    # use alternative method below to open file to get animation instead of Pillow Image.open(url)
                     cols[col].image(self.url_prefix + self.image_names[col+starting_col], use_column_width=True,
                                     caption=f'{str(self.available_dates[col+starting_col])[str(self.available_dates[col+starting_col]).find(",") + 1:]} '
                                             f'Image: {self.image_names[col+starting_col]}')
