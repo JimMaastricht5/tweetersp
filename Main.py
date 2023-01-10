@@ -47,6 +47,7 @@ class MainWebPage:
             except Exception as e:  # FileNotFoundError or HTTPError
                 print(f'no web stream found for {date}')
                 print(e)
+                self.dates.remove(date)
                 pass
         df['Date Time'] = pd.to_datetime(df['Date Time'])
         df = df.drop(['Unnamed: 0'], axis='columns')
@@ -76,6 +77,7 @@ class MainWebPage:
             except Exception as e:  # FileNotFoundError or HTTPError
                 print(f'no web occurences found for {date}')
                 print(e)
+                self.dates.remove(date)
         df = df.drop(['Unnamed: 0'], axis='columns')
         return df
 
