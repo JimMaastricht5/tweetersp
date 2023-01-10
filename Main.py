@@ -98,7 +98,8 @@ class MainWebPage:
                     # print(f'{self.url_prefix + self.image_names[col+starting_col]}')
                     urllib.request.urlretrieve(self.url_prefix + self.image_names[col+starting_col], 'imgfile')
                     img = Image.open('imgfile')
-                    cols[col].image(img, use_column_width=True,
+                    # cols[col].image(img, use_column_width=True,
+                    cols[col].image(self.url_prefix + self.image_names[col+starting_col], use_column_width=True,
                                     caption=f'{str(self.available_dates[col+starting_col])[str(self.available_dates[col+starting_col]).find(",") + 1:]} '
                                             f'Image: {self.image_names[col+starting_col]}')
                 except FileNotFoundError:  # missing file
