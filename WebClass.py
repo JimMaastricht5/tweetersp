@@ -75,11 +75,6 @@ class WebPages:
                 df_read['Date Time'] = pd.to_datetime(df_read['Date Time'])
                 df_read['Hour'] = pd.to_numeric(df_read['Date Time'].dt.strftime('%H')) + \
                     pd.to_numeric(df_read['Date Time'].dt.strftime('%M')) / 60
-                # df_read['Common Name'] = df_read['Species']
-                # df_read['Common Name'] = [name[name.find(' ') + 1:] if name.find(' ') >= 0 else name
-                #                           for name in df_read['Common Name']]
-                # df_read['Common Name'] = [name[name.find('(') + 1: name.find(')')] if name.find('(') >= 0 else name
-                #                           for name in df_read['Common Name']]
                 df = pd.concat([df, df_read])
             except urllib.error.URLError as e:
                 print(f'no web occurences found for {date}')
@@ -124,14 +119,16 @@ class WebPages:
         df = self.df_occurrences
         df = df[df['Feeder Name'].isin(feeder_options)]
         df = df[df['Date Time'].dt.strftime('%Y-%m-%d').isin(date_options)]  # compare y m d to date selection y m d
-        df = df[df['Common Name'].isin(bird_options)]
+        if len(bird_options) > 0:
+            df = df[df['Common Name'].isin(bird_options)]  # return birds if none selected
         return df
 
     def filter_message_stream(self, feeder_options, date_options, bird_options, message_options):
         df = self.df_msg_stream[self.df_msg_stream['Message Type'].isin(message_options)]
         df = df[df['Feeder Name'].isin(feeder_options)]
         df = df[df['Date Time'].dt.strftime('%Y-%m-%d').isin(date_options)]  # compare y m d to date selection y m d
-        df = df[df['Common Name'].isin(bird_options)]
+        if len(bird_options) > 0:
+            df = df[df['Common Name'].isin(bird_options)]  # return all birds if none selected
         self.image_names = list(df["Image Name"])
         self.available_dates = list(df["Date Time"])
         self.last_gif_name = self.last_gif()  # uses self.image names
@@ -180,6 +177,24 @@ class WebPages:
         return
 
     def messages_page(self):
-        st.write('test')
+        self.df_msg_stream = self.load_message_stream()  # message stream from device
+
+        # ****************** format page ********************
+        st.set_page_config(layout="wide")
+        st.header('Tweeters Web Page: Feeder Messages')
+
+        # feeder multi select filters
+        dropdown_cols = st.columns(2)
+        with dropdown_cols[0]:
+            feeder_options = st.multiselect('Feeders:', self.feeders, self.feeders)  # feeders available all selected
+        with dropdown_cols[1]:
+            date_options = st.multiselect('Dates:', self.dates, self.dates)  # dates available and all selected
+
+        st.write(self.filter_message_stream(feeder_options=feeder_options, date_options=date_options,
+                                            bird_options=[], message_options=['message']))
         return
 
+    def about_page(self):
+        st.write('About Page')
+        st.write('Follow us on Twitter @TweetersSp https://twitter.com/TweetersSp')
+        return

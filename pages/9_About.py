@@ -1,4 +1,5 @@
-import streamlit as st
+import WebClass
 
-st.write('About Page')
-st.write('Follow us on Twitter @TweetersSp https://twitter.com/TweetersSp')
+# init class and call main page
+webpage = WebClass.WebPages()
+webpage.about_page()
