@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from PIL import Image
 import urllib.request
-from urllib.error import HTTPError
+# from urllib.error import HTTPError
 from datetime import datetime
 from datetime import timedelta
 import pytz
@@ -37,19 +37,17 @@ class MainWebPage:
 
     def load_message_stream(self):
         # build empty df
-        date = self.dates[0]  # init dates field for except processing
         df = pd.DataFrame(data=None, columns=['Unnamed: 0', 'Feeder Name', 'Event Num', 'Message Type',
                                               'Date Time', 'Message', 'Image Name'], dtype=None)
-        try:  # read csvs from web, 3 days and concat
-            for date in self.dates:
+        for date in self.dates:
+            try:  # read csvs from web, 3 days and concat
                 urllib.request.urlretrieve(self.url_prefix + date + 'webstream.csv', 'webstream.csv')
                 df_read = pd.read_csv('webstream.csv')
                 df = pd.concat([df, df_read])
-        except Exception as e:  # FileNotFoundError or HTTPError
-            print(f'no web stream found for {date}')
-            print(e)
-            pass
-
+            except Exception as e:  # FileNotFoundError or HTTPError
+                print(f'no web stream found for {date}')
+                print(e)
+                pass
         df['Date Time'] = pd.to_datetime(df['Date Time'])
         df = df.drop(['Unnamed: 0'], axis='columns')
         self.feeders = list(df['Feeder Name'].unique())
@@ -57,15 +55,13 @@ class MainWebPage:
         return df.sort_values('Date Time', ascending=False)
 
     def load_bird_occurrences(self):
-        date = datetime.now(self.Tz)  # init for error handling
         cname_list = []
         df = pd.DataFrame(data=None, columns=['Unnamed: 0', 'Feeder Name', 'Species',
                                               'Date Time', 'Hour'], dtype=None)
         df['Common Name'] = cname_list
         df['Date Time'] = pd.to_datetime(df['Date Time'])
-
-        try:  # read 3 days of files
-            for date in self.dates:
+        for date in self.dates:
+            try:  # read 3 days of files
                 urllib.request.urlretrieve(self.url_prefix + date + 'web_occurrences.csv', 'web_occurrences.csv')
                 df_read = pd.read_csv('web_occurrences.csv')
                 df_read['Date Time'] = pd.to_datetime(df_read['Date Time'])
@@ -76,11 +72,10 @@ class MainWebPage:
                                           for name in df_read['Common Name']]
                 df_read['Common Name'] = [name[name.find('(') + 1: name.find(')')] if name.find('(') >= 0 else name
                                           for name in df_read['Common Name']]
-
                 df = pd.concat([df, df_read])
-        except Exception as e:  # FileNotFoundError or HTTPError
-            print(f'no web occurences found for {date}')
-            print(e)
+            except Exception as e:  # FileNotFoundError or HTTPError
+                print(f'no web occurences found for {date}')
+                print(e)
         df = df.drop(['Unnamed: 0'], axis='columns')
         return df
 
