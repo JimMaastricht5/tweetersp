@@ -45,7 +45,6 @@ class MainWebPage:
                 df_read = pd.read_csv('webstream.csv')
                 df = pd.concat([df, df_read])
             except urllib.error.URLError as e:
-            # except Exception as e:  # FileNotFoundError or HTTPError
                 print(f'no web stream found for {date}')
                 print(e)
                 self.dates.remove(date)  # remove date if not found
@@ -75,7 +74,7 @@ class MainWebPage:
                 df_read['Common Name'] = [name[name.find('(') + 1: name.find(')')] if name.find('(') >= 0 else name
                                           for name in df_read['Common Name']]
                 df = pd.concat([df, df_read])
-            except Exception as e:  # FileNotFoundError or HTTPError
+            except urllib.error.URLError as e:
                 print(f'no web occurences found for {date}')
                 print(e)
                 self.dates.remove(date)  # remove date if not found
