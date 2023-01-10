@@ -148,7 +148,8 @@ class MainWebPage:
                             x="Hour", color='Common Name', range_x=[self.min_hr, self.max_hr],
                             nbins=36, width=650, height=400)
         fig1['layout']['xaxis'].update(autorange=True)
-        st.write(fig1)  # write out figure to web
+        st.plotly_chart(fig1, use_container_width=True, sharing="streamlit", theme="streamlit")
+        # st.write(fig1)  # write out figure to web
 
         # image and message stream multi-select filters
         message_options = st.multiselect(
