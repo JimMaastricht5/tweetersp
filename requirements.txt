@@ -3,3 +3,4 @@ streamlit
 Pillow
 urllib3
 plotly
+pytz

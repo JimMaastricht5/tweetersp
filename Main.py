@@ -5,6 +5,7 @@ import urllib.request
 from urllib.error import HTTPError
 from datetime import datetime
 from datetime import timedelta
+import pytz
 import plotly.express as px
 
 
@@ -20,9 +21,10 @@ class MainWebPage:
 
         # load date range for web data, currently 3 days of data retained
         self.dates = []
-        self.dates.append(datetime.now().strftime('%Y-%m-%d'))
-        self.dates.append((datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d'))
-        self.dates.append((datetime.now() - timedelta(days=2)).strftime('%Y-%m-%d'))
+        self.Tz = pytz.timezone("America/Chicago")  # localize time to current madison wi cst bird feeder
+        self.dates.append(datetime.now(self.Tz).strftime('%Y-%m-%d'))
+        self.dates.append((datetime.now(self.Tz) - timedelta(days=1)).strftime('%Y-%m-%d'))
+        self.dates.append((datetime.now(self.Tz) - timedelta(days=2)).strftime('%Y-%m-%d'))
 
         # init vars
         self.df_occurrences = pd.DataFrame()
@@ -55,7 +57,7 @@ class MainWebPage:
         return df.sort_values('Date Time', ascending=False)
 
     def load_bird_occurrences(self):
-        date = datetime.now()  # init for error handling
+        date = datetime.now(self.Tz)  # init for error handling
         cname_list = []
         df = pd.DataFrame(data=None, columns=['Unnamed: 0', 'Feeder Name', 'Species',
                                               'Date Time', 'Hour'], dtype=None)
