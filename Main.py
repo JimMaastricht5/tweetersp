@@ -167,7 +167,7 @@ class MainWebPage:
         # image and message stream multi-select filters
         message_options = st.multiselect(
             'Message Types:',
-            ['possible', 'spotted', 'message'],
+            ['possible', 'spotted'],  # remove message type and display on own page later
             ['spotted'])
 
         st.write(self.filter_message_stream(feeder_options, date_options, bird_options, message_options))
