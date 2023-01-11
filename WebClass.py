@@ -60,7 +60,7 @@ class WebPages:
         df = self.build_common_name(df, 'Message')
         df = df.drop(['Unnamed: 0'], axis='columns')
         self.feeders = list(df['Feeder Name'].unique())
-        self.feeders.append('default')  # add default feeder name in case one was not provided, need until 1/11 or 1/12
+        # self.feeders.append('default')  # add default feeder name in case one was not provided, need until 1/11 or 1/12
         return df.sort_values('Date Time', ascending=False)
 
     def load_bird_occurrences(self):
@@ -177,7 +177,8 @@ class WebPages:
         return
 
     def messages_page(self):
-        self.df_msg_stream = self.load_message_stream()  # message stream from device
+        # self.df_msg_stream = self.load_message_stream()  # message stream from device
+        # is this needed if it was loaded on the main page?
 
         # ****************** format page ********************
         st.set_page_config(layout="wide")
