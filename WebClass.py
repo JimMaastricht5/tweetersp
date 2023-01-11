@@ -177,9 +177,8 @@ class WebPages:
         return
 
     def messages_page(self):
-        # self.df_msg_stream = self.load_message_stream()  # message stream from device
-        # is this needed if it was loaded on the main page?
-        self.df_msg_stream
+        self.df_msg_stream = self.load_message_stream()  # message stream from device
+
         # ****************** format page ********************
         st.set_page_config(layout="wide")
         st.header('Tweeters Web Page: Feeder Messages')
@@ -191,8 +190,8 @@ class WebPages:
         with dropdown_cols[1]:
             date_options = st.multiselect('Dates:', self.dates, self.dates)  # dates available and all selected
 
-        # st.write(self.filter_message_stream(feeder_options=feeder_options, date_options=date_options,
-        #                                     bird_options=[], message_options=['message']))
+        st.write(self.filter_message_stream(feeder_options=feeder_options, date_options=date_options,
+                                            bird_options=[], message_options=['message']))
         return
 
     def about_page(self):
