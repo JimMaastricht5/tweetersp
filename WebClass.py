@@ -179,7 +179,7 @@ class WebPages:
     def messages_page(self):
         # self.df_msg_stream = self.load_message_stream()  # message stream from device
         # is this needed if it was loaded on the main page?
-
+        self.df_msg_stream
         # ****************** format page ********************
         st.set_page_config(layout="wide")
         st.header('Tweeters Web Page: Feeder Messages')
