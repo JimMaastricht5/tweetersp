@@ -170,7 +170,9 @@ class WebPages:
             ['possible', 'spotted'],  # remove message type and display on own page later
             ['spotted'])
 
-        st.write(self.filter_message_stream(feeder_options, date_options, bird_options, message_options))
+        # st.write(self.filter_message_stream(feeder_options, date_options, bird_options, message_options))
+        df_main_messages = self.filter_message_stream(feeder_options, date_options, bird_options, message_options)
+        st.write(df_main_messages)
 
         # write last 10 images from stream
         st.write('Last Ten Images: Most Recent to Least Recent')
