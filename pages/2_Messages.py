@@ -1,5 +1,5 @@
 import WebClass
 
 # init class and call main page
-webpage = WebClass.WebPages()
-webpage.messages_page()
+webpage2 = WebClass.WebPages()
+webpage2.messages_page()

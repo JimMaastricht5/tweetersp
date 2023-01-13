@@ -60,7 +60,6 @@ class WebPages:
         df = self.build_common_name(df, 'Message')
         df = df.drop(['Unnamed: 0'], axis='columns')
         self.feeders = list(df['Feeder Name'].unique())
-        # self.feeders.append('default')  # add default feeder name in case one was not provided, need until 1/11 or 1/12
         return df.sort_values('Date Time', ascending=False)
 
     def load_bird_occurrences(self):
@@ -191,11 +190,15 @@ class WebPages:
             date_options = st.multiselect('Dates:', self.dates, self.dates)  # dates available and all selected
 
         st.write(self.filter_message_stream(feeder_options=feeder_options, date_options=date_options,
-                                            bird_options=[], message_options=['message']).sort_values('Date Time', ascending=True)
+                                            bird_options=[], message_options=['message']).sort_values('Date Time',
+                                                                                                      ascending=True)
                  )
         return
 
     def about_page(self):
         st.write('About Page')
         st.write('Follow us on Twitter @TweetersSp https://twitter.com/TweetersSp')
+        st.write(f'Code is publicly available at: '
+                 f'https://github.com/JimMaastricht5/birdclassifier and'
+                 f' https://github.com/JimMaastricht5/tweetersp')
         return
