@@ -143,8 +143,8 @@ class WebPages:
         st.header('Tweeters Web Page')
 
         # feeder multi select filters with expander
-        with st.expander("Filters:"):
-            st.write('Select Feeder, Dates, and Birds to include or exclude.')
+        with st.expander("Filters for Feeder, Dates, and Birds:"):
+            st.write('Select values to include or exclude in the chart and information table.')
             dropdown_cols = st.columns(3)
             with dropdown_cols[0]:
                 feeder_options = st.multiselect('Feeders:', self.feeders, self.feeders)  # feeders all selected
@@ -164,7 +164,8 @@ class WebPages:
 
         # image and message stream multi-select filters
         message_options = st.multiselect(
-            'Message Types:',
+            'Prediction Certainty: \n spotted is the list of birds above the confidence threshold of the model. '
+            'Possible are the sitings below the threshold',
             ['possible', 'spotted'],  # remove message type and display on own page later
             ['spotted'])
 
