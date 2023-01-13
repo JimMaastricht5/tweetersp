@@ -219,7 +219,7 @@ class WebPages:
                  f'frames an animated gif is written to the cloud.'
                  f'Select images are displayed on Twitter uses another algorithm to avoid tweeting out '
                  f'common species to frequently.  All images are available on this web site for three days.')
-        st.write(f'Feel free to use any of the images you see on the site.  The code is publically available and I am '
+        st.write(f'Feel free to use any of the images you see on the site.  The code is publicly available and I am '
                  f'always happy to work with others to improve the feeder or web site.  ')
 
         st.write('Follow us on Twitter @TweetersSp https://twitter.com/TweetersSp')
