@@ -165,14 +165,13 @@ class WebPages:
 
         # image and message stream multi-select filters
         message_options = st.multiselect(
-            'Prediction Certainty: \n spotted is the list of birds above the confidence threshold of the model. '
-            'Possible are the sitings below the threshold',
+            'Prediction Certainty: \n "spotted" includes all of the observations above the confidence '
+            'threshold of the model. "possible" includes the observations below the threshold',
             ['possible', 'spotted'],  # remove message type and display on own page later
             ['spotted'])
 
-        # st.write(self.filter_message_stream(feeder_options, date_options, bird_options, message_options))
-        df_main_messages = self.filter_message_stream(feeder_options, date_options, bird_options, message_options)
-        st.write(df_main_messages)
+        st.dataframe(data=self.filter_message_stream(feeder_options, date_options, bird_options, message_options),
+                     use_container_width=True)
 
         # write last 10 images from stream
         st.write('Last Ten Images: Most Recent to Least Recent')
@@ -195,14 +194,34 @@ class WebPages:
         with dropdown_cols[1]:
             date_options = st.multiselect('Dates:', self.dates, self.dates)  # dates available and all selected
 
-        st.write(self.filter_message_stream(feeder_options=feeder_options, date_options=date_options,
-                                            bird_options=[], message_options=['message']).sort_values('Date Time',
-                                                                                                      ascending=True)
-                 )
+        st.dataframe(data=self.filter_message_stream(feeder_options=feeder_options, date_options=date_options,
+                                                     bird_options=[],
+                                                     message_options=['message']).sort_values('Date Time',
+                                                                                              ascending=True),
+                     use_container_width=True)
         return
 
     def about_page(self):
         st.write('About Page')
+        st.write(f'This site display data for the the days from '
+                 f'{min(self.available_dates)} to {max(self.available_dates)}')
+        st.write(f'Data is sent from a rasp pi 4 running custom motion detection and image recognition software. '
+                 f'At sunrise an initial image is taken at the feeder.  The delta from this initial image is what the '
+                 f'software uses to detect motion.  Once motion is detected a google Tensorflow object detection model '
+                 f'is run to determine objects in the image.  If a bird is detected a second Tensorflow model is run '
+                 f'to determine the species.  The species model detects 999 species, but the software provides feeder '
+                 f'software provides the ability to exclude species, e.g., European Swallow that do not appear in '
+                 f'the area.  '
+                 f'\n'
+                 f'Once a species is observed with a confidence above the threshold the feeder send a jpg to the cloud '
+                 f'and takes a quick series '
+                 f'of images to build an animated gif.  Species detection is run for each frame.  If there are enough '
+                 f'frames an animated gif is written to the cloud.'
+                 f'Select images are displayed on Twitter uses another algorithm to avoid tweeting out '
+                 f'common species to frequently.  All images are available on this web site for three days.')
+        st.write(f'Feel free to use any of the images you see on the site.  The code is publically available and I am '
+                 f'always happy to work with others to improve the feeder or web site.  ')
+
         st.write('Follow us on Twitter @TweetersSp https://twitter.com/TweetersSp')
         st.write(f'Code is publicly available at: '
                  f'https://github.com/JimMaastricht5/birdclassifier and'
