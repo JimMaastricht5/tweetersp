@@ -33,6 +33,7 @@ class WebPages:
         self.feeders = []
         self.available_dates = self.dates
         self.last_gif_name = ''
+        self.date_options = st.multiselect('Dates:', self.dates, self.dates)  # dates available and all selected
 
     def build_common_name(self, df, target_col):
         df['Common Name'] = df[target_col]
@@ -147,7 +148,9 @@ class WebPages:
         with dropdown_cols[0]:
             feeder_options = st.multiselect('Feeders:', self.feeders, self.feeders)  # feeders available all selected
         with dropdown_cols[1]:
-            date_options = st.multiselect('Dates:', self.dates, self.dates)  # dates available and all selected
+            # date_options = st.multiselect('Dates:', self.dates, self.dates)  # dates available and all selected
+            self.date_options
+            date_options = self.date_options
         with dropdown_cols[2]:
             bird_options = st.multiselect('Birds:', self.birds, self.birds)  # all birds common names and all selected
 
