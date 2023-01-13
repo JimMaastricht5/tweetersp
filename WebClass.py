@@ -33,7 +33,6 @@ class WebPages:
         self.feeders = []
         self.available_dates = self.dates
         self.last_gif_name = ''
-        self.date_options = st.multiselect('Dates:', self.dates, self.dates)  # dates available and all selected
 
     def build_common_name(self, df, target_col):
         df['Common Name'] = df[target_col]
@@ -143,16 +142,16 @@ class WebPages:
         st.set_page_config(layout="wide")
         st.header('Tweeters Web Page')
 
-        # feeder multi select filters
-        dropdown_cols = st.columns(3)
-        with dropdown_cols[0]:
-            feeder_options = st.multiselect('Feeders:', self.feeders, self.feeders)  # feeders available all selected
-        with dropdown_cols[1]:
-            # date_options = st.multiselect('Dates:', self.dates, self.dates)  # dates available and all selected
-            self.date_options
-            date_options = self.date_options
-        with dropdown_cols[2]:
-            bird_options = st.multiselect('Birds:', self.birds, self.birds)  # all birds common names and all selected
+        # feeder multi select filters with expander
+        with st.expander("Filters:"):
+            st.write('Select Feeder, Dates, and Birds to include or exclude.')
+            dropdown_cols = st.columns(3)
+            with dropdown_cols[0]:
+                feeder_options = st.multiselect('Feeders:', self.feeders, self.feeders)  # feeders all selected
+            with dropdown_cols[1]:
+                date_options = st.multiselect('Dates:', self.dates, self.dates)  # dates available and all selected
+            with dropdown_cols[2]:
+                bird_options = st.multiselect('Birds:', self.birds, self.birds)  # all birds common names all selected
 
         # text and graph
         st.write(f'Interactive Chart of Birds: {min(self.available_dates)} to {max(self.available_dates)}')
