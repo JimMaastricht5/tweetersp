@@ -72,9 +72,11 @@ class WebPages:
                 urllib.request.urlretrieve(self.url_prefix + date + 'web_occurrences.csv', 'web_occurrences.csv')
                 df_read = pd.read_csv('web_occurrences.csv')
                 df_read['Date Time'] = pd.to_datetime(df_read['Date Time'])
-                df_read['Day.Hour'] = pd.to_numeric(df_read['Date Time'].dt.strftime('%d')) + \
-                    pd.to_numeric(df_read['Date Time'].dt.strftime('%H')) / 100 + \
-                    pd.to_numeric(df_read['Date Time'].dt.strftime('%M')) / 100 / 60
+                df_read['Day.Hour'] = pd.to_numeric(df_read['Date Time'].dt.strftime('%H')) + \
+                    pd.to_numeric(df_read['Date Time'].dt.strftime('%M')) / 60
+                # df_read['Day.Hour'] = pd.to_numeric(df_read['Date Time'].dt.strftime('%d')) + \
+                #     pd.to_numeric(df_read['Date Time'].dt.strftime('%H')) / 100 + \
+                #     pd.to_numeric(df_read['Date Time'].dt.strftime('%M')) / 100 / 60
                 df = pd.concat([df, df_read])
             except urllib.error.URLError as e:
                 print(f'no web occurences found for {date}')
@@ -158,7 +160,7 @@ class WebPages:
         # text and graph
         st.write(f'Interactive Chart of Birds: {min(self.available_dates)} to {max(self.available_dates)}')
         fig1 = px.histogram(self.filter_occurences(feeder_options, date_options, bird_options),
-                            x="Hour", color='Common Name', # range_x=[self.min_hr, self.max_hr],
+                            x="Hour", color='Common Name', range_x=[self.min_hr, self.max_hr],
                             nbins=36, width=650, height=400)
         fig1['layout']['xaxis'].update(autorange=True)
         st.plotly_chart(fig1, use_container_width=True, sharing="streamlit", theme="streamlit")
