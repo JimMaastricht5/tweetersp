@@ -72,7 +72,7 @@ class WebPages:
                 urllib.request.urlretrieve(self.url_prefix + date + 'web_occurrences.csv', 'web_occurrences.csv')
                 df_read = pd.read_csv('web_occurrences.csv')
                 df_read['Date Time'] = pd.to_datetime(df_read['Date Time'])
-                df_read['Day.Hour'] = pd.to_numeric(df_read['Date Time'].dt.strftime('%H')) + \
+                df_read['Hour'] = pd.to_numeric(df_read['Date Time'].dt.strftime('%H')) + \
                     pd.to_numeric(df_read['Date Time'].dt.strftime('%M')) / 60
                 # df_read['Day.Hour'] = pd.to_numeric(df_read['Date Time'].dt.strftime('%d')) + \
                 #     pd.to_numeric(df_read['Date Time'].dt.strftime('%H')) / 100 + \
