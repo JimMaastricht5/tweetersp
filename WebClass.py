@@ -199,6 +199,7 @@ class WebPages:
                                                      message_options=['message']).sort_values('Date Time',
                                                                                               ascending=True),
                      use_container_width=True)
+        self.publish_row_of_images()
         return
 
     def about_page(self):
