@@ -158,11 +158,11 @@ class WebPages:
 
         # text and graph
         st.write(f'Interactive Chart of Birds: {min(self.available_dates)} to {max(self.available_dates)}')
-        fig1 = px.histogram(self.filter_occurences(feeder_options, date_options, bird_options),
-                            x="Hour", color='Common Name', range_x=[self.min_hr, self.max_hr],
-                            nbins=36, width=650, height=400)
-        fig1['layout']['xaxis'].update(autorange=True)
-        st.plotly_chart(fig1, use_container_width=True, sharing="streamlit", theme="streamlit")
+        # fig1 = px.histogram(self.filter_occurences(feeder_options, date_options, bird_options),
+        #                     x="Hour", color='Common Name', range_x=[self.min_hr, self.max_hr],
+        #                     nbins=36, width=650, height=400)
+        # fig1['layout']['xaxis'].update(autorange=True)
+        # st.plotly_chart(fig1, use_container_width=True, sharing="streamlit", theme="streamlit")
 
         fig2 = px.histogram(self.filter_occurences(feeder_options, date_options, bird_options),
                             x="Day.Hour", color='Common Name', # range_x=[self.min_hr, self.max_hr],
