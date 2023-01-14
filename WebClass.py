@@ -74,9 +74,9 @@ class WebPages:
                 df_read['Date Time'] = pd.to_datetime(df_read['Date Time'])
                 df_read['Hour'] = pd.to_numeric(df_read['Date Time'].dt.strftime('%H')) + \
                     pd.to_numeric(df_read['Date Time'].dt.strftime('%M')) / 60
-                # df_read['Day.Hour'] = pd.to_numeric(df_read['Date Time'].dt.strftime('%d')) + \
-                #     pd.to_numeric(df_read['Date Time'].dt.strftime('%H')) / 100 + \
-                #     pd.to_numeric(df_read['Date Time'].dt.strftime('%M')) / 100 / 60
+                df_read['Day.Hour'] = pd.to_numeric(df_read['Date Time'].dt.strftime('%d')) + \
+                    pd.to_numeric(df_read['Date Time'].dt.strftime('%H')) / 100 + \
+                    pd.to_numeric(df_read['Date Time'].dt.strftime('%M')) / 100 / 60
                 df = pd.concat([df, df_read])
             except urllib.error.URLError as e:
                 print(f'no web occurences found for {date}')
@@ -100,7 +100,6 @@ class WebPages:
             cols = st.columns(self.num_image_cols)  # set web page with x number of images
             for col in range(0, self.num_image_cols):  # cols 0 to 5 for 5 columns
                 try:  # catch missing image
-                    # print(f'{self.url_prefix + self.image_names[col+starting_col]}')
                     urllib.request.urlretrieve(self.url_prefix + self.image_names[col+starting_col], 'imgfile')
                     # use alternative method below to open file to get animation instead of Pillow Image.open(url)
                     cols[col].image(self.url_prefix + self.image_names[col+starting_col], use_column_width=True,
@@ -164,7 +163,12 @@ class WebPages:
                             nbins=36, width=650, height=400)
         fig1['layout']['xaxis'].update(autorange=True)
         st.plotly_chart(fig1, use_container_width=True, sharing="streamlit", theme="streamlit")
-        # st.write(fig1)  # write out figure to web
+
+        fig2 = px.histogram(self.filter_occurences(feeder_options, date_options, bird_options),
+                            x="Day.Hour", color='Common Name', # range_x=[self.min_hr, self.max_hr],
+                            nbins=36, width=650, height=400)
+        fig2['layout']['xaxis'].update(autorange=True)
+        st.plotly_chart(fig2, use_container_width=True, sharing="streamlit", theme="streamlit")
 
         # image and message stream multi-select filters
         message_options = st.multiselect(
