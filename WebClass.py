@@ -118,7 +118,7 @@ class WebPages:
 
     def publish_first_image(self):
         for image_name in self.image_names:
-            if image_name != '' and image_name != "<NA>" and not image_name.isnull():
+            if image_name != '' and image_name != "<NA>":
                 try:
                     urllib.request.urlretrieve(self.url_prefix + image_name, 'imgfile')
                     st.image(self.url_prefix + image_name, caption=f'Seed Check Image: {image_name}')
