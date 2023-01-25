@@ -116,6 +116,19 @@ class WebPages:
             print(e)
         return
 
+    def publish_first_image(self):
+        for image_name in self.image_names:
+            if image_name != '' and image_name != "<NA>" and not image_name.isnull():
+                try:
+                    urllib.request.urlretrieve(self.url_prefix + image_name, 'imgfile')
+                    st.image(self.url_prefix + image_name, caption=f'Seed Check Image: {image_name}')
+                except FileNotFoundError:  # missing file
+                    st.write(f'missing file {image_name}')
+                except Exception as e:  # missing file
+                    print(image_name)
+                    print(e)
+        return
+
     def filter_occurences(self, feeder_options, date_options, bird_options):
         df = self.df_occurrences
         df = df[df['Feeder Name'].isin(feeder_options)]
@@ -208,7 +221,8 @@ class WebPages:
                                                      message_options=['message']).sort_values('Date Time',
                                                                                               ascending=True),
                      use_container_width=True)
-        self.publish_row_of_images()
+        # self.publish_row_of_images()
+        self.publish_first_image()
         return
 
     def about_page(self):
