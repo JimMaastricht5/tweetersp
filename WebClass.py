@@ -122,6 +122,7 @@ class WebPages:
                 try:
                     urllib.request.urlretrieve(self.url_prefix + image_name, 'imgfile')
                     st.image(self.url_prefix + image_name, caption=f'Seed Check Image: {image_name}')
+                    return  # only need the first image, fall out of function
                 except FileNotFoundError:  # missing file
                     st.write(f'missing file {image_name}')
                 except Exception as e:  # missing file
