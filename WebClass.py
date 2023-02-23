@@ -42,7 +42,7 @@ class WebPages:
                              for name in df['Common Name']]
         return df
 
-    @st.cache_data
+    # @st.cache_data
     def load_message_stream(self):
         # build empty df
         df = pd.DataFrame(data=None, columns=['Unnamed: 0', 'Feeder Name', 'Event Num', 'Message Type',
@@ -63,7 +63,7 @@ class WebPages:
         self.feeders = list(df['Feeder Name'].unique())
         return df.sort_values('Date Time', ascending=False)
 
-    @st.cache_data
+    # @st.cache_data
     def load_bird_occurrences(self):
         # setup df like file
         df = pd.DataFrame(data=None, columns=['Unnamed: 0', 'Feeder Name', 'Species',
