@@ -42,6 +42,7 @@ class WebPages:
                              for name in df['Common Name']]
         return df
 
+    @st.cache_data
     def load_message_stream(self):
         # build empty df
         df = pd.DataFrame(data=None, columns=['Unnamed: 0', 'Feeder Name', 'Event Num', 'Message Type',
@@ -62,6 +63,7 @@ class WebPages:
         self.feeders = list(df['Feeder Name'].unique())
         return df.sort_values('Date Time', ascending=False)
 
+    @st.cache_data
     def load_bird_occurrences(self):
         # setup df like file
         df = pd.DataFrame(data=None, columns=['Unnamed: 0', 'Feeder Name', 'Species',
@@ -200,6 +202,34 @@ class WebPages:
         st.write('Last Ten Images: Most Recent to Least Recent')
         self.publish_row_of_images(starting_col=0)  # row 1 of 5
         self.publish_row_of_images(starting_col=0 + self.num_image_cols)  # row 2 of 5
+
+        return
+
+    def daily_charts_page(self):
+        self.df_occurrences = self.load_bird_occurrences()  # test stream of bird occurrences for graph
+        self.birds = self.df_occurrences['Common Name'].unique()
+        self.df_msg_stream = self.load_message_stream()  # message stream from device
+
+        # ****************** format page ********************
+        st.set_page_config(layout="wide")
+        st.header('Tweeters Web Page: Daily Charts')
+
+        # feeder multi select filters with expander
+        with st.expander("Filters for Feeder, Dates, and Birds:"):
+            st.write('Select values to include or exclude in the chart and information table.  '
+                     'Empty list of birds is "all" birds.')
+            dropdown_cols = st.columns(1)
+            with dropdown_cols[0]:
+                feeder_options = st.multiselect('Feeders:', self.feeders, self.feeders)  # feeders all selected
+
+        # text and graph for a single day
+        for date in self.available_dates:
+            st.write(f'Interactive Chart of Birds: {date}')
+            fig1 = px.histogram(self.filter_occurences(feeder_options, date, self.birds),
+                                x="Hour", color='Common Name', range_x=[self.min_hr, self.max_hr],
+                                nbins=36, width=650, height=400)
+            fig1['layout']['xaxis'].update(autorange=True)
+            st.plotly_chart(fig1, use_container_width=True, sharing="streamlit", theme="streamlit")
 
         return
 
