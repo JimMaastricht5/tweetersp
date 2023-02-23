@@ -225,7 +225,7 @@ class WebPages:
         # text and graph for a single day
         for date in self.available_dates:
             st.write(f'Interactive Chart of Birds: {date}')
-            fig1 = px.histogram(self.filter_occurences(feeder_options, date, self.birds),
+            fig1 = px.histogram(self.filter_occurences(feeder_options, list(date), self.birds),
                                 x="Hour", color='Common Name', range_x=[self.min_hr, self.max_hr],
                                 nbins=36, width=650, height=400)
             fig1['layout']['xaxis'].update(autorange=True)
