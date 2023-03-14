@@ -108,8 +108,7 @@ class WebPages:
             cols = st.columns(self.num_image_cols)  # set web page with x number of images
             for col in range(0, self.num_image_cols):  # cols 0 to 5 for 5 columns
                 try:  # catch missing image
-                    urllib.request.urlretrieve(self.url_prefix + self.image_names[col+starting_col].replace(' ', '&'),
-                                               'imgfile')
+                    urllib.request.urlretrieve(self.url_prefix + self.image_names[col+starting_col], 'imgfile')
                     # use alternative method below to open file to get animation instead of Pillow Image.open(url)
                     cols[col].image(self.url_prefix + self.image_names[col+starting_col], use_column_width=True,
                                     caption=f'{str(self.available_dates[col+starting_col])[str(self.available_dates[col+starting_col]).find(",") + 1:]} '
