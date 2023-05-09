@@ -342,10 +342,10 @@ class WebPages:
         df = self.load_bird_occurrences()
         gb = GridOptionsBuilder.from_dataframe(df)
         gb.configure_pagination(enabled=True, paginationPageSize=20)  # Add pagination
-        gb.configure_default_column(enablePivot=False, enableValue=True, enableRowGroup=True)
-        # gb.configure_selection(selection_mode="single", use_checkbox=True)
-        gb.configure_selection('multiple', use_checkbox=True,
-                               groupSelectsChildren="Group checkbox select children")  # Enable multi-row selection
+        gb.configure_default_column(enablePivot=True, enableValue=True, enableRowGroup=True)
+        gb.configure_selection(selection_mode="single", use_checkbox=True)
+        # gb.configure_selection('multiple', use_checkbox=True,
+        #                        groupSelectsChildren="Group checkbox select children")  # Enable multi-row selection
         gb.configure_side_bar()
         gridoptions = gb.build()
 
