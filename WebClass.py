@@ -341,6 +341,7 @@ class WebPages:
 
         df = self.filter_message_stream(feeder_options, date_options, bird_options, message_options)
         gb = GridOptionsBuilder.from_dataframe(df)
+        gb.configure_pagination(paginationAutoPageSize=True)  # Add pagination
         gb.configure_default_column(enablePivot=False, enableValue=True, enableRowGroup=False)
         gb.configure_selection(selection_mode="single", use_checkbox=False)
         gb.configure_side_bar()
