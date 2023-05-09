@@ -342,7 +342,7 @@ class WebPages:
         df = self.filter_message_stream(feeder_options, date_options, bird_options, message_options)
         gb = GridOptionsBuilder.from_dataframe(df)
         gb.configure_pagination(enabled=True, paginationPageSize=20)  # Add pagination
-        gb.configure_default_column(enablePivot=False, enableValue=True, enableRowGroup=False)
+        gb.configure_default_column(enablePivot=False, enableValue=True, enableRowGroup=True)
         # gb.configure_selection(selection_mode="single", use_checkbox=True)
         gb.configure_selection('multiple', use_checkbox=True,
                                groupSelectsChildren="Group checkbox select children")  # Enable multi-row selection
