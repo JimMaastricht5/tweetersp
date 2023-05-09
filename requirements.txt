@@ -3,3 +3,4 @@ streamlit
 urllib3
 plotly
 pytz
+streamlit-aggrid
