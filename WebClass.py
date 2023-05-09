@@ -379,9 +379,9 @@ class WebPages:
         #     reload_data=True
         # )
         #
-        # data = grid_response['data']
-        # selected = grid_response['selected_rows']
-        # df = pd.DataFrame(selected)  # Pass the selected rows to a new dataframe df
+        df = response['data']
+        selected = response['selected_rows']
+        df2 = pd.DataFrame(selected)  # Pass the selected rows to a new dataframe df
         # write last 10 images from stream
         # st.write('Last Ten Images: Most Recent to Least Recent')
         # self.publish_row_of_images(starting_col=0)  # row 1 of 5
