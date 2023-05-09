@@ -355,10 +355,11 @@ class WebPages:
             enable_enterprise_modules=True,
             update_mode=GridUpdateMode.MODEL_CHANGED,
             data_return_mode=DataReturnMode.FILTERED_AND_SORTED,
-            fit_columns_on_grid_load=True,
-            header_checkbox_selection_filtered_only=True,
-            height=1000,
-            use_checkbox=True)
+            fit_columns_on_grid_load=False,
+            # header_checkbox_selection_filtered_only=True,
+            # height=1000,
+            # use_checkbox=True
+        )
         # gb = GridOptionsBuilder.from_dataframe(data)
         # gb.configure_pagination(paginationAutoPageSize=True)  # Add pagination
         # gb.configure_side_bar()  # Add a sidebar
