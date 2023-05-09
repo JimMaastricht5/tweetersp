@@ -337,12 +337,12 @@ class WebPages:
 
         # st.dataframe(data=self.filter_message_stream(feeder_options, date_options, bird_options, message_options),
         #              use_container_width=True)
-        AgGrid(self.filter_message_stream(feeder_options, date_options, bird_options, message_options))
+        # AgGrid(self.filter_message_stream(feeder_options, date_options, bird_options, message_options))
 
         df = self.filter_message_stream(feeder_options, date_options, bird_options, message_options)
         gb = GridOptionsBuilder.from_dataframe(df)
-        gb.configure_default_column(enablePivot=False, enableValue=True, enableRowGroup=True)
-        gb.configure_selection(selection_mode="multiple", use_checkbox=True)
+        gb.configure_default_column(enablePivot=False, enableValue=True, enableRowGroup=False)
+        gb.configure_selection(selection_mode="single", use_checkbox=True)
         gb.configure_side_bar()
         gridoptions = gb.build()
 
