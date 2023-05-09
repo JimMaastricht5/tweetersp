@@ -341,7 +341,7 @@ class WebPages:
 
         df = self.load_bird_occurrences()
         gb = GridOptionsBuilder.from_dataframe(df)
-        gb.configure_pagination(enabled=True, paginationPageSize=20)  # Add pagination
+        gb.configure_pagination(enabled=True, paginationPageSize=10)  # Add pagination
         gb.configure_default_column(enablePivot=True, enableValue=True, enableRowGroup=True)
         gb.configure_selection(selection_mode="single", use_checkbox=True)
         # gb.configure_selection('multiple', use_checkbox=True,
@@ -357,7 +357,7 @@ class WebPages:
             data_return_mode=DataReturnMode.FILTERED_AND_SORTED,
             fit_columns_on_grid_load=False,
             header_checkbox_selection_filtered_only=True,
-            height=250,
+            # height=250,
             use_checkbox=True
         )
         # gb = GridOptionsBuilder.from_dataframe(data)
