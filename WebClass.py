@@ -353,7 +353,7 @@ class WebPages:
             data_return_mode='AS_INPUT',
             update_mode='MODEL_CHANGED',
             fit_columns_on_grid_load=False,
-            theme='blue',  # Add theme color to the table
+            # theme='blue',  # Add theme color to the table
             enable_enterprise_modules=True,
             height=350,
             width='100%',
