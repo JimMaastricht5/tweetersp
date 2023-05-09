@@ -339,30 +339,45 @@ class WebPages:
         #              use_container_width=True)
         AgGrid(self.filter_message_stream(feeder_options, date_options, bird_options, message_options))
 
-        data = self.filter_message_stream(feeder_options, date_options, bird_options, message_options)
-        gb = GridOptionsBuilder.from_dataframe(data)
-        gb.configure_pagination(paginationAutoPageSize=True)  # Add pagination
-        gb.configure_side_bar()  # Add a sidebar
-        gb.configure_selection('multiple', use_checkbox=True,
-                               groupSelectsChildren="Group checkbox select children")  # Enable multi-row selection
-        gridOptions = gb.build()
+        df = self.filter_message_stream(feeder_options, date_options, bird_options, message_options)
+        gb = GridOptionsBuilder.from_dataframe(df)
+        gb.configure_default_column(enablePivot=True, enableValue=True, enableRowGroup=True)
+        gb.configure_selection(selection_mode="multiple", use_checkbox=True)
+        gb.configure_side_bar()
+        gridoptions = gb.build()
 
-        grid_response = AgGrid(
-            data,
-            gridOptions=gridOptions,
-            data_return_mode='AS_INPUT',
-            update_mode='MODEL_CHANGED',
-            fit_columns_on_grid_load=False,
-            # theme='blue',  # Add theme color to the table
+        response = AgGrid(
+            df,
+            gridOptions=gridoptions,
             enable_enterprise_modules=True,
-            height=350,
-            width='100%',
-            reload_data=True
-        )
-
-        data = grid_response['data']
-        selected = grid_response['selected_rows']
-        df = pd.DataFrame(selected)  # Pass the selected rows to a new dataframe df
+            update_mode=GridUpdateMode.MODEL_CHANGED,
+            data_return_mode=DataReturnMode.FILTERED_AND_SORTED,
+            fit_columns_on_grid_load=False,
+            header_checkbox_selection_filtered_only=True,
+            use_checkbox=True)
+        # gb = GridOptionsBuilder.from_dataframe(data)
+        # gb.configure_pagination(paginationAutoPageSize=True)  # Add pagination
+        # gb.configure_side_bar()  # Add a sidebar
+        # gb.configure_selection('multiple', use_checkbox=True,
+        #                        groupSelectsChildren="Group checkbox select children")  # Enable multi-row selection
+        # gridOptions = gb.build()
+        #
+        # grid_response = AgGrid(
+        #     data,
+        #     gridOptions=gridOptions,
+        #     data_return_mode='AS_INPUT',
+        #     update_mode='MODEL_CHANGED',
+        #     fit_columns_on_grid_load=False,
+        #     # theme='blue',  # Add theme color to the table
+        #     enable_enterprise_modules=True,
+        #     height=350,
+        #     width='100%',
+        #     reload_data=True
+        # )
+        #
+        # data = grid_response['data']
+        # selected = grid_response['selected_rows']
+        # df = pd.DataFrame(selected)  # Pass the selected rows to a new dataframe df
         # write last 10 images from stream
         # st.write('Last Ten Images: Most Recent to Least Recent')
         # self.publish_row_of_images(starting_col=0)  # row 1 of 5
