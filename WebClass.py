@@ -322,24 +322,24 @@ class WebPages:
         # st.plotly_chart(fig1, use_container_width=True, sharing="streamlit", theme="streamlit")
 
         # multi-day
-        fig2 = px.histogram(self.filter_occurences(feeder_options, date_options, bird_options),
-                            x="Date Time", color='Common Name',
-                            nbins=36, width=650, height=400)
-        fig2['layout']['xaxis'].update(autorange=True)
-        st.plotly_chart(fig2, use_container_width=True, sharing="streamlit", theme="streamlit")
+        # fig2 = px.histogram(self.filter_occurences(feeder_options, date_options, bird_options),
+        #                     x="Date Time", color='Common Name',
+        #                     nbins=36, width=650, height=400)
+        # fig2['layout']['xaxis'].update(autorange=True)
+        # st.plotly_chart(fig2, use_container_width=True, sharing="streamlit", theme="streamlit")
 
         # image and message stream multi-select filters
-        message_options = st.multiselect(
-            'Prediction Certainty: \n "spotted" includes all of the observations above the confidence '
-            'threshold of the model. "possible" includes the observations below the threshold',
-            ['possible', 'spotted'],  # remove message type and display on own page later
-            ['spotted'])
+        # message_options = st.multiselect(
+        #     'Prediction Certainty: \n "spotted" includes all of the observations above the confidence '
+        #     'threshold of the model. "possible" includes the observations below the threshold',
+        #     ['possible', 'spotted'],  # remove message type and display on own page later
+        #     ['spotted'])
 
         # st.dataframe(data=self.filter_message_stream(feeder_options, date_options, bird_options, message_options),
         #              use_container_width=True)
         # AgGrid(self.filter_message_stream(feeder_options, date_options, bird_options, message_options))
 
-        df = self.filter_message_stream(feeder_options, date_options, bird_options, message_options)
+        df = self.load_bird_occurrences()
         gb = GridOptionsBuilder.from_dataframe(df)
         gb.configure_pagination(enabled=True, paginationPageSize=20)  # Add pagination
         gb.configure_default_column(enablePivot=False, enableValue=True, enableRowGroup=True)
