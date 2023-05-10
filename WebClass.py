@@ -99,6 +99,7 @@ class WebPages:
         try:
             urllib.request.urlretrieve(self.url_prefix + 'daily_history.csv', 'daily_history.csv')
             df = pd.read_csv('daily_history.csv')
+            df = df.drop(['Unnamed: 0'], axis='columns')
         except urllib.error.URLError as e:
             print(f'no daily history')
             print(e)
