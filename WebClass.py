@@ -88,11 +88,20 @@ class WebPages:
                     pd.to_numeric(df_read['Date Time'].dt.strftime('%M')) / 100 / 60
                 df = pd.concat([df, df_read])
             except urllib.error.URLError as e:
-                print(f'no web occurences found for {date}')
+                print(f'no web occurrences found for {date}')
                 print(e)
                 self.dates.remove(date)  # remove date if not found
         df = self.build_common_name(df, 'Species')  # build common name for merged df
         df = df.drop(['Unnamed: 0'], axis='columns')
+        return df
+
+    def load_daily_history(self):
+        try:
+            urllib.request.urlretrieve(self.url_prefix + 'daily_history.csv', 'daily_history.csv')
+            df = pd.read_csv('daily_history.csv')
+        except urllib.error.URLError as e:
+            print(f'no daily history')
+            print(e)
         return df
 
     def last_gif(self):
@@ -298,48 +307,9 @@ class WebPages:
 
         # ****************** format page ********************
         st.set_page_config(layout="wide")
-        st.header('Tweeters Web Page')
+        st.header('Daily History')
 
-        # feeder multi select filters with expander
-        with st.expander("Filters for Feeder, Dates, and Birds:"):
-            st.write('Select values to include or exclude in the chart and information table.  '
-                     'Empty list of birds is "all" birds.')
-            dropdown_cols = st.columns(3)
-            with dropdown_cols[0]:
-                feeder_options = st.multiselect('Feeders:', self.feeders, self.feeders)  # feeders all selected
-            with dropdown_cols[1]:
-                date_options = st.multiselect('Dates:', self.dates, self.dates)  # dates available and all selected
-            with dropdown_cols[2]:
-                bird_options = st.multiselect('Birds:', self.birds, [])  # all birds common names none selected
-
-        # text and graph
-        st.write(f'Interactive Chart of Birds: {min(self.available_dates)} to {max(self.available_dates)}')
-        # single day
-        # fig1 = px.histogram(self.filter_occurences(feeder_options, date_options, bird_options),
-        #                     x="Hour", color='Common Name', range_x=[self.min_hr, self.max_hr],
-        #                     nbins=36, width=650, height=400)
-        # fig1['layout']['xaxis'].update(autorange=True)
-        # st.plotly_chart(fig1, use_container_width=True, sharing="streamlit", theme="streamlit")
-
-        # multi-day
-        # fig2 = px.histogram(self.filter_occurences(feeder_options, date_options, bird_options),
-        #                     x="Date Time", color='Common Name',
-        #                     nbins=36, width=650, height=400)
-        # fig2['layout']['xaxis'].update(autorange=True)
-        # st.plotly_chart(fig2, use_container_width=True, sharing="streamlit", theme="streamlit")
-
-        # image and message stream multi-select filters
-        # message_options = st.multiselect(
-        #     'Prediction Certainty: \n "spotted" includes all of the observations above the confidence '
-        #     'threshold of the model. "possible" includes the observations below the threshold',
-        #     ['possible', 'spotted'],  # remove message type and display on own page later
-        #     ['spotted'])
-
-        # st.dataframe(data=self.filter_message_stream(feeder_options, date_options, bird_options, message_options),
-        #              use_container_width=True)
-        # AgGrid(self.filter_message_stream(feeder_options, date_options, bird_options, message_options))
-
-        df = self.load_bird_occurrences()
+        df = self.load_daily_history()
         gb = GridOptionsBuilder.from_dataframe(df)
         gb.configure_pagination(paginationPageSize=50)  # Add pagination
         gb.configure_default_column(enablePivot=False, enableValue=False, enableRowGroup=False)
