@@ -96,6 +96,7 @@ class WebPages:
         return df
 
     def load_daily_history(self):
+        df = None
         try:
             urllib.request.urlretrieve(self.url_prefix + 'daily_history.csv', 'daily_history.csv')
             df = pd.read_csv('daily_history.csv')
@@ -266,6 +267,16 @@ class WebPages:
         self.publish_first_image()
         return
 
+    def daily_trends_page(self):
+        st.set_page_config(layout="wide")
+        st.header('Daily History')
+        df = self.load_daily_history()
+        st.write(f'Trend of Bird Visits by Day')
+        fig1 = px.line(data_frame=df, x="Day", y="counts", color='Common Name', width=650, height=400)
+        fig1['layout']['xaxis'].update(autorange=True)
+        st.plotly_chart(fig1, use_container_width=True, sharing="streamlit", theme="streamlit")
+        return
+
     def about_page(self):
         st.write('About Page')
         st.write(f'This site display data for the the days from '
@@ -293,11 +304,10 @@ class WebPages:
                  f' https://github.com/JimMaastricht5/tweetersp')
         return
 
-
     def test_df_page(self):
-        self.df_occurrences = self.load_bird_occurrences()  # test stream of bird occurrences for graph
-        self.birds = self.df_occurrences['Common Name'].unique()
-        self.df_msg_stream = self.load_message_stream()  # message stream from device
+        # self.df_occurrences = self.load_bird_occurrences()  # test stream of bird occurrences for graph
+        # self.birds = self.df_occurrences['Common Name'].unique()
+        # self.df_msg_stream = self.load_message_stream()  # message stream from device
 
         # ****************** format page ********************
         st.set_page_config(layout="wide")
@@ -307,6 +317,7 @@ class WebPages:
         gb = GridOptionsBuilder.from_dataframe(df)
         gb.configure_pagination(paginationPageSize=50)  # Add pagination
         gb.configure_default_column(enablePivot=False, enableValue=False, enableRowGroup=False)
+        # selection options multi or single
         # gb.configure_selection(selection_mode="single", use_checkbox=True)
         # gb.configure_selection('multiple', use_checkbox=True,
         #                        groupSelectsChildren="Group checkbox select children")  # Enable multi-row selection
@@ -324,31 +335,10 @@ class WebPages:
             # height=250,  # using height breaks multi-page view
             use_checkbox=True
         )
-        # gb = GridOptionsBuilder.from_dataframe(data)
-        # gb.configure_pagination(paginationAutoPageSize=True)  # Add pagination
-        # gb.configure_side_bar()  # Add a sidebar
-        # gb.configure_selection('multiple', use_checkbox=True,
-        #                        groupSelectsChildren="Group checkbox select children")  # Enable multi-row selection
-        # gridOptions = gb.build()
-        #
-        # grid_response = AgGrid(
-        #     data,
-        #     gridOptions=gridOptions,
-        #     data_return_mode='AS_INPUT',
-        #     update_mode='MODEL_CHANGED',
-        #     fit_columns_on_grid_load=False,
-        #     # theme='blue',  # Add theme color to the table
-        #     enable_enterprise_modules=True,
-        #     height=350,
-        #     width='100%',
-        #     reload_data=True
-        # )
-        #
-        df = response['data']
-        selected = response['selected_rows']
-        df2 = pd.DataFrame(selected)  # Pass the selected rows to a new dataframe df
-        # write last 10 images from stream
-        # st.write('Last Ten Images: Most Recent to Least Recent')
-        # self.publish_row_of_images(starting_col=0)  # row 1 of 5
-        # self.publish_row_of_images(starting_col=0 + self.num_image_cols)  # row 2 of 5
+
+        # selection results
+        # df = response['data']
+        # selected = response['selected_rows']
+        # df2 = pd.DataFrame(selected)  # Pass the selected rows to a new dataframe df
+
         return
