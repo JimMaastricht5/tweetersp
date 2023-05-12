@@ -191,13 +191,6 @@ class WebPages:
 
         # text and graph
         st.write(f'Interactive Chart of Birds: {min(self.available_dates)} to {max(self.available_dates)}')
-        # single day
-        # fig1 = px.histogram(self.filter_occurences(feeder_options, date_options, bird_options),
-        #                     x="Hour", color='Common Name', range_x=[self.min_hr, self.max_hr],
-        #                     nbins=36, width=650, height=400)
-        # fig1['layout']['xaxis'].update(autorange=True)
-        # st.plotly_chart(fig1, use_container_width=True, sharing="streamlit", theme="streamlit")
-
         # multi-day
         fig2 = px.histogram(self.filter_occurences(feeder_options, date_options, bird_options),
                             x="Date Time", color='Common Name',
@@ -314,7 +307,7 @@ class WebPages:
         gb = GridOptionsBuilder.from_dataframe(df)
         gb.configure_pagination(paginationPageSize=50)  # Add pagination
         gb.configure_default_column(enablePivot=False, enableValue=False, enableRowGroup=False)
-        gb.configure_selection(selection_mode="single", use_checkbox=True)
+        # gb.configure_selection(selection_mode="single", use_checkbox=True)
         # gb.configure_selection('multiple', use_checkbox=True,
         #                        groupSelectsChildren="Group checkbox select children")  # Enable multi-row selection
         gb.configure_side_bar()
@@ -328,7 +321,7 @@ class WebPages:
             data_return_mode=DataReturnMode.FILTERED_AND_SORTED,
             fit_columns_on_grid_load=False,
             header_checkbox_selection_filtered_only=True,
-            # height=250,
+            # height=250,  # using height breaks multi-page view
             use_checkbox=True
         )
         # gb = GridOptionsBuilder.from_dataframe(data)
