@@ -126,6 +126,7 @@ class WebPages:
                         st.image(self.url_prefix + self.image_names[col+starting_col], use_column_width=True,
                                         caption=f'{str(self.available_dates[col+starting_col])[str(self.available_dates[col+starting_col]).find(",") + 1:]} '
                                                 f'Image: {self.image_names[col+starting_col]}')
+                        st.write(f'{self.url_prefix + self.image_names[col+starting_col]}' , unsafe_allow_html=True)
                     # cols[col].image(self.url_prefix + self.image_names[col + starting_col], use_column_width=True,
                     #                 caption=f'{str(self.available_dates[col + starting_col])[str(self.available_dates[col + starting_col]).find(",") + 1:]} '
                     #                         f'Image: {self.image_names[col + starting_col]}')
