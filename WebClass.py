@@ -122,9 +122,13 @@ class WebPages:
                 try:  # catch missing image
                     urllib.request.urlretrieve(self.url_prefix + self.image_names[col+starting_col], 'imgfile')
                     # use alternative method below to open file to get animation instead of Pillow Image.open(url)
-                    cols[col].image(self.url_prefix + self.image_names[col+starting_col], use_column_width=True,
-                                    caption=f'{str(self.available_dates[col+starting_col])[str(self.available_dates[col+starting_col]).find(",") + 1:]} '
-                                            f'Image: {self.image_names[col+starting_col]}')
+                    with cols[col]:
+                        st.image(self.url_prefix + self.image_names[col+starting_col], use_column_width=True,
+                                        caption=f'{str(self.available_dates[col+starting_col])[str(self.available_dates[col+starting_col]).find(",") + 1:]} '
+                                                f'Image: {self.image_names[col+starting_col]}')
+                    # cols[col].image(self.url_prefix + self.image_names[col + starting_col], use_column_width=True,
+                    #                 caption=f'{str(self.available_dates[col + starting_col])[str(self.available_dates[col + starting_col]).find(",") + 1:]} '
+                    #                         f'Image: {self.image_names[col + starting_col]}')
                 except FileNotFoundError:  # missing file
                     cols[col].write(f'missing file {self.image_names[col+starting_col]}')
                 except Exception as e:  # missing file
@@ -215,7 +219,7 @@ class WebPages:
         self.publish_row_of_images(starting_col=(0 + self.num_image_cols))  # row 2 of 5 cols starts num_image_cols
         self.publish_row_of_images(starting_col=(self.num_image_cols * 2))  # row 3 of 5 cols starts num_image_cols * 2
         self.publish_row_of_images(starting_col=(self.num_image_cols * 3))  # row 4 of 5 cols starts num_image_cols * 3
-        self.publish_row_of_images(starting_col=(self.num_image_cols * 4))  # row 5 of 5 cols starts num_image_cols * 4
+        self.publish_row_of_images(starting_col=(self.num_image_cols * 4))  # row 5 of 5 cols starts num_image_cols * 5
 
         return
 
