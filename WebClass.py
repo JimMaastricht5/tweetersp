@@ -210,9 +210,12 @@ class WebPages:
                      use_container_width=True)
 
         # write last 10 images from stream
-        st.write('Last Ten Images: Most Recent to Least Recent')
-        self.publish_row_of_images(starting_col=0)  # row 1 of 5
-        self.publish_row_of_images(starting_col=0 + self.num_image_cols)  # row 2 of 5
+        st.write('Last 25 Images: Most Recent to Least Recent')
+        self.publish_row_of_images(starting_col=0)  # col 1 of 5
+        self.publish_row_of_images(starting_col=(0 + self.num_image_cols))  # row 2 of 5 cols starts num_image_cols
+        self.publish_row_of_images(starting_col=(self.num_image_cols * 2))  # row 3 of 5 cols starts num_image_cols * 2
+        self.publish_row_of_images(starting_col=(self.num_image_cols * 3))  # row 4 of 5 cols starts num_image_cols * 3
+        self.publish_row_of_images(starting_col=(self.num_image_cols * 4))  # row 5 of 5 cols starts num_image_cols * 4
 
         return
 
