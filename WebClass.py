@@ -287,7 +287,8 @@ class WebPages:
 
     def twitter_timeline_page(self):
         st.write('Twitter Timeline for @TweetersSP')
-        # st.write('<a class="twitter-timeline" href="https://twitter.com/TweetersSp?ref_src=twsrc%5Etfw">Tweets by TweetersSp</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>', unsafe_allow_html=True)
+        url='<a class="twitter-timeline" href="https://twitter.com/TweetersSp?ref_src=twsrc%5Etfw">Tweets by TweetersSp</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>'
+        st.write(f'{url}', unsafe_allow_html=True)
         return
 
     def about_page(self):
