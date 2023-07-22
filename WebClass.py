@@ -125,9 +125,9 @@ class WebPages:
                     # use alternative method below to open file to get animation instead of Pillow Image.open(url)
                     with cols[col]:
                         st.image(self.url_prefix + self.image_names[col+starting_col], use_column_width=True,
-                                        caption=f'{str(self.available_dates[col+starting_col])[str(self.available_dates[col+starting_col]).find(",") + 1:]} '
-                                                f'Image: {self.image_names[col+starting_col]}')
-                        st.write(f'{self.url_prefix + self.image_names[col+starting_col]}' , unsafe_allow_html=True)
+                                 caption=f'{str(self.available_dates[col+starting_col])[str(self.available_dates[col+starting_col]).find(",") + 1:]} '
+                                 f'Image: {self.image_names[col+starting_col]}')
+                        st.write(f'{self.url_prefix + self.image_names[col+starting_col]}', unsafe_allow_html=True)
                     # cols[col].image(self.url_prefix + self.image_names[col + starting_col], use_column_width=True,
                     #                 caption=f'{str(self.available_dates[col + starting_col])[str(self.available_dates[col + starting_col]).find(",") + 1:]} '
                     #                         f'Image: {self.image_names[col + starting_col]}')
@@ -288,7 +288,7 @@ class WebPages:
 
     def twitter_timeline_page(self):
         st.write('Twitter Timeline for @TweetersSP')
-        url='<a class="twitter-timeline" href="https://twitter.com/TweetersSp?ref_src=twsrc%5Etfw">Tweets by TweetersSp</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>'
+        url = '<a class="twitter-timeline" href="https://twitter.com/TweetersSp?ref_src=twsrc%5Etfw">Tweets by TweetersSp</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>'
         st.write(f'{url}', unsafe_allow_html=True)
         return
 
