@@ -101,7 +101,7 @@ class WebPages:
             urllib.request.urlretrieve(self.url_prefix + 'daily_history.csv', 'daily_history.csv')
             df = pd.read_csv('daily_history.csv')
             df = df.drop(['Unnamed: 0'], axis='columns')
-            df["day_of_year"] = df["month"] * 30 + df["day"]  # df["year"] * 365
+            df["Day_of_Year"] = df["Month"] * 30 + df["Day"]  # df["Year"] * 365
         except urllib.error.URLError as e:
             print(f'no daily history')
             print(e)
@@ -281,7 +281,7 @@ class WebPages:
         st.header('Daily History')
         df = self.load_daily_history()
         st.write(f'Trend of Bird Visits by Day')
-        fig1 = px.line(data_frame=df, x="day_of_year", y="counts", color='Common Name', width=650, height=800)
+        fig1 = px.line(data_frame=df, x="Day_of_Year", y="counts", color='Common Name', width=650, height=800)
         fig1['layout']['xaxis'].update(autorange=True)
         st.plotly_chart(fig1, use_container_width=True, sharing="streamlit", theme="streamlit")
         return
