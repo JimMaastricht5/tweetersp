@@ -213,7 +213,7 @@ class WebPages:
             ['spotted'])
 
         st.dataframe(data=self.filter_message_stream(feeder_options, date_options, bird_options, message_options),
-                     use_container_width=True)
+                     use_container_width=True, hide_index=True)
 
         # write last 10 images from stream
         st.write('Last 25 Images: Most Recent to Least Recent')
