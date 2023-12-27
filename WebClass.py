@@ -172,7 +172,7 @@ class WebPages:
             df = df[df['Common Name'].isin(bird_options)]  # return all birds if none selected
         self.image_names = list(df["Image Name"])
         self.available_dates = list(df["Date Time"])
-        df = df['Image Link'] = self.url_prefix + df['Image Name']
+        # df = df['Image Link'] = self.url_prefix + df['Image Name']
         self.last_gif_name = self.last_gif()  # uses self.image names
         return df
 
