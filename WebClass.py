@@ -92,7 +92,6 @@ class WebPages:
                 print(e)
                 self.dates.remove(date)  # remove date if not found
         df = self.build_common_name(df, 'Species')  # build common name for merged df
-        df = df['Image Link'] = self.url_prefix + df['Image Name']
         df = df.drop(['Unnamed: 0'], axis='columns')
         return df
 
@@ -172,6 +171,7 @@ class WebPages:
         if len(bird_options) > 0:
             df = df[df['Common Name'].isin(bird_options)]  # return all birds if none selected
         self.image_names = list(df["Image Name"])
+        df = df['Image Link'] = self.url_prefix + df['Image Name']
         self.available_dates = list(df["Date Time"])
         self.last_gif_name = self.last_gif()  # uses self.image names
         return df
