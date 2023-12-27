@@ -92,6 +92,7 @@ class WebPages:
                 print(e)
                 self.dates.remove(date)  # remove date if not found
         df = self.build_common_name(df, 'Species')  # build common name for merged df
+        df = df['Image Link'] = self.url_prefix + df['Image Name']
         df = df.drop(['Unnamed: 0'], axis='columns')
         return df
 
@@ -213,7 +214,7 @@ class WebPages:
             ['spotted'])
 
         st.dataframe(data=self.filter_message_stream(feeder_options, date_options, bird_options, message_options),
-                     use_container_width=True, hide_index=True, column_config={'Image Name': st.column_config.LinkColumn("Image Link", help='', max_chars=100,)})
+                     use_container_width=True, hide_index=True, column_config={'Image Link': st.column_config.LinkColumn("Image Link", help='', max_chars=100,)})
 
         # write last 10 images from stream
         st.write('Last 25 Images: Most Recent to Least Recent')
