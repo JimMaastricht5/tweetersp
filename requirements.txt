@@ -1,4 +1,4 @@
-pandas~=1.5.2
+pandas
 streamlit
 urllib3
 plotly
