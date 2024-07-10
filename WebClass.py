@@ -54,6 +54,7 @@ class WebPages:
 
         # build color map so each chart uses the same color for each species
         self.common_names = sorted(df['Common Name'].unique())
+        self.common_names = [name for name in self.common_names if name not in FILTER_BIRD_NAMES]
         color_palette = colors.sequential.Viridis
         self.bird_color_map = dict(zip(self.common_names, color_palette))
         return df
