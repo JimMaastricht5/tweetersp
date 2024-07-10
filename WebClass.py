@@ -43,6 +43,7 @@ class WebPages:
         self.available_dates = self.dates
         self.last_gif_name = ''
         self.bird_color_map = {}
+        self.common_names = []
 
     def build_common_name(self, df, target_col):
         df['Common Name'] = df[target_col]
@@ -52,8 +53,9 @@ class WebPages:
                              for name in df['Common Name']]
 
         # build color map so each chart uses the same color for each species
+        self.common_names = sorted(df['Common Name'].unique())
         color_palette = colors.sequential.Viridis
-        self.bird_color_map = dict(zip(df['Common Name'].unique(), color_palette))
+        self.bird_color_map = dict(zip(self.common_names, color_palette))
         return df
 
     # @st.cache_data
@@ -262,7 +264,8 @@ class WebPages:
             fig1 = px.histogram(self.filter_occurences(feeder_options, [date], self.birds),
                                 x="Hour", color='Common Name', range_x=[self.min_hr, self.max_hr],
                                 nbins=36, width=650, height=400,
-                                color_discrete_map=self.bird_color_map)
+                                color_discrete_map=self.bird_color_map,
+                                category_orders={'Common Name': self.common_names})
             fig1['layout']['xaxis'].update(autorange=True)
             st.plotly_chart(fig1, use_container_width=True, sharing="streamlit", theme="streamlit")
 
