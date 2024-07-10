@@ -304,9 +304,9 @@ class WebPages:
         df = df[df['counts'] > filter_birds_cnt]
         df['Year-Day'] = (df['Year'] - 2023) * 365 + df['Day_of_Year']
         st.write(f'Trend of Bird Visits by Day')
-        fig1 = px.line(data_frame=df, x="Year-Day", y="counts", color='Common Name', width=650, height=800,
-                       color_discrete_map=self.bird_color_map,
-                       category_orders={'Common Name': self.common_names})
+        fig1 = px.line(data_frame=df, x="Year-Day", y="counts", color='Common Name', width=650, height=800)
+                       #color_discrete_map=self.bird_color_map,
+                       #category_orders={'Common Name': self.common_names})
         fig1['layout']['xaxis'].update(autorange=True)
         st.plotly_chart(fig1, use_container_width=True, sharing="streamlit", theme="streamlit")
 
