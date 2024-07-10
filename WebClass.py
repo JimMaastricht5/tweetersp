@@ -211,7 +211,8 @@ class WebPages:
             ['spotted'])
 
         st.dataframe(data=self.filter_message_stream(feeder_options, date_options, bird_options, message_options),
-                     use_container_width=True, hide_index=True, column_config={'Image Link': st.column_config.LinkColumn("Image Link", help='', max_chars=100,)})
+                     use_container_width=True, hide_index=True,
+                     column_config={'Image Link': st.column_config.LinkColumn("Image Link", help='', max_chars=100,)})
 
         # write last 10 images from stream
         st.write('Last 25 Images: Most Recent to Least Recent')
@@ -274,15 +275,14 @@ class WebPages:
         self.publish_first_image()
         return
 
-    def daily_trends_page(self):
+    def daily_trends_page(self, filter_birds=1):
         st.set_page_config(layout="wide")
         st.header('Daily History')
         df = self.load_daily_history()
-        # df['Year-Day'] = df.apply(lambda row: f"{int(row['Year'])}.{int(row['Day_of_Year'])}", axis=1)
+        df = df[df['counts'] <= filter_birds]
         df['Year-Day'] = (df['Year'] - 2023) * 365 + df['Day_of_Year']
         st.write(f'Trend of Bird Visits by Day')
         fig1 = px.line(data_frame=df, x="Year-Day", y="counts", color='Common Name', width=650, height=800)
-        # fig1.update_traces(texttemplate='%{.0f}')
         fig1['layout']['xaxis'].update(autorange=True)
         st.plotly_chart(fig1, use_container_width=True, sharing="streamlit", theme="streamlit")
 
@@ -293,7 +293,7 @@ class WebPages:
         gb.configure_side_bar()
         gridoptions = gb.build()
 
-        response = AgGrid(
+        _ = AgGrid(
             df,
             gridOptions=gridoptions,
             enable_enterprise_modules=True,
@@ -308,10 +308,10 @@ class WebPages:
 
     # def twitter_timeline_page(self):
     #     st.write('Twitter Timeline for @TweetersSP')
-    #     url = '<a class="twitter-timeline" href="https://twitter.com/TweetersSp?ref_src=twsrc%5Etfw">Tweets by TweetersSp</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>'
+    #     url = '<a class="twitter-timeline" href="https://twitter.com/TweetersSp?ref_src=twsrc%5Etfw">Tweets by
+    #     TweetersSp</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>'
     #     st.write(f'{url}', unsafe_allow_html=True)
     #     return
-
 
     # def test_df_page(self):
     #     # ****************** format page ********************
@@ -365,4 +365,3 @@ class WebPages:
                  f'https://github.com/JimMaastricht5/birdclassifier and'
                  f' https://github.com/JimMaastricht5/tweetersp')
         return
-
