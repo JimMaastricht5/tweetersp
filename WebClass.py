@@ -6,6 +6,7 @@ from datetime import datetime
 from datetime import timedelta
 import pytz
 import plotly.express as px
+from plotly.express import colors
 from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
 
 # list of birds to exclude that prior model displayed and are not valid resutls
@@ -250,12 +251,17 @@ class WebPages:
             with dropdown_cols[0]:
                 feeder_options = st.multiselect('Feeders:', self.feeders, self.feeders)  # feeders all selected
 
+        # build color map so each chart uses the same color for each species
+        color_palette = colors.sequential.Viridis  # Choose a suitable palette
+        bird_color_map = dict(zip(self.birds['Common Name'].unique(), color_palette))
+
         # text and graph for a single day
         for date in self.available_dates:
             st.write(f'Interactive Chart of Birds: {date}')
             fig1 = px.histogram(self.filter_occurences(feeder_options, [date], self.birds),
                                 x="Hour", color='Common Name', range_x=[self.min_hr, self.max_hr],
-                                nbins=36, width=650, height=400)
+                                nbins=36, width=650, height=400,
+                                color_discrete_map=bird_color_map)
             fig1['layout']['xaxis'].update(autorange=True)
             st.plotly_chart(fig1, use_container_width=True, sharing="streamlit", theme="streamlit")
 
