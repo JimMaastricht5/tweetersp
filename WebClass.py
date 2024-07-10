@@ -279,7 +279,7 @@ class WebPages:
         st.set_page_config(layout="wide")
         st.header('Daily History')
         df = self.load_daily_history()
-        df = df[df['counts'] <= filter_birds]
+        df = df[df['counts'] > filter_birds]
         df['Year-Day'] = (df['Year'] - 2023) * 365 + df['Day_of_Year']
         st.write(f'Trend of Bird Visits by Day')
         fig1 = px.line(data_frame=df, x="Year-Day", y="counts", color='Common Name', width=650, height=800)
