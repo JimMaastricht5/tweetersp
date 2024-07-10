@@ -42,6 +42,7 @@ class WebPages:
         self.feeders = []
         self.available_dates = self.dates
         self.last_gif_name = ''
+        self.bird_color_map = {}
 
     def build_common_name(self, df, target_col):
         df['Common Name'] = df[target_col]
@@ -49,6 +50,10 @@ class WebPages:
                              for name in df['Common Name']]
         df['Common Name'] = [name[name.find('(') + 1: name.find(')')] if name.find('(') >= 0 else name
                              for name in df['Common Name']]
+
+        # build color map so each chart uses the same color for each species
+        color_palette = colors.sequential.Viridis
+        self.bird_color_map = dict(zip(df['Common Name'].unique(), color_palette))
         return df
 
     # @st.cache_data
@@ -251,17 +256,13 @@ class WebPages:
             with dropdown_cols[0]:
                 feeder_options = st.multiselect('Feeders:', self.feeders, self.feeders)  # feeders all selected
 
-        # build color map so each chart uses the same color for each species
-        color_palette = colors.sequential.Viridis
-        bird_color_map = dict(zip(self.birds['Common Name'].unique().to_list(), color_palette))
-
         # text and graph for a single day
         for date in self.available_dates:
             st.write(f'Interactive Chart of Birds: {date}')
             fig1 = px.histogram(self.filter_occurences(feeder_options, [date], self.birds),
                                 x="Hour", color='Common Name', range_x=[self.min_hr, self.max_hr],
                                 nbins=36, width=650, height=400,
-                                color_discrete_map=bird_color_map)
+                                color_discrete_map=self.bird_color_map)
             fig1['layout']['xaxis'].update(autorange=True)
             st.plotly_chart(fig1, use_container_width=True, sharing="streamlit", theme="streamlit")
 
