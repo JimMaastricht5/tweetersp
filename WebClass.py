@@ -253,7 +253,7 @@ class WebPages:
 
         # build color map so each chart uses the same color for each species
         color_palette = colors.sequential.Viridis  # Choose a suitable palette
-        bird_color_map = dict(zip(self.birds['Common Name'].unique(), color_palette))
+        bird_color_map = dict(zip(self.birds['Common Name'].unique().to_list(), color_palette))
 
         # text and graph for a single day
         for date in self.available_dates:
