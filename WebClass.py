@@ -282,13 +282,59 @@ class WebPages:
         fig1 = px.line(data_frame=df, x="Day_of_Year", y="counts", color='Common Name', width=650, height=800)
         fig1['layout']['xaxis'].update(autorange=True)
         st.plotly_chart(fig1, use_container_width=True, sharing="streamlit", theme="streamlit")
+
+        gb = GridOptionsBuilder.from_dataframe(df)
+        gb.configure_pagination(paginationPageSize=50)  # Add pagination
+        gb.configure_default_column(enablePivot=False, enableValue=False, enableRowGroup=False)
+
+        gb.configure_side_bar()
+        gridoptions = gb.build()
+
+        response = AgGrid(
+            df,
+            gridOptions=gridoptions,
+            enable_enterprise_modules=True,
+            update_mode=GridUpdateMode.MODEL_CHANGED,
+            data_return_mode=DataReturnMode.FILTERED_AND_SORTED,
+            fit_columns_on_grid_load=False,
+            header_checkbox_selection_filtered_only=True,
+            # height=250,  # using height breaks multi-page view
+            use_checkbox=True
+        )
         return
 
-    def twitter_timeline_page(self):
-        st.write('Twitter Timeline for @TweetersSP')
-        url = '<a class="twitter-timeline" href="https://twitter.com/TweetersSp?ref_src=twsrc%5Etfw">Tweets by TweetersSp</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>'
-        st.write(f'{url}', unsafe_allow_html=True)
-        return
+    # def twitter_timeline_page(self):
+    #     st.write('Twitter Timeline for @TweetersSP')
+    #     url = '<a class="twitter-timeline" href="https://twitter.com/TweetersSp?ref_src=twsrc%5Etfw">Tweets by TweetersSp</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>'
+    #     st.write(f'{url}', unsafe_allow_html=True)
+    #     return
+
+
+    # def test_df_page(self):
+    #     # ****************** format page ********************
+    #     st.set_page_config(layout="wide")
+    #     st.header('Daily History')
+    #
+    #     df = self.load_daily_history()
+    #     gb = GridOptionsBuilder.from_dataframe(df)
+    #     gb.configure_pagination(paginationPageSize=50)  # Add pagination
+    #     gb.configure_default_column(enablePivot=False, enableValue=False, enableRowGroup=False)
+    #
+    #     gb.configure_side_bar()
+    #     gridoptions = gb.build()
+    #
+    #     response = AgGrid(
+    #         df,
+    #         gridOptions=gridoptions,
+    #         enable_enterprise_modules=True,
+    #         update_mode=GridUpdateMode.MODEL_CHANGED,
+    #         data_return_mode=DataReturnMode.FILTERED_AND_SORTED,
+    #         fit_columns_on_grid_load=False,
+    #         header_checkbox_selection_filtered_only=True,
+    #         # height=250,  # using height breaks multi-page view
+    #         use_checkbox=True
+    #     )
+    #     return
 
     def about_page(self):
         st.write('About Page')
@@ -317,41 +363,3 @@ class WebPages:
                  f' https://github.com/JimMaastricht5/tweetersp')
         return
 
-    def test_df_page(self):
-        # self.df_occurrences = self.load_bird_occurrences()  # test stream of bird occurrences for graph
-        # self.birds = self.df_occurrences['Common Name'].unique()
-        # self.df_msg_stream = self.load_message_stream()  # message stream from device
-
-        # ****************** format page ********************
-        st.set_page_config(layout="wide")
-        st.header('Daily History')
-
-        df = self.load_daily_history()
-        gb = GridOptionsBuilder.from_dataframe(df)
-        gb.configure_pagination(paginationPageSize=50)  # Add pagination
-        gb.configure_default_column(enablePivot=False, enableValue=False, enableRowGroup=False)
-        # selection options multi or single
-        # gb.configure_selection(selection_mode="single", use_checkbox=True)
-        # gb.configure_selection('multiple', use_checkbox=True,
-        #                        groupSelectsChildren="Group checkbox select children")  # Enable multi-row selection
-        gb.configure_side_bar()
-        gridoptions = gb.build()
-
-        response = AgGrid(
-            df,
-            gridOptions=gridoptions,
-            enable_enterprise_modules=True,
-            update_mode=GridUpdateMode.MODEL_CHANGED,
-            data_return_mode=DataReturnMode.FILTERED_AND_SORTED,
-            fit_columns_on_grid_load=False,
-            header_checkbox_selection_filtered_only=True,
-            # height=250,  # using height breaks multi-page view
-            use_checkbox=True
-        )
-
-        # selection results
-        # df = response['data']
-        # selected = response['selected_rows']
-        # df2 = pd.DataFrame(selected)  # Pass the selected rows to a new dataframe df
-
-        return
