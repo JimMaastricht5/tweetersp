@@ -278,7 +278,7 @@ class WebPages:
         st.set_page_config(layout="wide")
         st.header('Daily History')
         df = self.load_daily_history()
-        df['Year-Day'] = str(df['Year']) + '.' + str(df['Day_of_Year'])
+        df['Year-Day'] = df.apply(lambda row: str(df['Year']) + '.' + str(df['Day_of_Year']))
         st.write(f'Trend of Bird Visits by Day')
         fig1 = px.line(data_frame=df, x="Day_of_Year", y="counts", color='Common Name', width=650, height=800)
         fig1['layout']['xaxis'].update(autorange=True)
