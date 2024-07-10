@@ -8,8 +8,15 @@ import pytz
 import plotly.express as px
 from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
 
-
+# list of birds to exclude that prior model displayed and are not valid resutls
+FILTER_BIRD_NAMES = ['Rock Pigeon', 'Pine Grosbeak', 'Indigo Bunting', 'Eurasian Collared-Dove',
+                     'White-crowned Sparrow', 'Lark Sparrow', 'Chipping Sparrow', 'Pine Siskin',
+                     'Vesper Sparrow', 'White-throated Sparrow', 'Common Ground-Dove',
+                     'Cedar Waxwing', "Lincoln's Sparrow", 'Evening Grosbeak', 'American Tree Sparrow',
+                     "Hart's Sparrow", 'Field Sparrow']
 # sample link format https://storage.googleapis.com/tweeterssp-web-site-contents/2022-12-29-11-57-29227.jpg
+
+
 class WebPages:
     def __init__(self, min_hr=6, max_hr=18, num_image_cols=5,
                  url_prefix='https://storage.googleapis.com/tweeterssp-web-site-contents/'):
@@ -275,11 +282,12 @@ class WebPages:
         self.publish_first_image()
         return
 
-    def daily_trends_page(self, filter_birds=1):
+    def daily_trends_page(self, filter_birds_cnt=1):
         st.set_page_config(layout="wide")
         st.header('Daily History')
         df = self.load_daily_history()
-        df = df[df['counts'] > filter_birds]
+        df = df[df['counts'] > filter_birds_cnt]
+        df = df[df['Common Name'] not in FILTER_BIRD_NAMES]
         df['Year-Day'] = (df['Year'] - 2023) * 365 + df['Day_of_Year']
         st.write(f'Trend of Bird Visits by Day')
         fig1 = px.line(data_frame=df, x="Year-Day", y="counts", color='Common Name', width=650, height=800)
