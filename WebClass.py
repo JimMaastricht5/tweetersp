@@ -78,7 +78,7 @@ class WebPages:
         return df.sort_values('Date Time', ascending=False)
 
     # @st.cache_data
-    def load_bird_occurrences(self):
+    def load_bird_occurrences(self, drop_old_model_species=True):
         # setup df like file
         df = pd.DataFrame(data=None, columns=['Unnamed: 0', 'Feeder Name', 'Species',
                                               'Date Time', 'Hour'], dtype=None)
@@ -100,6 +100,8 @@ class WebPages:
                 self.dates.remove(date)  # remove date if not found
         df = self.build_common_name(df, 'Species')  # build common name for merged df
         df = df.drop(['Unnamed: 0'], axis='columns')
+        if drop_old_model_species:
+            df = df[~df['Common Name'].isin(FILTER_BIRD_NAMES)]  # get rid of species from old model
         return df
 
     def load_daily_history(self):
@@ -287,7 +289,6 @@ class WebPages:
         st.header('Daily History')
         df = self.load_daily_history()
         df = df[df['counts'] > filter_birds_cnt]
-        df = df[~df['Common Name'].isin(FILTER_BIRD_NAMES)]
         df['Year-Day'] = (df['Year'] - 2023) * 365 + df['Day_of_Year']
         st.write(f'Trend of Bird Visits by Day')
         fig1 = px.line(data_frame=df, x="Year-Day", y="counts", color='Common Name', width=650, height=800)
