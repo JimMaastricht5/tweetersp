@@ -252,7 +252,7 @@ class WebPages:
                 feeder_options = st.multiselect('Feeders:', self.feeders, self.feeders)  # feeders all selected
 
         # build color map so each chart uses the same color for each species
-        color_palette = colors.sequential.Viridis  # Choose a suitable palette
+        color_palette = colors.sequential.Viridis
         bird_color_map = dict(zip(self.birds['Common Name'].unique().to_list(), color_palette))
 
         # text and graph for a single day
