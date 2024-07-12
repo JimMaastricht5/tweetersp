@@ -9,7 +9,7 @@ import plotly.express as px
 from plotly.express import colors
 from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
 
-# list of birds to exclude that prior model displayed and are not valid resutls
+# list of birds to exclude that prior model displayed and are not valid results
 FILTER_BIRD_NAMES = ['Rock Pigeon', 'Pine Grosbeak', 'Indigo Bunting', 'Eurasian Collared-Dove',
                      'White-crowned Sparrow', 'Lark Sparrow', 'Chipping Sparrow', 'Pine Siskin',
                      'Vesper Sparrow', 'White-throated Sparrow', 'Common Ground-Dove',
@@ -45,6 +45,7 @@ class WebPages:
         self.bird_color_map = {}
         self.common_names = []
 
+    # helper functions ######
     def build_common_name(self, df, target_col):
         df['Common Name'] = df[target_col]
         df['Common Name'] = [name[name.find(' ') + 1:] if name.find(' ') >= 0 else name
@@ -173,7 +174,7 @@ class WebPages:
                     print(e)
         return
 
-    def filter_occurences(self, feeder_options, date_options, bird_options):
+    def filter_occurrences(self, feeder_options, date_options, bird_options):
         df = self.df_occurrences
         df = df[df['Feeder Name'].isin(feeder_options)]
         df = df[df['Date Time'].dt.strftime('%Y-%m-%d').isin(date_options)]  # compare y m d to date selection y m d
@@ -193,6 +194,7 @@ class WebPages:
         self.last_gif_name = self.last_gif()  # uses self.image names
         return df
 
+    # page functions ######
     def main_page(self):
         self.df_occurrences = self.load_bird_occurrences()  # test stream of bird occurrences for graph
         self.birds = self.df_occurrences['Common Name'].unique()
@@ -217,7 +219,7 @@ class WebPages:
         # text and graph
         st.write(f'Interactive Chart of Birds: {min(self.available_dates)} to {max(self.available_dates)}')
         # multi-day
-        fig2 = px.histogram(self.filter_occurences(feeder_options, date_options, bird_options),
+        fig2 = px.histogram(self.filter_occurrences(feeder_options, date_options, bird_options),
                             x="Date Time", color='Common Name',
                             nbins=36, width=650, height=400,
                             color_discrete_map=self.bird_color_map,
@@ -266,7 +268,7 @@ class WebPages:
         # text and graph for a single day
         for date in self.available_dates:
             st.write(f'Interactive Chart of Birds: {date}')
-            fig1 = px.histogram(self.filter_occurences(feeder_options, [date], self.birds),
+            fig1 = px.histogram(self.filter_occurrences(feeder_options, [date], self.birds),
                                 x="Hour", color='Common Name', range_x=[self.min_hr, self.max_hr],
                                 nbins=36, width=650, height=400,
                                 color_discrete_map=self.bird_color_map,
@@ -276,13 +278,43 @@ class WebPages:
 
         return
 
+    def daily_trends_page(self, filter_birds_cnt=1):
+        st.set_page_config(layout="wide")
+        st.header('Daily History - May 9th 2023 to Present')
+        df = self.load_daily_history()
+        df = df[df['counts'] > filter_birds_cnt]
+        df['Year-Day'] = (df['Year'] - 2023) * 365 + df['Day_of_Year']
+        st.write(f'Trend of Bird Visits by Day.  Data started being retained on May 9th 2023.')
+        fig1 = px.line(data_frame=df, x="Year-Day", y="counts", color='Common Name', width=650, height=800,
+                       color_discrete_map=self.bird_color_map,
+                       category_orders={'Common Name': self.common_names})
+        fig1['layout']['xaxis'].update(autorange=True)
+        st.plotly_chart(fig1, use_container_width=True, sharing="streamlit", theme="streamlit")
+
+        gb = GridOptionsBuilder.from_dataframe(df)
+        gb.configure_pagination(paginationPageSize=50)  # Add pagination
+        gb.configure_default_column(enablePivot=False, enableValue=False, enableRowGroup=False)
+        gb.configure_side_bar()
+        gridoptions = gb.build()
+
+        _ = AgGrid(
+            df,
+            gridOptions=gridoptions,
+            enable_enterprise_modules=True,
+            update_mode=GridUpdateMode.MODEL_CHANGED,
+            data_return_mode=DataReturnMode.FILTERED_AND_SORTED,
+            fit_columns_on_grid_load=False,
+            header_checkbox_selection_filtered_only=True,
+            # height=250,  # using height breaks multipage view
+            use_checkbox=True
+        )
+        return
+
     def messages_page(self):
         self.df_msg_stream = self.load_message_stream()  # message stream from device
-
         # ****************** format page ********************
         st.set_page_config(layout="wide")
         st.header('Tweeters Web Page: Feeder Messages')
-
         # feeder multi select filters
         dropdown_cols = st.columns(2)
         with dropdown_cols[0]:
@@ -298,72 +330,6 @@ class WebPages:
         # self.publish_row_of_images()
         self.publish_first_image()
         return
-
-    def daily_trends_page(self, filter_birds_cnt=1):
-        st.set_page_config(layout="wide")
-        st.header('Daily History')
-        df = self.load_daily_history()
-        df = df[df['counts'] > filter_birds_cnt]
-        df['Year-Day'] = (df['Year'] - 2023) * 365 + df['Day_of_Year']
-        st.write(f'Trend of Bird Visits by Day')
-        fig1 = px.line(data_frame=df, x="Year-Day", y="counts", color='Common Name', width=650, height=800,
-                       color_discrete_map=self.bird_color_map,
-                       category_orders={'Common Name': self.common_names})
-        fig1['layout']['xaxis'].update(autorange=True)
-        st.plotly_chart(fig1, use_container_width=True, sharing="streamlit", theme="streamlit")
-
-        gb = GridOptionsBuilder.from_dataframe(df)
-        gb.configure_pagination(paginationPageSize=50)  # Add pagination
-        gb.configure_default_column(enablePivot=False, enableValue=False, enableRowGroup=False)
-
-        gb.configure_side_bar()
-        gridoptions = gb.build()
-
-        _ = AgGrid(
-            df,
-            gridOptions=gridoptions,
-            enable_enterprise_modules=True,
-            update_mode=GridUpdateMode.MODEL_CHANGED,
-            data_return_mode=DataReturnMode.FILTERED_AND_SORTED,
-            fit_columns_on_grid_load=False,
-            header_checkbox_selection_filtered_only=True,
-            # height=250,  # using height breaks multi-page view
-            use_checkbox=True
-        )
-        return
-
-    # def twitter_timeline_page(self):
-    #     st.write('Twitter Timeline for @TweetersSP')
-    #     url = '<a class="twitter-timeline" href="https://twitter.com/TweetersSp?ref_src=twsrc%5Etfw">Tweets by
-    #     TweetersSp</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>'
-    #     st.write(f'{url}', unsafe_allow_html=True)
-    #     return
-
-    # def test_df_page(self):
-    #     # ****************** format page ********************
-    #     st.set_page_config(layout="wide")
-    #     st.header('Daily History')
-    #
-    #     df = self.load_daily_history()
-    #     gb = GridOptionsBuilder.from_dataframe(df)
-    #     gb.configure_pagination(paginationPageSize=50)  # Add pagination
-    #     gb.configure_default_column(enablePivot=False, enableValue=False, enableRowGroup=False)
-    #
-    #     gb.configure_side_bar()
-    #     gridoptions = gb.build()
-    #
-    #     response = AgGrid(
-    #         df,
-    #         gridOptions=gridoptions,
-    #         enable_enterprise_modules=True,
-    #         update_mode=GridUpdateMode.MODEL_CHANGED,
-    #         data_return_mode=DataReturnMode.FILTERED_AND_SORTED,
-    #         fit_columns_on_grid_load=False,
-    #         header_checkbox_selection_filtered_only=True,
-    #         # height=250,  # using height breaks multi-page view
-    #         use_checkbox=True
-    #     )
-    #     return
 
     def about_page(self):
         st.write('About Page')
