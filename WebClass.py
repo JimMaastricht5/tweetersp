@@ -280,7 +280,8 @@ class WebPages:
 
     def daily_trends_page(self, filter_birds_cnt=1):
         st.set_page_config(layout="wide")
-        st.header('Daily History - May 9th 2023 to Present')
+        st.header(f'Daily History - May 9th 2023 to Present.  May 9th was day 159.  '
+                  f'Dates in 2024 are presented as the day of the year + 365.')
         df = self.load_daily_history()
         df = df[df['counts'] > filter_birds_cnt]
         df['Year-Day'] = (df['Year'] - 2023) * 365 + df['Day_of_Year']
