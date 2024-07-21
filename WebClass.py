@@ -211,8 +211,9 @@ class WebPages:
             dropdown_cols = st.columns(3)
             with dropdown_cols[0]:
                 feeder_options = st.multiselect('Feeders:', self.feeders, self.feeders)  # feeders all selected
-            with dropdown_cols[1]:
-                date_options = st.multiselect('Dates:', self.dates, self.dates[0])  # dates available and first selected
+            with dropdown_cols[1]:   # dates available and first selected
+                if len(self.dates) > 0:
+                    date_options = st.multiselect('Dates:', self.dates, self.dates[0])
             with dropdown_cols[2]:
                 bird_options = st.multiselect('Birds:', self.birds, [])  # all birds common names none selected
 
