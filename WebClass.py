@@ -217,11 +217,13 @@ class WebPages:
             with dropdown_cols[2]:
                 bird_options = st.multiselect('Birds:', self.birds, [])  # all birds common names none selected
 
-        # text and graph
-        if len(self.dates) > 0:
-            st.write(f'Interactive Chart of Birds: {min(self.available_dates)} to {max(self.available_dates)}')
-        else:
+        # check for no data available
+        if len(self.dates) == 0:
             st.write(f'Interactive Chart of Birds: No Data Available')
+            return
+
+        # data available text and graph
+        st.write(f'Interactive Chart of Birds: {min(self.available_dates)} to {max(self.available_dates)}')
         # multi-day
         fig2 = px.histogram(self.filter_occurrences(feeder_options, date_options, bird_options),
                             x="Date Time", color='Common Name',
