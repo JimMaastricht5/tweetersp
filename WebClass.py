@@ -190,11 +190,16 @@ class WebPages:
     #             last_name = file_name
     #             break
     #     return last_name
+    def set_caption(self, starting_col: int, current_col: int) -> str:
+        caption = f'{} '
+        f'Image: {self.image_names[current_col + starting_col]}'
+        return caption
 
     def publish_row_of_images(self, starting_col: int = 0) -> None:
         """
-        :param starting_col:
-        :return:
+        publish a row of images with a set number of images per row in num_image_cols
+        :param starting_col: starting position in list
+        :return: None
         """
         try:  # catch error with less than X images for row
             cols = st.columns(self.num_image_cols)  # set web page with x number of images
@@ -204,8 +209,7 @@ class WebPages:
                     # use alternative method below to open file to get animation instead of Pillow Image.open(url)
                     with cols[col]:
                         st.image(self.url_prefix + self.image_names[col+starting_col], use_column_width=True,
-                                 caption=f'{str(self.available_dates[col+starting_col])[str(self.available_dates[col+starting_col]).find(",") + 1:]} '
-                                 f'Image: {self.image_names[col+starting_col]}')
+                                 caption=self.set_caption(starting_col, col))
                         st.write(f'{self.url_prefix + self.image_names[col+starting_col]}', unsafe_allow_html=True)
                 except FileNotFoundError:  # missing file
                     cols[col].write(f'missing file {self.image_names[col+starting_col]}')
@@ -220,7 +224,8 @@ class WebPages:
 
     def publish_first_image(self) -> None:
         """
-        :return:
+        publishes the first image in the list to the web
+        :return: None
         """
         for image_name in self.image_names:
             if image_name != '' and image_name != "<NA>":
@@ -237,10 +242,11 @@ class WebPages:
 
     def filter_occurrences(self, feeder_options: list, date_options: list, bird_options: list) -> pandas.DataFrame:
         """
-        :param feeder_options:
-        :param date_options:
-        :param bird_options:
-        :return:
+        filter down the bird occurrences df to include the desired selections
+        :param feeder_options: which feeders to include in output
+        :param date_options: which dates to include in output
+        :param bird_options: which birds to include in output
+        :return: df with filtered list of data
         """
         df = self.df_occurrences
         df = df[df['Feeder Name'].isin(feeder_options)]
@@ -251,6 +257,14 @@ class WebPages:
 
     def filter_message_stream(self, feeder_options: list, date_options: list, bird_options: list,
                               message_options: list) -> pandas.DataFrame:
+        """
+        filter the message stream to include the desired selections
+        :param feeder_options: which feeders to include in output
+        :param date_options: which dates to include in output
+        :param bird_options: which birds to include in output
+        :param message_options: which message types to include in ouput
+        :return: filtered df
+        """
         df = self.df_msg_stream[self.df_msg_stream['Message Type'].isin(message_options)]
         df = df[df['Feeder Name'].isin(feeder_options)]
         df = df[df['Date Time'].dt.strftime('%Y-%m-%d').isin(date_options)]  # compare y m d to date selection y m d
@@ -262,19 +276,18 @@ class WebPages:
         # self.last_gif_name = self.last_gif()  # uses self.image names
         return df
 
-    # page functions ######
-    def main_page(self):
+    # static page functions ######
+    def main_page(self) -> None:
         """
-        :return:
+        Renders the main page of the web site
+        :return: None
         """
         self.df_occurrences = self.load_bird_occurrences()  # test stream of bird occurrences for graph
         self.birds = self.df_occurrences['Common Name'].unique()
         self.df_msg_stream = self.load_message_stream()  # message stream from device
-
         # ****************** format page ********************
         st.set_page_config(layout="wide")
         st.header('Tweeters Web Page')
-
         # feeder multi select filters with expander
         with st.expander("Filters for Feeder, Dates, and Birds:"):
             st.write('Select values to include or exclude in the chart and information table.  '
@@ -287,7 +300,6 @@ class WebPages:
                     date_options = st.multiselect('Dates:', self.dates, self.dates[0])
             with dropdown_cols[2]:
                 bird_options = st.multiselect('Birds:', self.birds, [])  # all birds common names none selected
-
         # check for no data available
         if len(self.dates) == 0:
             st.write(f'Interactive Chart of Birds: No Data Available')
@@ -324,7 +336,11 @@ class WebPages:
         self.publish_row_of_images(starting_col=(self.num_image_cols * 4))  # row 5 of 5 cols starts num_image_cols * 5
         return
 
-    def daily_charts_page(self):
+    def daily_charts_page(self) -> None:
+        """
+        renders the daily charts pages, display a bar chart of birds seen by hour for the selected days
+        :return: None
+        """
         self.df_occurrences = self.load_bird_occurrences()  # test stream of bird occurrences for graph
         self.birds = self.df_occurrences['Common Name'].unique()
         self.df_msg_stream = self.load_message_stream()  # message stream from device
@@ -354,7 +370,12 @@ class WebPages:
 
         return
 
-    def daily_trends_page(self, filter_birds_cnt=1):
+    def daily_trends_page(self, filter_birds_cnt: int = 1) -> None:
+        """
+        creates the daily trends page, shows aggregated daily counts since inception on may 9th 2023
+        :param filter_birds_cnt: min number of occurrences of bird to be displayed.  must be > 1 per the default
+        :return: None
+        """
         st.set_page_config(layout="wide")
         st.header(f'Daily History - May 9th 2023 to Present.  May 9th was day 159.  '
                   f'Dates in 2024 are presented as the day of the year + 365.')
@@ -387,7 +408,11 @@ class WebPages:
         )
         return
 
-    def messages_page(self):
+    def messages_page(self) -> None:
+        """
+        formats the messages page
+        :return: None
+        """
         self.df_msg_stream = self.load_message_stream()  # message stream from device
         # ****************** format page ********************
         st.set_page_config(layout="wide")
@@ -404,11 +429,14 @@ class WebPages:
                                                      message_options=['message']).sort_values('Date Time',
                                                                                               ascending=True),
                      use_container_width=True)
-        # self.publish_row_of_images()
-        self.publish_first_image()
+        self.publish_first_image()  # just want one image
         return
 
-    def about_page(self):
+    def about_page(self) -> None:
+        """
+        formats the about page that describes the app and the site
+        :return: None
+        """
         st.write('About Page')
         st.write(f'This site display data for the the days from '
                  f'{min(self.available_dates)} to {max(self.available_dates)}')
