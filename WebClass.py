@@ -183,7 +183,7 @@ class WebPages:
         image_date_time = image_name[0:image_name.find('(')]
         image_date = image_date_time[0:10]
         image_time = image_date_time[11:]
-        caption = f'date: {image_date} /n time: {image_time}'
+        caption = f'date: {image_date} \n time: {image_time}'
         return caption
 
     def publish_row_of_images(self, starting_col: int = 0) -> None:
