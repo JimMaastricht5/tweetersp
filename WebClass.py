@@ -421,7 +421,7 @@ class WebPages:
             date_options = st.multiselect('Dates:', self.dates, self.dates)  # dates available and all selected
         df = self.filter_message_stream(feeder_options=feeder_options, date_options=date_options,
                                         bird_options=[], message_options=['message'])
-        df = df.drop(['Message Type'], axis='columns').sort_values('Date Time', ascending=True)
+        df = df.drop(['Message Type', 'Image Name'], axis='columns').sort_values('Date Time', ascending=True)
         st.dataframe(data=df, use_container_width=True)
         self.publish_first_image()  # just want one image
         return
