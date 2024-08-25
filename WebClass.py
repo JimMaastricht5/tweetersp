@@ -1,3 +1,29 @@
+# MIT License
+#
+# 2021 Jim Maastricht
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# JimMaastricht5@gmail.com
+# module controls all of the data handling and web page generation for the tweeters web app
+# individual pages create the class and call the corresponding function to generate the page ouput
+import pandas
 import streamlit as st
 import pandas as pd
 import urllib.request
@@ -19,21 +45,28 @@ FILTER_BIRD_NAMES = ['Rock Pigeon', 'Pine Grosbeak', 'Indigo Bunting', 'Eurasian
 
 
 class WebPages:
-    def __init__(self, min_hr=6, max_hr=18, num_image_cols=5,
-                 url_prefix='https://storage.googleapis.com/tweeterssp-web-site-contents/'):
+    def __init__(self, min_hr: int = 6, max_hr: int = 18, num_image_cols: int = 5,
+                 url_prefix: str = 'https://storage.googleapis.com/tweeterssp-web-site-contents/') -> None:
+        """
+        set up class to handle the creation of all of the web pages along with the data
+        :param min_hr: minimum hour value to display on chart
+        :param max_hr: max hour value to display on chart.  0 to 24
+        :param num_image_cols: number of cols to display in a row on the web page
+        :param url_prefix: url prefix to retrieve contents from google storage
+        :return: None
+        """
         # set default values
         self.min_hr = min_hr
         self.max_hr = max_hr
         self.url_prefix = url_prefix
         self.num_image_cols = num_image_cols
-
         # load date range for web data, currently 3 days of data retained
         self.dates = []
         self.Tz = pytz.timezone("America/Chicago")  # localize time to current madison wi cst bird feeder
+        # grab today's date along with the two prior for the drop down date list selector
         self.dates.append(datetime.now(self.Tz).strftime('%Y-%m-%d'))
         self.dates.append((datetime.now(self.Tz) - timedelta(days=1)).strftime('%Y-%m-%d'))
         self.dates.append((datetime.now(self.Tz) - timedelta(days=2)).strftime('%Y-%m-%d'))
-
         # init vars
         self.df_occurrences = pd.DataFrame()
         self.df_msg_stream = pd.DataFrame()
@@ -41,18 +74,24 @@ class WebPages:
         self.image_names = []
         self.feeders = []
         self.available_dates = self.dates
-        self.last_gif_name = ''
+        # self.last_gif_name = ''
         self.bird_color_map = {}
         self.common_names = []
+        return
 
-    # helper functions ######
-    def build_common_name(self, df, target_col):
+    def build_common_name(self, df: pandas.DataFrame, target_col: str) -> pandas.DataFrame:
+        """
+        builds common names for the birds from a target col, sets a common color palette for use in graphing
+        across days, e.g., finches are always a yellow bar
+        :param df: dataframe containing the data to parse
+        :param target_col: column name to extract the common names from
+        :return: new dataframe with common name column
+        """
         df['Common Name'] = df[target_col]
         df['Common Name'] = [name[name.find(' ') + 1:] if name.find(' ') >= 0 else name
                              for name in df['Common Name']]
         df['Common Name'] = [name[name.find('(') + 1: name.find(')')] if name.find('(') >= 0 else name
                              for name in df['Common Name']]
-
         # build color map so each chart uses the same color for each species
         self.common_names = sorted(df['Common Name'].unique())
         self.common_names = [name for name in self.common_names if name not in FILTER_BIRD_NAMES]
@@ -61,8 +100,11 @@ class WebPages:
         return df
 
     # @st.cache_data
-    def load_message_stream(self):
-        # build empty df
+    def load_message_stream(self) -> pandas.DataFrame:
+        """
+        builds an empty data frame, reads for csv for each date and merges them into on df
+        :return: returns a dataframe with all messages for each day requested
+        """
         df = pd.DataFrame(data=None, columns=['Unnamed: 0', 'Feeder Name', 'Event Num', 'Message Type',
                                               'Date Time', 'Message', 'Image Name'], dtype=None)
         for date in self.dates:
@@ -78,17 +120,20 @@ class WebPages:
         df['Date Time'] = pd.to_datetime(df['Date Time'])
         df = self.build_common_name(df, 'Message')
         df = df.drop(['Unnamed: 0'], axis='columns')
-
         # reorder df
         new_col_order = ['Date Time', 'Common Name', 'Message', 'Feeder Name', 'Event Num', 'Message Type',
                          'Image Name']
         df = df.reindex(columns=new_col_order)
-
         self.feeders = list(df['Feeder Name'].unique())
         return df.sort_values('Date Time', ascending=False)
 
     # @st.cache_data
-    def load_bird_occurrences(self, drop_old_model_species=True):
+    def load_bird_occurrences(self, drop_old_model_species: bool = True) -> pandas.DataFrame:
+        """
+        setup df with birds spotted
+        :param drop_old_model_species:
+        :return: data frame with birds the feeder has seen
+        """
         # setup df like file
         df = pd.DataFrame(data=None, columns=['Unnamed: 0', 'Feeder Name', 'Species',
                                               'Date Time', 'Hour'], dtype=None)
@@ -110,11 +155,16 @@ class WebPages:
                 self.dates.remove(date)  # remove date if not found
         df = self.build_common_name(df, 'Species')  # build common name for merged df
         df = df.drop(['Unnamed: 0'], axis='columns')
-        if drop_old_model_species:
+        if drop_old_model_species:  # the old model made pred errors, this filter drops the more obvious errors
             df = df[~df['Common Name'].isin(FILTER_BIRD_NAMES)]  # get rid of species from old model
         return df
 
-    def load_daily_history(self, drop_old_model_species=True):
+    def load_daily_history(self, drop_old_model_species: bool = True) -> pandas.DataFrame:
+        """
+        loads the history for all days and months with summarized counts by day
+        :param drop_old_model_species:
+        :return: df with daily history for line graph
+        """
         df = None
         try:
             urllib.request.urlretrieve(self.url_prefix + 'daily_history.csv', 'daily_history.csv')
@@ -128,16 +178,24 @@ class WebPages:
             print(e)
         return df
 
-    def last_gif(self):
-        last_name = ''
-        search_str = '.gif'
-        for file_name in self.image_names:
-            if isinstance(file_name, str) and file_name.find(search_str) != -1:
-                last_name = file_name
-                break
-        return last_name
+    # def last_gif(self) -> str:
+    #     """
+    #     finds the file name of the last gif from a string
+    #     :return: file name
+    #     """
+    #     last_name = ''
+    #     search_str = '.gif'
+    #     for file_name in self.image_names:
+    #         if isinstance(file_name, str) and file_name.find(search_str) != -1:
+    #             last_name = file_name
+    #             break
+    #     return last_name
 
-    def publish_row_of_images(self, starting_col=0):
+    def publish_row_of_images(self, starting_col: int = 0) -> None:
+        """
+        :param starting_col:
+        :return:
+        """
         try:  # catch error with less than X images for row
             cols = st.columns(self.num_image_cols)  # set web page with x number of images
             for col in range(0, self.num_image_cols):  # cols 0 to 5 for 5 columns
@@ -160,7 +218,10 @@ class WebPages:
             print(e)
         return
 
-    def publish_first_image(self):
+    def publish_first_image(self) -> None:
+        """
+        :return:
+        """
         for image_name in self.image_names:
             if image_name != '' and image_name != "<NA>":
                 try:
@@ -174,7 +235,13 @@ class WebPages:
                     print(e)
         return
 
-    def filter_occurrences(self, feeder_options, date_options, bird_options):
+    def filter_occurrences(self, feeder_options: list, date_options: list, bird_options: list) -> pandas.DataFrame:
+        """
+        :param feeder_options:
+        :param date_options:
+        :param bird_options:
+        :return:
+        """
         df = self.df_occurrences
         df = df[df['Feeder Name'].isin(feeder_options)]
         df = df[df['Date Time'].dt.strftime('%Y-%m-%d').isin(date_options)]  # compare y m d to date selection y m d
@@ -182,7 +249,8 @@ class WebPages:
             df = df[df['Common Name'].isin(bird_options)]  # return birds if none selected
         return df
 
-    def filter_message_stream(self, feeder_options, date_options, bird_options, message_options):
+    def filter_message_stream(self, feeder_options: list, date_options: list, bird_options: list,
+                              message_options: list) -> pandas.DataFrame:
         df = self.df_msg_stream[self.df_msg_stream['Message Type'].isin(message_options)]
         df = df[df['Feeder Name'].isin(feeder_options)]
         df = df[df['Date Time'].dt.strftime('%Y-%m-%d').isin(date_options)]  # compare y m d to date selection y m d
@@ -191,11 +259,14 @@ class WebPages:
         self.image_names = list(df["Image Name"])
         self.available_dates = list(df["Date Time"])
         # df = df['Image Link'] = self.url_prefix + df['Image Name']
-        self.last_gif_name = self.last_gif()  # uses self.image names
+        # self.last_gif_name = self.last_gif()  # uses self.image names
         return df
 
     # page functions ######
     def main_page(self):
+        """
+        :return:
+        """
         self.df_occurrences = self.load_bird_occurrences()  # test stream of bird occurrences for graph
         self.birds = self.df_occurrences['Common Name'].unique()
         self.df_msg_stream = self.load_message_stream()  # message stream from device
@@ -251,7 +322,6 @@ class WebPages:
         self.publish_row_of_images(starting_col=(self.num_image_cols * 2))  # row 3 of 5 cols starts num_image_cols * 2
         self.publish_row_of_images(starting_col=(self.num_image_cols * 3))  # row 4 of 5 cols starts num_image_cols * 3
         self.publish_row_of_images(starting_col=(self.num_image_cols * 4))  # row 5 of 5 cols starts num_image_cols * 5
-
         return
 
     def daily_charts_page(self):
