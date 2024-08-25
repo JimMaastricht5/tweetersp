@@ -191,7 +191,7 @@ class WebPages:
     #             break
     #     return last_name
     def set_caption(self, starting_col: int, current_col: int) -> str:
-        caption = f'{} '
+        caption = f''
         f'Image: {self.image_names[current_col + starting_col]}'
         return caption
 
