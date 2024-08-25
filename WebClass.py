@@ -181,8 +181,9 @@ class WebPages:
     def set_caption(self, starting_col: int, current_col: int) -> str:
         image_name = self.image_names[current_col + starting_col]
         image_date_time = image_name[0:image_name.find('(')]
-        image_date = image_date_time[0:10].replace('-', '/')
-        image_time = image_date_time[11:-6].replace('-',':')
+        image_date = image_date_time[8:10] + '/' + image_date_time[5:7] + '/' + image_date_time[0:3]
+        # image_date = image_date_time[0:10].replace('-', '/')
+        image_time = image_date_time[11:-6].replace('-', ':')
         caption = f'date: {image_date}  time: {image_time}'
         return caption
 
