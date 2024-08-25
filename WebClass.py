@@ -178,11 +178,15 @@ class WebPages:
             print(e)
         return df
 
-    def set_caption(self, starting_col: int, current_col: int) -> str:
-        image_name = self.image_names[current_col + starting_col]
+    def set_caption(self, current_image_num: int) -> str:
+        """
+        pulls the image file name and parses the name for the date and times, formats a string
+        :param current_image_num: image offset in list to build caption for
+        :return: the caption for this image
+        """
+        image_name = self.image_names[current_image_num]
         image_date_time = image_name[0:image_name.find('(')]
         image_date = image_date_time[5:7] + '/' + image_date_time[8:10] + '/' + image_date_time[0:4]
-        # image_date = image_date_time[0:10].replace('-', '/')
         image_time = image_date_time[11:-6].replace('-', ':')
         caption = f'date: {image_date}  time: {image_time}'
         return caption
@@ -201,7 +205,7 @@ class WebPages:
                     # use alternative method below to open file to get animation instead of Pillow Image.open(url)
                     with cols[col]:
                         st.image(self.url_prefix + self.image_names[col+starting_col], use_column_width=True,
-                                 caption=self.set_caption(starting_col, col))
+                                 caption=self.set_caption(starting_col+col))
                         st.write(f'{self.url_prefix + self.image_names[col+starting_col]}', unsafe_allow_html=True)
                 except FileNotFoundError:  # missing file
                     cols[col].write(f'missing file {self.image_names[col+starting_col]}')
