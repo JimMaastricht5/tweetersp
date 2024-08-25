@@ -191,8 +191,7 @@ class WebPages:
     #             break
     #     return last_name
     def set_caption(self, starting_col: int, current_col: int) -> str:
-        caption = f''
-        f'Image: {self.image_names[current_col + starting_col]}'
+        caption = f'Image: {self.image_names[current_col + starting_col]}'
         return caption
 
     def publish_row_of_images(self, starting_col: int = 0) -> None:
