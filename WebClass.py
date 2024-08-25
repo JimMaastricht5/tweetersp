@@ -119,9 +119,10 @@ class WebPages:
                 pass
         df['Date Time'] = pd.to_datetime(df['Date Time'])
         # df = self.build_common_name(df, 'Message')
-        df = df.drop(['Unnamed: 0', 'Message Type', 'Image Name'], axis='columns')
+        df = df.drop(['Unnamed: 0'], axis='columns')
         # reorder df
-        new_col_order = ['Date Time', 'Message', 'Feeder Name', 'Event Num']
+        new_col_order = ['Date Time', 'Message', 'Feeder Name', 'Event Num', 'Message Type',
+                         'Image Name']
         df = df.reindex(columns=new_col_order)
         self.feeders = list(df['Feeder Name'].unique())
         return df.sort_values('Date Time', ascending=False)
