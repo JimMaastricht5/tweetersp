@@ -178,22 +178,11 @@ class WebPages:
             print(e)
         return df
 
-    # def last_gif(self) -> str:
-    #     """
-    #     finds the file name of the last gif from a string
-    #     :return: file name
-    #     """
-    #     last_name = ''
-    #     search_str = '.gif'
-    #     for file_name in self.image_names:
-    #         if isinstance(file_name, str) and file_name.find(search_str) != -1:
-    #             last_name = file_name
-    #             break
-    #     return last_name
     def set_caption(self, starting_col: int, current_col: int) -> str:
         image_name = self.image_names[current_col + starting_col]
         image_date = image_name[0:image_name.find('(')]
-        caption = f'date: {image_date}'
+        image_time = image_date[image_date.find('-', 3):]
+        caption = f'date: {image_date}  time: {image_time}'
         return caption
 
     def publish_row_of_images(self, starting_col: int = 0) -> None:
