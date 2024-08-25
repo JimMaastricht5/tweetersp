@@ -22,7 +22,7 @@
 #
 # JimMaastricht5@gmail.com
 # module controls all of the data handling and web page generation for the tweeters web app
-# individual pages create the class and call the corresponding function to generate the page ouput
+# individual pages create the class and call the corresponding function to generate the page output
 import pandas
 import streamlit as st
 import pandas as pd
@@ -48,11 +48,11 @@ class WebPages:
     def __init__(self, min_hr: int = 6, max_hr: int = 18, num_image_cols: int = 5,
                  url_prefix: str = 'https://storage.googleapis.com/tweeterssp-web-site-contents/') -> None:
         """
-        set up class to handle the creation of all of the web pages along with the data
+        set up class to handle the creation of all the web pages along with the data
         :param min_hr: minimum hour value to display on chart
         :param max_hr: max hour value to display on chart.  0 to 24
         :param num_image_cols: number of cols to display in a row on the web page
-        :param url_prefix: url prefix to retrieve contents from google storage
+        :param url_prefix: url prefix to retrieve contents from Google storage
         :return: None
         """
         # set default values
@@ -63,7 +63,7 @@ class WebPages:
         # load date range for web data, currently 3 days of data retained
         self.dates = []
         self.Tz = pytz.timezone("America/Chicago")  # localize time to current madison wi cst bird feeder
-        # grab today's date along with the two prior for the drop down date list selector
+        # grab today's date along with the two prior for the drop-down date list selector
         self.dates.append(datetime.now(self.Tz).strftime('%Y-%m-%d'))
         self.dates.append((datetime.now(self.Tz) - timedelta(days=1)).strftime('%Y-%m-%d'))
         self.dates.append((datetime.now(self.Tz) - timedelta(days=2)).strftime('%Y-%m-%d'))
@@ -183,7 +183,7 @@ class WebPages:
         image_date_time = image_name[0:image_name.find('(')]
         image_date = image_date_time[0:10]
         image_time = image_date_time[11:]
-        caption = f'date: {image_date} \n time: {image_time}'
+        caption = f'date: {image_date} <br> time: {image_time}'
         return caption
 
     def publish_row_of_images(self, starting_col: int = 0) -> None:
@@ -270,7 +270,7 @@ class WebPages:
     # static page functions ######
     def main_page(self) -> None:
         """
-        Renders the main page of the web site
+        Renders the main page of the website
         :return: None
         """
         self.df_occurrences = self.load_bird_occurrences()  # test stream of bird occurrences for graph
@@ -363,7 +363,7 @@ class WebPages:
 
     def daily_trends_page(self, filter_birds_cnt: int = 1) -> None:
         """
-        creates the daily trends page, shows aggregated daily counts since inception on may 9th 2023
+        creates the daily trends page, shows aggregated daily counts since inception on May 9th 2023
         :param filter_birds_cnt: min number of occurrences of bird to be displayed.  must be > 1 per the default
         :return: None
         """
