@@ -423,8 +423,9 @@ class WebPages:
         st.dataframe(data=self.filter_message_stream(feeder_options=feeder_options, date_options=date_options,
                                                      bird_options=[],
                                                      message_options=['message']).sort_values('Date Time',
-                                                                                              ascending=True),
+                                                                                              ascending=True).drop(['Message Type', 'Image Name', 'Common Name'], axis='columns'),
                      use_container_width=True)
+        df = df.drop(['Unnamed: 0'], axis='columns')
         self.publish_first_image()  # just want one image
         return
 
