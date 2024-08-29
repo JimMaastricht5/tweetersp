@@ -248,7 +248,8 @@ class WebPages:
         df = df[df['Feeder Name'].isin(feeder_options)]
         df = df[df['Date Time'].dt.strftime('%Y-%m-%d').isin(date_options)]  # compare y m d to date selection y m d
         if len(bird_options) > 0:
-            df = df[df['Common Name'].isin(bird_options)]  # return birds if none selected
+            print(bird_options)
+            df = df[df['Common Name'].isin(bird_options)]  # return birds if something is selected
         return df
 
     def filter_message_stream(self, feeder_options: list, date_options: list, bird_options: list,
