@@ -40,7 +40,7 @@ FILTER_BIRD_NAMES = ['Rock Pigeon', 'Pine Grosbeak', 'Indigo Bunting', 'Eurasian
                      'White-crowned Sparrow', 'Lark Sparrow', 'Chipping Sparrow', 'Pine Siskin',
                      'Vesper Sparrow', 'White-throated Sparrow', 'Common Ground-Dove',
                      'Cedar Waxwing', "Lincoln's Sparrow", 'Evening Grosbeak', 'American Tree Sparrow',
-                     "Harris's Sparrow", 'Field Sparrow']
+                     "Harris's Sparrow", 'Field Sparrow', 'White-breasted Nuthatch']
 # sample link format https://storage.googleapis.com/tweeterssp-web-site-contents/2022-12-29-11-57-29227.jpg
 
 
