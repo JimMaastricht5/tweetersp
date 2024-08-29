@@ -118,11 +118,11 @@ class WebPages:
                 self.dates.remove(date)  # remove date if not found
                 pass
         df['Date Time'] = pd.to_datetime(df['Date Time'])
-        # df = self.build_common_name(df, 'Message')
+        df = self.build_common_name(df, 'Message')
         df = df.drop(['Unnamed: 0'], axis='columns')
         # reorder df
         new_col_order = ['Date Time', 'Message', 'Feeder Name', 'Event Num', 'Message Type',
-                         'Image Name']
+                         'Image Name', 'Common Name']
         df = df.reindex(columns=new_col_order)
         self.feeders = list(df['Feeder Name'].unique())
         return df.sort_values('Date Time', ascending=False)
@@ -279,7 +279,7 @@ class WebPages:
         Renders the main page of the website
         :return: None
         """
-        self.df_occurrences = self.load_bird_occurrences()  # test stream of bird occurrences for graph
+        self.df_occurrences = self.load_bird_occurrences()  # stream of bird occurrences for graph
         self.birds = self.df_occurrences['Common Name'].unique()
         self.df_msg_stream = self.load_message_stream()  # message stream from device
         # ****************** format page ********************
