@@ -259,18 +259,18 @@ class WebPages:
         :param feeder_options: which feeders to include in output
         :param date_options: which dates to include in output
         :param bird_options: which birds to include in output
-        :param message_options: which message types to include in ouput
+        :param message_options: which message types to include in output, spotted or possible
         :return: filtered df
         """
-        df = self.df_msg_stream[self.df_msg_stream['Message Type'].isin(message_options)]
+        message_type_translation = {'Animated': 'spotted', 'Static': 'possible'}
+        message_types = [message_type_translation[value] for value in message_options]
+        df = self.df_msg_stream[self.df_msg_stream['Message Type'].isin(message_types)]
         df = df[df['Feeder Name'].isin(feeder_options)]
         df = df[df['Date Time'].dt.strftime('%Y-%m-%d').isin(date_options)]  # compare y m d to date selection y m d
         if len(bird_options) > 0:
             df = df[df['Common Name'].isin(bird_options)]  # return all birds if none selected
         self.image_names = list(df["Image Name"])
         self.available_dates = list(df["Date Time"])
-        # df = df['Image Link'] = self.url_prefix + df['Image Name']
-        # self.last_gif_name = self.last_gif()  # uses self.image names
         return df
 
     # static page functions ######
@@ -315,10 +315,10 @@ class WebPages:
 
         # image and message stream multi-select filters
         message_options = st.multiselect(
-            'Prediction Certainty: \n "spotted" includes all of the observations above the confidence '
-            'threshold of the model. "possible" includes the observations below the threshold',
-            ['possible', 'spotted'],  # remove message type and display on own page later
-            ['spotted'])
+            'Animated: includes animated gifs '
+            'Static: includes static photo taken at initial observation',
+            ['Static', 'Animated'],  # remove message type and display on own page later
+            ['Animated'])
 
         st.dataframe(data=self.filter_message_stream(feeder_options, date_options, bird_options, message_options),
                      use_container_width=True, hide_index=True,
