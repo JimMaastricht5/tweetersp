@@ -284,19 +284,20 @@ class WebPages:
         self.df_msg_stream = self.load_message_stream()  # message stream from device
         # ****************** format page ********************
         st.set_page_config(layout="wide")
-        st.header('Tweeters Web Page')
+        st.header('Tweeters: Bird Feeder Species Identification')
         # feeder multi select filters with expander
-        with st.expander("Filters for Feeder, Dates, and Birds:"):
-            st.write('Select values to include or exclude in the chart and information table.  '
-                     'Empty list of birds is "all" birds.')
-            dropdown_cols = st.columns(3)
-            with dropdown_cols[0]:
-                feeder_options = st.multiselect('Feeders:', self.feeders, self.feeders)  # feeders all selected
-            with dropdown_cols[1]:   # dates available and first selected
-                if len(self.dates) > 0:
-                    date_options = st.multiselect('Dates:', self.dates, self.dates[0])
-            with dropdown_cols[2]:
-                bird_options = st.multiselect('Birds:', self.birds, [])  # all birds common names none selected
+        # with st.expander("Filters for Feeder, Dates, and Birds:"):
+        st.write('Select values to include or exclude in the chart and information table.  '
+                 'Empty list of birds is "all" birds.')
+        dropdown_cols = st.columns(3)
+        with dropdown_cols[0]:
+            feeder_options = st.multiselect('Feeders:', self.feeders, self.feeders)  # feeders all selected
+        with dropdown_cols[1]:   # dates available and first selected
+            if len(self.dates) > 0:
+                date_options = st.multiselect('Dates:', self.dates, self.dates[0])
+        with dropdown_cols[2]:
+            bird_options = st.multiselect('Birds:', self.birds, [])  # all birds common names none selected
+
         # check for no data available
         if len(self.dates) == 0:
             st.write(f'Interactive Chart of Birds: No Data Available')
@@ -315,8 +316,8 @@ class WebPages:
 
         # image and message stream multi-select filters
         message_options = st.multiselect(
-            'Animated: includes animated gifs '
-            'Static: includes static photo taken at initial observation',
+            'Animated: show animated gifs sent to twitter'
+            'Static: show static photo taken when species was identified and counted',
             ['Static', 'Animated'],  # remove message type and display on own page later
             ['Animated'])
 
