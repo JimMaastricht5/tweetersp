@@ -262,7 +262,7 @@ class WebPages:
         :param message_options: which message types to include in output, spotted or possible
         :return: filtered df
         """
-        message_type_translation = {'Animated': 'spotted', 'Static': 'possible'}
+        message_type_translation = {'Animated': 'spotted', 'Static': 'possible', 'message': 'message'}
         message_types = [message_type_translation[value] for value in message_options]
         df = self.df_msg_stream[self.df_msg_stream['Message Type'].isin(message_types)]
         df = df[df['Feeder Name'].isin(feeder_options)]
@@ -296,7 +296,7 @@ class WebPages:
             if len(self.dates) > 0:
                 date_options = st.multiselect('Dates:', self.dates, self.dates[0])
         with dropdown_cols[2]:
-            bird_options = st.multiselect('Birds:', self.birds, [])  # all birds common names none selected
+            bird_options = st.multiselect('Birds to Include:', self.birds, [])  # all birds common names none selected
 
         # check for no data available
         if len(self.dates) == 0:
