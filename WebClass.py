@@ -32,8 +32,9 @@ from datetime import datetime
 from datetime import timedelta
 import pytz
 import plotly.express as px
-from plotly.express import colors
+# from plotly.express import colors
 from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
+import matplotlib.colors as mcolors
 
 # list of birds to exclude that prior model displayed and are not valid results
 FILTER_BIRD_NAMES = ['Rock Pigeon', 'Pine Grosbeak', 'Indigo Bunting', 'Eurasian Collared-Dove',
@@ -74,7 +75,28 @@ class WebPages:
         self.image_names = []
         self.feeders = []
         self.available_dates = self.dates
-        # self.last_gif_name = ''
+        self.color_list = [
+            "#F0F8FF", "#FAEBD7", "#00FFFF", "#7FFFD4", "#F0FFFF",
+            "#F5F5DC", "#FFCEF4", "#FFB6C1", "#FFDAB9", "#CD853F",
+            "#F0E68C", "#FFFFE0", "#008B8B", "#9ACD32", "#00BFFF",
+            "#87CEFA", "#7FFFD4", "#66CDAA", "#00CED1", "#90EE90",
+            "#D3D3D3", "#9AC6CD", "#8B8B8B", "#808080", "#9400D3",
+            "#FF1493", "#B22222", "#228B22", "#DAA520", "#800000",
+            "#00008B", "#0000CD", "#0000FF", "#4B0082", "#8B0000",
+            "#808000", "#FFFF00", "#00FF00", "#808080", "#000000",
+            "#8B4513", "#A0522D", "#C0C0C0", "#808080", "#800080",
+            "#FFA500", "#FF4500", "#DA70D6", "#EEE8AA", "#98FB98",
+            "#AFEEEE", "#ADD8E6", "#DDA0DD", "#D8BFD8", "#FF00FF",
+            "#DC143C", "#00FFFF", "#0000FF", "#8A2BE2", "#A52A2A",
+            "#DEB887", "#5F9EA0", "#7FFF00", "#D2691E", "#CD853F",
+            "#FFD700", "#DAA520", "#808000", "#008000", "#800080",
+            "#FF00FF", "#BC8F8F", "#483D8B", "#2F4F4F", "#00CED1",
+            "#9400D3", "#FF1493", "#00BFFF", "#66CDAA", "#008B8B",
+            "#B0C4DE", "#FFFFE0", "#00FF00", "#FF0000", "#8B008B",
+            "#808080", "#9ACD32", "#6B8E23", "#FFA07A", "#20B2AA",
+            "#87CEEB", "#6A5ACD", "#708090", "#778899", "#B0C4DE",
+            "#FFFFE0", "#00FF00", "#FF0000", "#8B008B", "#808080"]
+        self.cmap = mcolors.ListedColormap(self.color_list)
         self.bird_color_map = {}
         self.common_names = []
         return
@@ -95,8 +117,9 @@ class WebPages:
         # build color map so each chart uses the same color for each species
         self.common_names = sorted(df['Common Name'].unique())
         self.common_names = [name for name in self.common_names if name not in FILTER_BIRD_NAMES]
-        color_palette = colors.sequential.Viridis
-        self.bird_color_map = dict(zip(self.common_names, color_palette))
+        # color_palette = colors.sequential.Viridis
+        # self.bird_color_map = dict(zip(self.common_names, color_palette))
+        self.bird_color_map = dict(zip(self.common_names, self.cmap(range(len(self.common_names)))))
         return df
 
     # @st.cache_data
