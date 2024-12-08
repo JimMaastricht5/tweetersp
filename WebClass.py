@@ -32,7 +32,7 @@ from datetime import datetime
 from datetime import timedelta
 import pytz
 import plotly.express as px
-# from plotly.express import colors
+from plotly.express import colors
 from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
 import matplotlib.colors as mcolors
 
@@ -98,6 +98,7 @@ class WebPages:
             "#FFFFE0", "#00FF00", "#FF0000", "#8B008B", "#808080"]
         self.cmap = mcolors.ListedColormap(self.color_list)
         self.bird_color_map = {}
+        self.bird_color_map_hist = {}
         self.common_names = []
         return
 
@@ -117,8 +118,8 @@ class WebPages:
         # build color map so each chart uses the same color for each species
         self.common_names = sorted(df['Common Name'].unique())
         self.common_names = [name for name in self.common_names if name not in FILTER_BIRD_NAMES]
-        # color_palette = colors.sequential.Viridis
-        # self.bird_color_map = dict(zip(self.common_names, color_palette))
+        color_palette = colors.sequential.Viridis
+        self.bird_color_map_hist = dict(zip(self.common_names, color_palette))
         self.bird_color_map = dict(zip(self.common_names, self.cmap(range(len(self.common_names)))))
         return df
 
@@ -332,7 +333,7 @@ class WebPages:
         fig2 = px.histogram(self.filter_occurrences(feeder_options, date_options, bird_options),
                             x="Date Time", color='Common Name',
                             nbins=36, width=650, height=400,
-                            color_discrete_map=self.bird_color_map,
+                            color_discrete_map=self.bird_color_map_hist,
                             category_orders={'Common Name': self.common_names})
         fig2['layout']['xaxis'].update(autorange=True)
         st.plotly_chart(fig2, use_container_width=True, sharing="streamlit", theme="streamlit")
@@ -384,9 +385,9 @@ class WebPages:
             fig1 = px.histogram(self.filter_occurrences(feeder_options, [date], self.birds),
                                 x="Hour", color='Common Name', range_x=[self.min_hr, self.max_hr],
                                 nbins=36, width=650, height=400,
-            #                    color_discrete_map=self.bird_color_map,
+                                color_discrete_map=self.bird_color_map_hist,
                                 category_orders={'Common Name': self.common_names})
-            fig1.update_traces(marker_color=list(self.bird_color_map.values()))
+            # fig1.update_traces(marker_color=list(self.bird_color_map.values()))
             fig1['layout']['xaxis'].update(autorange=True)
             st.plotly_chart(fig1, use_container_width=True, sharing="streamlit", theme="streamlit")
 
