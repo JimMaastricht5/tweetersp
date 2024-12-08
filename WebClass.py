@@ -384,8 +384,9 @@ class WebPages:
             fig1 = px.histogram(self.filter_occurrences(feeder_options, [date], self.birds),
                                 x="Hour", color='Common Name', range_x=[self.min_hr, self.max_hr],
                                 nbins=36, width=650, height=400,
-                                color_discrete_map=self.bird_color_map,
+            #                    color_discrete_map=self.bird_color_map,
                                 category_orders={'Common Name': self.common_names})
+            fig1.update_traces(marker_color=list(self.bird_color_map.values()))
             fig1['layout']['xaxis'].update(autorange=True)
             st.plotly_chart(fig1, use_container_width=True, sharing="streamlit", theme="streamlit")
 
