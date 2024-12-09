@@ -119,7 +119,7 @@ class WebPages:
         self.common_names = sorted(df['Common Name'].unique())
         self.common_names = [name for name in self.common_names if name not in FILTER_BIRD_NAMES]
         # color_palette = colors.sequential.Viridis
-        color_palette = colors.qualitative.Set1
+        color_palette = colors.qualitative.Pastel1
         self.bird_color_map_hist = dict(zip(self.common_names, color_palette))
         self.bird_color_map = dict(zip(self.common_names, self.cmap(range(len(self.common_names)))))
         return df
