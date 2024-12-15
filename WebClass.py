@@ -227,7 +227,7 @@ class WebPages:
                     urllib.request.urlretrieve(self.url_prefix + self.image_names[col+starting_col], 'imgfile')
                     # use alternative method below to open file to get animation instead of Pillow Image.open(url)
                     with cols[col]:
-                        st.image(self.url_prefix + self.image_names[col+starting_col], use_column_width=True,
+                        st.image(self.url_prefix + self.image_names[col+starting_col], # use_column_width=True,
                                  caption=self.set_caption(starting_col+col))
                         st.write(f'{self.url_prefix + self.image_names[col+starting_col]}', unsafe_allow_html=True)
                 except FileNotFoundError:  # missing file
