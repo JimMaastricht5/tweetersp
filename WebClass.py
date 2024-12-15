@@ -324,7 +324,6 @@ class WebPages:
                 self.bird_dd_options = []  # Set to an empty list if not already a list
             if 'All' not in self.bird_dd_options:
                 self.bird_dd_options.append('All')
-            bird_options = st.multiselect('Birds to Include:', self.bird_options, ['All'])
             bird_options = st.multiselect('Birds to Include:', self.bird_dd_options, ['All'])  # all birds common names none selected
 
         # check for no data available
