@@ -123,7 +123,7 @@ class WebPages:
         self.bird_color_map = dict(zip(self.common_names, self.cmap(range(len(self.common_names)))))
         return df
 
-    # @st.cache_data
+    @st.cache_data
     def load_message_stream(self) -> pandas.DataFrame:
         """
         builds an empty data frame, reads for csv for each date and merges them into on df
