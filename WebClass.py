@@ -291,7 +291,7 @@ class WebPages:
         df = self.df_msg_stream[self.df_msg_stream['Message Type'].isin(message_types)]
         df = df[df['Feeder Name'].isin(feeder_options)]
         df = df[df['Date Time'].dt.strftime('%Y-%m-%d').isin(date_options)]  # compare y m d to date selection y m d
-        if len(bird_options) > 0:
+        if 'All' not in bird_options or ('All' in bird_options and len(bird_options) > 1):
             df = df[df['Common Name'].isin(bird_options)]  # return all birds if none selected
         self.image_names = list(df["Image Name"])
         self.available_dates = list(df["Date Time"])
