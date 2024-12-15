@@ -305,7 +305,7 @@ class WebPages:
         """
         self.df_occurrences = self.load_bird_occurrences()  # stream of bird occurrences for graph
         self.birds = self.df_occurrences['Common Name'].unique()
-        self.bird_options = self.birds.append('All')
+        self.bird_options = self.birds + ['All']
         self.df_msg_stream = self.load_message_stream()  # message stream from device
         # ****************** format page ********************
         st.set_page_config(layout="wide")
