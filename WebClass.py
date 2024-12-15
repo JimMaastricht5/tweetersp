@@ -33,9 +33,7 @@ from datetime import timedelta
 import pytz
 import plotly.express as px
 from plotly.express import colors
-from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
 import matplotlib.colors as mcolors
-from streamlit import column_config
 
 # list of birds to exclude that prior model displayed and are not valid results
 FILTER_BIRD_NAMES = ['Rock Pigeon', 'Pine Grosbeak', 'Indigo Bunting', 'Eurasian Collared-Dove',
@@ -403,7 +401,8 @@ class WebPages:
                   f'Dates in 2024 are presented as the day of the year + 365.')
         df = self.load_daily_history()
         df = df[df['counts'] > filter_birds_cnt]
-        df['Year-Day'] = (df['Year'] - 2023) * 365 + df['Day_of_Year']
+        # df['Year-Day'] = (df['Year'] - 2023) * 365 + df['Day_of_Year']
+        df['Year-Day'] = df['Year'].astype(str) + '.' + df['Day_of_Year']
         st.write(f'Trend of Bird Visits by Day.  Data started being retained on May 9th 2023.')
         fig1 = px.line(data_frame=df, x="Year-Day", y="counts", color='Common Name', width=650, height=800,
                        color_discrete_map=self.bird_color_map,
@@ -411,22 +410,6 @@ class WebPages:
         fig1['layout']['xaxis'].update(autorange=True)
         st.plotly_chart(fig1, use_container_width=True, theme="streamlit")
         st.dataframe(df)
-        # gb = GridOptionsBuilder.from_dataframe(df)
-        # gb.configure_pagination(paginationPageSize=50)  # Add pagination
-        # gb.configure_default_column(enablePivot=False, enableValue=False, enableRowGroup=False)
-        # gb.configure_side_bar()
-        # gridoptions = gb.build()
-        #
-        # _ = AgGrid(
-        #     df,
-        #     gridOptions=gridoptions,
-        #     enable_enterprise_modules=True,
-        #     update_mode=GridUpdateMode.MODEL_CHANGED,
-        #     data_return_mode=DataReturnMode.FILTERED_AND_SORTED,
-        #     fit_columns_on_grid_load=False,
-        #     header_checkbox_selection_filtered_only=True,
-        #     use_checkbox=True
-        # )
         return
 
     def messages_page(self) -> None:
