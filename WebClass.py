@@ -335,7 +335,7 @@ class WebPages:
                             color_discrete_map=self.bird_color_map_hist,
                             category_orders={'Common Name': self.common_names})
         fig2['layout']['xaxis'].update(autorange=True)
-        st.plotly_chart(fig2, use_container_width=True, sharing="streamlit", theme="streamlit")
+        st.plotly_chart(fig2, use_container_width=True, theme="streamlit")
 
         # image and message stream multi-select filters
         message_options = st.multiselect(
