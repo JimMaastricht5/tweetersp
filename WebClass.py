@@ -271,7 +271,7 @@ class WebPages:
         df = self.df_occurrences
         df = df[df['Feeder Name'].isin(feeder_options)]
         df = df[df['Date Time'].dt.strftime('%Y-%m-%d').isin(date_options)]  # compare y m d to date selection y m d
-        if len(bird_options) > 0:
+        if 'All' not in bird_options or ('All' in bird_options and len(bird_options) != 0):
             print(bird_options)
             df = df[df['Common Name'].isin(bird_options)]  # return birds if something is selected
         return df
@@ -320,10 +320,6 @@ class WebPages:
             if len(self.dates) > 0:
                 date_options = st.multiselect('Dates:', self.dates, self.dates[0])
         with dropdown_cols[2]:
-            if not isinstance(self.bird_dd_options, list):
-                self.bird_dd_options = []  # Set to an empty list if not already a list
-            if 'All' not in self.bird_dd_options:
-                self.bird_dd_options.append('All')
             bird_options = st.multiselect('Birds to Include:', self.bird_dd_options, ['All'])  # all birds common names none selected
 
         # check for no data available
