@@ -35,6 +35,7 @@ import plotly.express as px
 from plotly.express import colors
 from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
 import matplotlib.colors as mcolors
+from streamlit import column_config
 
 # list of birds to exclude that prior model displayed and are not valid results
 FILTER_BIRD_NAMES = ['Rock Pigeon', 'Pine Grosbeak', 'Indigo Bunting', 'Eurasian Collared-Dove',
@@ -409,7 +410,8 @@ class WebPages:
                        category_orders={'Common Name': self.common_names})
         fig1['layout']['xaxis'].update(autorange=True)
         st.plotly_chart(fig1, use_container_width=True, theme="streamlit")
-        st.dataframe(df)
+        column_config = {'Year': st.column_config.NumberColumn(format='d')}
+        st.dataframe(df, column_config=column_config)
         # gb = GridOptionsBuilder.from_dataframe(df)
         # gb.configure_pagination(paginationPageSize=50)  # Add pagination
         # gb.configure_default_column(enablePivot=False, enableValue=False, enableRowGroup=False)
