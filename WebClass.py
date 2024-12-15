@@ -227,7 +227,7 @@ class WebPages:
                     urllib.request.urlretrieve(self.url_prefix + self.image_names[col+starting_col], 'imgfile')
                     # use alternative method below to open file to get animation instead of Pillow Image.open(url)
                     with cols[col]:
-                        st.image(self.url_prefix + self.image_names[col+starting_col], # use_column_width=True,
+                        st.image(self.url_prefix + self.image_names[col+starting_col],
                                  caption=self.set_caption(starting_col+col))
                         st.write(f'{self.url_prefix + self.image_names[col+starting_col]}', unsafe_allow_html=True)
                 except FileNotFoundError:  # missing file
@@ -296,7 +296,7 @@ class WebPages:
         self.available_dates = list(df["Date Time"])
         return df
 
-    # static page functions ######
+    ######## page functions ######
     def main_page(self) -> None:
         """
         Renders the main page of the website
@@ -309,7 +309,6 @@ class WebPages:
         st.set_page_config(layout="wide")
         st.header('Tweeters: Bird Feeder Species Identification')
         # feeder multi select filters with expander
-        # with st.expander("Filters for Feeder, Dates, and Birds:"):
         st.write('Select values to include or exclude in the chart and information table.  '
                  'Empty list of birds is "all" birds.')
         dropdown_cols = st.columns(3)
@@ -319,7 +318,7 @@ class WebPages:
             if len(self.dates) > 0:
                 date_options = st.multiselect('Dates:', self.dates, self.dates[0])
         with dropdown_cols[2]:
-            bird_options = st.multiselect('Birds to Include:', self.birds, [])  # all birds common names none selected
+            bird_options = st.multiselect('Birds to Include:', self.birds, ['All'])  # all birds common names none selected
 
         # check for no data available
         if len(self.dates) == 0:
@@ -386,7 +385,6 @@ class WebPages:
                                 nbins=36, width=650, height=400,
                                 color_discrete_map=self.bird_color_map_hist,
                                 category_orders={'Common Name': self.common_names})
-            # fig1.update_traces(marker_color=list(self.bird_color_map.values()))
             fig1['layout']['xaxis'].update(autorange=True)
             st.plotly_chart(fig1, use_container_width=True, sharing="streamlit", theme="streamlit")
 
@@ -425,7 +423,6 @@ class WebPages:
             data_return_mode=DataReturnMode.FILTERED_AND_SORTED,
             fit_columns_on_grid_load=False,
             header_checkbox_selection_filtered_only=True,
-            # height=250,  # using height breaks multipage view
             use_checkbox=True
         )
         return
