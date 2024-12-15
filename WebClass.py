@@ -318,7 +318,7 @@ class WebPages:
             if len(self.dates) > 0:
                 date_options = st.multiselect('Dates:', self.dates, self.dates[0])
         with dropdown_cols[2]:
-            bird_options = st.multiselect('Birds to Include:', self.birds, ['All'])  # all birds common names none selected
+            bird_options = st.multiselect('Birds to Include:', self.birds.append('All'), ['All'])  # all birds common names none selected
 
         # check for no data available
         if len(self.dates) == 0:
