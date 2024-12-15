@@ -194,8 +194,7 @@ class WebPages:
             urllib.request.urlretrieve(self.url_prefix + 'daily_history.csv', 'daily_history.csv')
             df = pd.read_csv('daily_history.csv')
             df = df.drop(['Unnamed: 0'], axis='columns')
-            df["Day_of_Year"] = df["Month"] * 30 + df["Day"]  # df["Year"] * 365
-            df['Year'] = df['Year'].astype(str)
+            df['Day_of_Year'] = df['Month'] * 30 + df['Day']  # df["Year"] * 365
             if drop_old_model_species:
                 df = df[~df['Common Name'].isin(FILTER_BIRD_NAMES)]  # get rid of species from old model
         except urllib.error.URLError as e:
@@ -411,7 +410,7 @@ class WebPages:
                        category_orders={'Common Name': self.common_names})
         fig1['layout']['xaxis'].update(autorange=True)
         st.plotly_chart(fig1, use_container_width=True, theme="streamlit")
-        column_config = {'Year': st.column_config.NumberColumn(format='d')}
+        column_config = {'Year': st.column_config.TextColumn()}
         st.dataframe(df, column_config=column_config)
         # gb = GridOptionsBuilder.from_dataframe(df)
         # gb.configure_pagination(paginationPageSize=50)  # Add pagination
