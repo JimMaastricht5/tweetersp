@@ -410,8 +410,7 @@ class WebPages:
                        category_orders={'Common Name': self.common_names})
         fig1['layout']['xaxis'].update(autorange=True)
         st.plotly_chart(fig1, use_container_width=True, theme="streamlit")
-        column_config = {'Year': st.column_config.TextColumn()}
-        st.dataframe(df, column_config=column_config)
+        st.dataframe(df)
         # gb = GridOptionsBuilder.from_dataframe(df)
         # gb.configure_pagination(paginationPageSize=50)  # Add pagination
         # gb.configure_default_column(enablePivot=False, enableValue=False, enableRowGroup=False)
