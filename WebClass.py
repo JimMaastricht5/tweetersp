@@ -335,7 +335,7 @@ class WebPages:
                             color_discrete_map=self.bird_color_map_hist,
                             category_orders={'Common Name': self.common_names})
         fig2['layout']['xaxis'].update(autorange=True)
-        st.plotly_chart(fig2, use_container_width=True, theme="streamlit")
+        st.plotly_chart(fig2, use_container_width=True, theme='streamlit', on_select='ignore')
 
         # image and message stream multi-select filters
         message_options = st.multiselect(
@@ -346,7 +346,7 @@ class WebPages:
 
         st.dataframe(data=self.filter_message_stream(feeder_options, date_options, bird_options, message_options),
                      use_container_width=True, hide_index=True,
-                     column_config={'Image Link': st.column_config.LinkColumn("Image Link", help='', max_chars=100,)})
+                     column_config={'Image Link': st.column_config.LinkColumn('Image Link', help='', max_chars=100,)})
 
         # write last 10 images from stream
         st.write('Last 25 Images: Most Recent to Least Recent')
