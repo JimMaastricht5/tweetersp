@@ -387,7 +387,7 @@ class WebPages:
                                 color_discrete_map=self.bird_color_map_hist,
                                 category_orders={'Common Name': self.common_names})
             fig1['layout']['xaxis'].update(autorange=True)
-            st.plotly_chart(fig1, use_container_width=True, sharing="streamlit", theme="streamlit")
+            st.plotly_chart(fig1, use_container_width=True, theme="streamlit")
 
         return
 
@@ -408,7 +408,7 @@ class WebPages:
                        color_discrete_map=self.bird_color_map,
                        category_orders={'Common Name': self.common_names})
         fig1['layout']['xaxis'].update(autorange=True)
-        st.plotly_chart(fig1, use_container_width=True, sharing="streamlit", theme="streamlit")
+        st.plotly_chart(fig1, use_container_width=True, theme="streamlit")
 
         gb = GridOptionsBuilder.from_dataframe(df)
         gb.configure_pagination(paginationPageSize=50)  # Add pagination
