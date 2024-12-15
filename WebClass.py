@@ -72,6 +72,7 @@ class WebPages:
         self.df_occurrences = pd.DataFrame()
         self.df_msg_stream = pd.DataFrame()
         self.birds = []
+        self.bird_options = []
         self.image_names = []
         self.feeders = []
         self.available_dates = self.dates
@@ -304,6 +305,7 @@ class WebPages:
         """
         self.df_occurrences = self.load_bird_occurrences()  # stream of bird occurrences for graph
         self.birds = self.df_occurrences['Common Name'].unique()
+        self.bird_options = self.birds.append('All')
         self.df_msg_stream = self.load_message_stream()  # message stream from device
         # ****************** format page ********************
         st.set_page_config(layout="wide")
@@ -318,7 +320,7 @@ class WebPages:
             if len(self.dates) > 0:
                 date_options = st.multiselect('Dates:', self.dates, self.dates[0])
         with dropdown_cols[2]:
-            bird_options = st.multiselect('Birds to Include:', self.birds.append('All'), ['All'])  # all birds common names none selected
+            bird_options = st.multiselect('Birds to Include:', self.bird_options, ['All'])  # all birds common names none selected
 
         # check for no data available
         if len(self.dates) == 0:
