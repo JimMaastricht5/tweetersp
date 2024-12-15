@@ -409,23 +409,23 @@ class WebPages:
                        category_orders={'Common Name': self.common_names})
         fig1['layout']['xaxis'].update(autorange=True)
         st.plotly_chart(fig1, use_container_width=True, theme="streamlit")
-
-        gb = GridOptionsBuilder.from_dataframe(df)
-        gb.configure_pagination(paginationPageSize=50)  # Add pagination
-        gb.configure_default_column(enablePivot=False, enableValue=False, enableRowGroup=False)
-        gb.configure_side_bar()
-        gridoptions = gb.build()
-
-        _ = AgGrid(
-            df,
-            gridOptions=gridoptions,
-            enable_enterprise_modules=True,
-            update_mode=GridUpdateMode.MODEL_CHANGED,
-            data_return_mode=DataReturnMode.FILTERED_AND_SORTED,
-            fit_columns_on_grid_load=False,
-            header_checkbox_selection_filtered_only=True,
-            use_checkbox=True
-        )
+        st.dataframe(df)
+        # gb = GridOptionsBuilder.from_dataframe(df)
+        # gb.configure_pagination(paginationPageSize=50)  # Add pagination
+        # gb.configure_default_column(enablePivot=False, enableValue=False, enableRowGroup=False)
+        # gb.configure_side_bar()
+        # gridoptions = gb.build()
+        #
+        # _ = AgGrid(
+        #     df,
+        #     gridOptions=gridoptions,
+        #     enable_enterprise_modules=True,
+        #     update_mode=GridUpdateMode.MODEL_CHANGED,
+        #     data_return_mode=DataReturnMode.FILTERED_AND_SORTED,
+        #     fit_columns_on_grid_load=False,
+        #     header_checkbox_selection_filtered_only=True,
+        #     use_checkbox=True
+        # )
         return
 
     def messages_page(self) -> None:
