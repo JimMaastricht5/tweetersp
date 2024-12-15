@@ -123,7 +123,6 @@ class WebPages:
         self.bird_color_map = dict(zip(self.common_names, self.cmap(range(len(self.common_names)))))
         return df
 
-    @st.cache_data
     def load_message_stream(self) -> pandas.DataFrame:
         """
         builds an empty data frame, reads for csv for each date and merges them into on df
@@ -151,16 +150,14 @@ class WebPages:
         self.feeders = list(df['Feeder Name'].unique())
         return df.sort_values('Date Time', ascending=False)
 
-    # @st.cache_data
     def load_bird_occurrences(self, drop_old_model_species: bool = True) -> pandas.DataFrame:
         """
         setup df with birds spotted
         :param drop_old_model_species:
         :return: data frame with birds the feeder has seen
         """
-        # setup df like file
         df = pd.DataFrame(data=None, columns=['Unnamed: 0', 'Feeder Name', 'Species',
-                                              'Date Time', 'Hour'], dtype=None)
+                                              'Date Time', 'Hour'], dtype=None)  # setup df like file
         df['Date Time'] = pd.to_datetime(df['Date Time'])
         for date in self.dates:
             try:  # read 3 days of files
