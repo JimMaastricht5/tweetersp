@@ -407,7 +407,7 @@ class WebPages:
         fig1 = px.line(data_frame=df, x="Year-Day", y="counts", color='Common Name', width=650, height=800,
                        color_discrete_map=self.bird_color_map,
                        category_orders={'Common Name': self.common_names})
-        fig1['layout']['xaxis'].update(autorange=True)
+        # fig1['layout']['xaxis'].update(autorange=True)
         st.plotly_chart(fig1, use_container_width=True, theme="streamlit")
         st.dataframe(df)
         return
