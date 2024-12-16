@@ -404,10 +404,7 @@ class WebPages:
         st.header(f'Daily History - May 9th 2023 to Present')
         df = self.load_daily_history()
         df = df[df['counts'] > filter_birds_cnt]
-        st.write(f'Trend of Bird Visits by Day.  Data started being retained on May 9th 2023.')
-        st.write(f'Click and drag to select and zoom to a smaller date range.  Double-click to zoom back out')
-        st.write(f'Click on a bird name in the legend to remove it from the results.')
-        st.write(f'Double-click on a bird name in the legend to select only that individual bird.')
+        st.write(f'Trend of Bird Visits by Day.  Data started being retained on May 9th 2023. Click and drag to select and zoom to a smaller date range.  Double-click to zoom back out.  Click on a bird name in the legend to remove it from the results. Double-click on a bird name in the legend to select only that individual bird.')
         fig1 = px.line(data_frame=df, x='Year-Day', y='counts', color='Common Name', width=650, height=800,
                        color_discrete_map=self.bird_color_map,
                        category_orders={'Common Name': self.common_names})
