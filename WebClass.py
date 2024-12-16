@@ -397,8 +397,7 @@ class WebPages:
         :return: None
         """
         st.set_page_config(layout="wide")
-        st.header(f'Daily History - May 9th 2023 to Present.  Drag and select in the graph to zoom.  '
-                  f'Double-click to zoom out')
+        st.header(f'Daily History - May 9th 2023 to Present')
         df = self.load_daily_history()
         df = df[df['counts'] > filter_birds_cnt]
         df['Year'] = df['Year'].astype(str).str[:-2]
@@ -406,6 +405,9 @@ class WebPages:
         df['Year-Day'] = pd.to_datetime(df['Year-Day'], format ='%Y.%j')
         df = df.sort_values('Year-Day', ascending=True)
         st.write(f'Trend of Bird Visits by Day.  Data started being retained on May 9th 2023.')
+        st.write(f'Click and drag to select and zoom to a smaller date range.')
+        st.write(f'Click on a bird name in the legend to remove it from the results.')
+        st.write(f'Double-click on a bird name in the legend to select only that individual bird.')
         fig1 = px.line(data_frame=df, x='Year-Day', y='counts', color='Common Name', width=650, height=800,
                        color_discrete_map=self.bird_color_map,
                        category_orders={'Common Name': self.common_names})
