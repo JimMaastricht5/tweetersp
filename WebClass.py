@@ -409,6 +409,7 @@ class WebPages:
                        color_discrete_map=self.bird_color_map,
                        category_orders={'Common Name': self.common_names})
         st.plotly_chart(fig1, use_container_width=True, theme="streamlit")
+        df = df.drop(['Day_of_Year', 'Year-Day'])
         st.dataframe(df)
         return
 
