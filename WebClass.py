@@ -192,7 +192,11 @@ class WebPages:
             urllib.request.urlretrieve(self.url_prefix + 'daily_history.csv', 'daily_history.csv')
             df = pd.read_csv('daily_history.csv')
             df = df.drop(['Unnamed: 0'], axis='columns')
-            df['Day_of_Year'] = (df['Month'] -1) * 30 + df['Day']  # df["Year"] * 365
+            df['Day_of_Year'] = (df['Month'] -1) * 30 + df['Day']
+            df['Year'] = df['Year'].astype(str).str[:-2]
+            df['Year-Day'] = df['Year'] + '.' + df['Day_of_Year'].astype(str).str[:-2].str.rjust(3, '0')
+            df['Year-Day'] = pd.to_datetime(df['Year-Day'], format='%Y.%j')
+            df = df.sort_values('Year-Day', ascending=True)
             if drop_old_model_species:
                 df = df[~df['Common Name'].isin(FILTER_BIRD_NAMES)]  # get rid of species from old model
         except urllib.error.URLError as e:
@@ -400,12 +404,8 @@ class WebPages:
         st.header(f'Daily History - May 9th 2023 to Present')
         df = self.load_daily_history()
         df = df[df['counts'] > filter_birds_cnt]
-        df['Year'] = df['Year'].astype(str).str[:-2]
-        df['Year-Day'] = df['Year'] + '.' + df['Day_of_Year'].astype(str).str[:-2].str.rjust(3, '0')
-        df['Year-Day'] = pd.to_datetime(df['Year-Day'], format ='%Y.%j')
-        df = df.sort_values('Year-Day', ascending=True)
         st.write(f'Trend of Bird Visits by Day.  Data started being retained on May 9th 2023.')
-        st.write(f'Click and drag to select and zoom to a smaller date range.')
+        st.write(f'Click and drag to select and zoom to a smaller date range.  Double-click to zoom back out')
         st.write(f'Click on a bird name in the legend to remove it from the results.')
         st.write(f'Double-click on a bird name in the legend to select only that individual bird.')
         fig1 = px.line(data_frame=df, x='Year-Day', y='counts', color='Common Name', width=650, height=800,
