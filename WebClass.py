@@ -401,7 +401,7 @@ class WebPages:
         df = self.load_daily_history()
         df = df[df['counts'] > filter_birds_cnt]
         df['Year-Day'] = df['Year'].astype(str) + '.' + df['Day_of_Year'].astype(str)
-        df['Year'] = df['Year'].astype(str)
+        df['Year'] = df['Year'].astype(str)[0:4]
         df = df.sort_values('Year-Day')
         st.write(f'Trend of Bird Visits by Day.  Data started being retained on May 9th 2023.')
         fig1 = px.line(data_frame=df, x="Year-Day", y="counts", color='Common Name', width=650, height=800,
