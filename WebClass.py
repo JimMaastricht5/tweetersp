@@ -397,7 +397,8 @@ class WebPages:
         :return: None
         """
         st.set_page_config(layout="wide")
-        st.header(f'Daily History - May 9th 2023 to Present')
+        st.header(f'Daily History - May 9th 2023 to Present.  Drag and select in the graph to zoom.  '
+                  f'Double-click to zoom out')
         df = self.load_daily_history()
         df = df[df['counts'] > filter_birds_cnt]
         df['Year'] = df['Year'].astype(str).str[:-2]
