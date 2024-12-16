@@ -192,7 +192,7 @@ class WebPages:
             urllib.request.urlretrieve(self.url_prefix + 'daily_history.csv', 'daily_history.csv')
             df = pd.read_csv('daily_history.csv')
             df = df.drop(['Unnamed: 0'], axis='columns')
-            df['Day_of_Year'] = df['Month'] * 30 + df['Day']  # df["Year"] * 365
+            df['Day_of_Year'] = (df['Month'] -1) * 30 + df['Day']  # df["Year"] * 365
             if drop_old_model_species:
                 df = df[~df['Common Name'].isin(FILTER_BIRD_NAMES)]  # get rid of species from old model
         except urllib.error.URLError as e:
