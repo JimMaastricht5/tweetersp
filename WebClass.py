@@ -262,17 +262,21 @@ class WebPages:
                     print(e)
         return
 
-    def filter_occurrences(self, feeder_options: list, date_options: list, bird_options: list) -> pandas.DataFrame:
+    def filter_occurrences(self, feeder_options: list, date_options: list, bird_options: list,
+                           drop_old_model_species: bool=True) -> pandas.DataFrame:
         """
         filter down the bird occurrences df to include the desired selections
         :param feeder_options: which feeders to include in output
         :param date_options: which dates to include in output
         :param bird_options: which birds to include in output
+        :param drop_old_model_species: drop species in error by model
         :return: df with filtered list of data
         """
         df = self.df_occurrences
         df = df[df['Feeder Name'].isin(feeder_options)]
         df = df[df['Date Time'].dt.strftime('%Y-%m-%d').isin(date_options)]  # compare y m d to date selection y m d
+        if drop_old_model_species:  # the old model made pred errors, this filter drops the more obvious errors
+            df = df[~df['Common Name'].isin(FILTER_BIRD_NAMES)]  # get rid of species from old model
         if 'All' not in bird_options or ('All' in bird_options and len(bird_options) > 1):
             print(bird_options)
             df = df[df['Common Name'].isin(bird_options)]  # return birds if something is selected
