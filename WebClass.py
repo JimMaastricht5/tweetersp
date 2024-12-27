@@ -171,7 +171,7 @@ class WebPages:
                 df_read['Day.Hour'] = pd.to_numeric(df_read['Date Time'].dt.strftime('%d')) + \
                     pd.to_numeric(df_read['Date Time'].dt.strftime('%H')) / 100 + \
                     pd.to_numeric(df_read['Date Time'].dt.strftime('%M')) / 100 / 60
-                df = pd.concat([df, df_read])
+                df = pd.concat([df, df_read]) if df_read.shape[0] > 0 else df
             except urllib.error.URLError as e:
                 print(f'no web occurrences found for {date}')
                 print(e)
