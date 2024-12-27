@@ -149,7 +149,8 @@ class WebPages:
                          'Image Name', 'Common Name']
         df = df.reindex(columns=new_col_order)
         self.feeders = list(df['Feeder Name'].unique())
-        return df.sort_values('Date Time', ascending=False)
+        df = df.sort_values('Date Time', ascending=False)
+        return df
 
     def load_bird_occurrences(self, drop_old_model_species: bool = True) -> pandas.DataFrame:
         """
@@ -174,7 +175,7 @@ class WebPages:
             except urllib.error.URLError as e:
                 print(f'no web occurrences found for {date}')
                 print(e)
-                self.dates.remove(date)  # remove date if not found
+                # self.dates.remove(date)  # remove date if not found ?? does this create the early day blank error on the prior day?
         df = self.build_common_name(df, 'Species')  # build common name for merged df
         df = df.drop(['Unnamed: 0'], axis='columns')
         if drop_old_model_species:  # the old model made pred errors, this filter drops the more obvious errors
