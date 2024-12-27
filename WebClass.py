@@ -160,8 +160,8 @@ class WebPages:
         """
         # df = pd.DataFrame(data=None, columns=['Unnamed: 0', 'Feeder Name', 'Species',
         #                                       'Date Time', 'Hour'], dtype=None)  # setup df like file
+        # df['Date Time'] = pd.to_datetime(df['Date Time'])
         df = None
-        df['Date Time'] = pd.to_datetime(df['Date Time'])
         for date in self.dates:
             try:  # read 3 days of files
                 urllib.request.urlretrieve(self.url_prefix + date + 'web_occurrences.csv', 'web_occurrences.csv')
