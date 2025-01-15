@@ -458,14 +458,21 @@ class WebPages:
         # ****************** format page ********************
         st.set_page_config(layout="wide")
         st.header('Species Classified: 2024')
-        st.write('Historical analysis of 2024 bird species classified by the Madison feeder.')
-        st.write(f'First occurrence: {df["DateTime"].min()}')
-        st.write(f'Last occurrence: {df["DateTime"].max()}')
-        st.write(f'Number of Images: \t{df.shape[0]}\n')
+        st.write(f'Historical analysis of {df.shape[0]} bird classifications in 2024 by the Madison feeder.')
 
+        start_date = st.date_input("Start Date", value=datetime.date(2024, 1, 1))
+        end_date = st.date_input("End Date", value=datetime.date(2024, 12, 31))
+        if start_date > end_date:
+            st.error("Start date must be before end date.")
+            filtered_df = df
+        else:
+            st.write(f"Selected date range: {start_date} to {end_date}")
+            filtered_df = df[(df['dates'] >= pd.to_datetime(start_date)) & (df['dates'] <= pd.to_datetime(end_date))]
+
+        st.dataframe(data=filtered_df, use_container_width=True)
         # print(f'Possible False Positives: \n{name_counts[name_counts <= 150]}')
         # print(f'Remaining Species: \n{name_counts[name_counts > 150]}')
-        st.dataframe(data=df, use_container_width=True)
+
         return
 
     def about_page(self) -> None:
