@@ -465,6 +465,7 @@ class WebPages:
 
         # print(f'Possible False Positives: \n{name_counts[name_counts <= 150]}')
         # print(f'Remaining Species: \n{name_counts[name_counts > 150]}')
+        st.dataframe(data=df, use_container_width=True)
         return
 
     def about_page(self) -> None:
