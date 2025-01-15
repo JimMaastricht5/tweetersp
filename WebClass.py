@@ -459,9 +459,10 @@ class WebPages:
         st.set_page_config(layout="wide")
         st.header('Species Classified: 2024')
         st.write(f'Historical analysis of {df.shape[0]} bird classifications in 2024 by the Madison feeder.')
-
-        start_date = st.date_input("Start Date", value=datetime.date(2024, 1, 1))
-        end_date = st.date_input("End Date", value=datetime.date(2024, 12, 31))
+        default_start_date = datetime.date(2024, 1, 1)
+        default_end_date = datetime.date(2024, 12, 31)
+        start_date = st.date_input("Start Date", value=default_start_date)
+        end_date = st.date_input("End Date", value=default_end_date)
         if start_date > end_date:
             st.error("Start date must be before end date.")
             filtered_df = df
