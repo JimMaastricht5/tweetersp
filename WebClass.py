@@ -454,7 +454,6 @@ class WebPages:
         df_raw = pd.read_csv(df_file_name)
         df_raw['DateTime'] = pd.to_datetime(df_raw['DateTime'], errors='raise')
         df = df_raw[df_raw['DateTime'].dt.year == 2024].copy()  # .copy() avoids warnings about setting values on slice
-        name_counts = df['Name'].value_counts()
 
         # ****************** format page ********************
         st.set_page_config(layout="wide")
