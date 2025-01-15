@@ -469,7 +469,8 @@ class WebPages:
             filtered_df = df
         else:
             st.write(f"Selected date range: {start_date} to {end_date}")
-            filtered_df = df[(df['dates'] >= pd.to_datetime(start_date)) & (df['dates'] <= pd.to_datetime(end_date))]
+            filtered_df = df[(df['DateTime'] >= pd.to_datetime(start_date)) &
+                             (df['DateTime'] <= pd.to_datetime(end_date))]
 
         st.dataframe(data=filtered_df, use_container_width=True)
         # print(f'Possible False Positives: \n{name_counts[name_counts <= 150]}')
