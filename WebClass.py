@@ -472,7 +472,7 @@ class WebPages:
                              (df['DateTime'] <= pd.to_datetime(end_date))]
 
         filtered_df.set_index('DateTime')
-        df_display = filtered_df.drop(['0', 'Number', 'Year', 'Month', 'Day', 'Hour'], axis=1)
+        df_display = filtered_df.drop(['', 'Number', 'Year', 'Month', 'Day', 'Hour'], axis=1)
 
         st.write(df_display.columns)
         st.dataframe(data=df_display, use_container_width=True)
