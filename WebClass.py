@@ -172,7 +172,7 @@ class WebPages:
                 df_read['Day.Hour'] = pd.to_numeric(df_read['Date Time'].dt.strftime('%d')) + \
                     pd.to_numeric(df_read['Date Time'].dt.strftime('%H')) / 100 + \
                     pd.to_numeric(df_read['Date Time'].dt.strftime('%M')) / 100 / 60
-                df = pd.concat([df, df_read]) if df is not None else df_read
+                df = pd.concat([df, df_read]) if df is not None else df_read  # handle empty df on first loop
             except urllib.error.URLError as e:
                 print(f'no web occurrences found for {date}')
                 print(e)
@@ -319,8 +319,7 @@ class WebPages:
         st.set_page_config(layout="wide")
         st.header('Tweeters: Bird Feeder Species Identification')
         # feeder multi select filters with expander
-        st.write('Select values to include or exclude in the chart and information table.  '
-                 'Empty list of birds is "all" birds.')
+        st.write('Select values to include or exclude in the chart and information table.  ')
         dropdown_cols = st.columns(3)
         with dropdown_cols[0]:
             feeder_options = st.multiselect('Feeders:', self.feeders, self.feeders)  # feeders all selected
@@ -348,7 +347,7 @@ class WebPages:
 
         # image and message stream multi-select filters
         message_options = st.multiselect(
-            'Animated: show animated gifs sent to twitter'
+            'Animated: show animated gifs sent to twitter (default); '
             'Static: show static photo taken when species was identified and counted',
             ['Static', 'Animated'],  # remove message type and display on own page later
             ['Animated'])
@@ -439,7 +438,7 @@ class WebPages:
             date_options = st.multiselect('Dates:', self.dates, self.dates)  # dates available and all selected
         df = self.filter_message_stream(feeder_options=feeder_options, date_options=date_options,
                                         bird_options=['All'], message_options=['message'])
-        df = df.drop(['Message Type', 'Image Name'], axis='columns')
+        df = df.drop(['Message Type'], axis='columns')  # , 'Image Name'
         st.dataframe(data=df, use_container_width=True)
         self.publish_first_image()  # just want one image
         return
