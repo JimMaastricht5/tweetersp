@@ -448,20 +448,23 @@ class WebPages:
         load 2024 data and allow for visual analysis
         :return: None
         """
+        # load data
         df_file_name = 'archive-jpg-list.csv'
         df_raw = pd.read_csv(df_file_name)
         df_raw['DateTime'] = pd.to_datetime(df_raw['DateTime'], errors='raise')
-        print('Limiting list to 2024 only....')
         df = df_raw[df_raw['DateTime'].dt.year == 2024].copy()  # .copy() avoids warnings about setting values on slice
         name_counts = df['Name'].value_counts()
-        print(df.columns)
-        print('')
-        print(f'Starting date: {df["DateTime"].min()}')
-        print(f'Ending date: {df["DateTime"].max()}')
-        print(f'Number of Images: \t{df.shape[0]}\n')
-        print(f'Possible False Positives: \n{name_counts[name_counts <= 150]}')
-        print('')
-        print(f'Remaining Species: \n{name_counts[name_counts > 150]}')
+
+        # ****************** format page ********************
+        st.set_page_config(layout="wide")
+        st.header('Species Classified: 2024')
+        st.write('Historical analysis of 2024 bird species classified by the Madison feeder.')
+        st.write(f'First occurrence: {df["DateTime"].min()}')
+        st.write(f'Last occurrence: {df["DateTime"].max()}')
+        st.write(f'Number of Images: \t{df.shape[0]}\n')
+
+        # print(f'Possible False Positives: \n{name_counts[name_counts <= 150]}')
+        # print(f'Remaining Species: \n{name_counts[name_counts > 150]}')
         return
 
     def about_page(self) -> None:
