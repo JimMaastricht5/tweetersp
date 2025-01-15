@@ -471,8 +471,9 @@ class WebPages:
             filtered_df = df[(df['DateTime'] >= pd.to_datetime(start_date)) &
                              (df['DateTime'] <= pd.to_datetime(end_date))]
 
-        df_display = filtered_df.drop(['Number', 'Year', 'Month', 'Day', 'Hour'], axis=1)
-        df_display.set_index('DateTime')
+        filtered_df.set_index('DateTime')
+        df_display = filtered_df.drop(['0', 'Number', 'Year', 'Month', 'Day', 'Hour'], axis=1)
+
         st.write(df_display.columns)
         st.dataframe(data=df_display, use_container_width=True)
         # print(f'Possible False Positives: \n{name_counts[name_counts <= 150]}')
