@@ -29,6 +29,7 @@ import pandas as pd
 import urllib.request
 from urllib.error import HTTPError
 from datetime import datetime
+from datetime import date as dtdate
 from datetime import timedelta
 import pytz
 import plotly.express as px
@@ -459,8 +460,8 @@ class WebPages:
         st.set_page_config(layout="wide")
         st.header('Species Classified: 2024')
         st.write(f'Historical analysis of {df.shape[0]} bird classifications in 2024 by the Madison feeder.')
-        default_start_date = datetime.date(2024, 1, 1)
-        default_end_date = datetime.date(2024, 12, 31)
+        default_start_date = dtdate(2024, 1, 1)
+        default_end_date = dtdate(2024, 12, 31)
         start_date = st.date_input("Start Date", value=default_start_date)
         end_date = st.date_input("End Date", value=default_end_date)
         if start_date > end_date:
