@@ -443,6 +443,27 @@ class WebPages:
         self.publish_first_image()  # just want one image
         return
 
+    def analysis_2024_page(self) -> None:
+        """
+        load 2024 data and allow for visual analysis
+        :return:
+        """
+        df_file_name = 'archive-jpg-list.csv'
+        df_raw = pd.read_csv(df_file_name)
+        df_raw['DateTime'] = pd.to_datetime(df_raw['DateTime'], errors='raise')
+        print('Limiting list to 2024 only....')
+        df = df_raw[df_raw['DateTime'].dt.year == 2024].copy()  # .copy() avoids warnings about setting values on slice
+        name_counts = df['Name'].value_counts()
+        print(df.columns)
+        print('')
+        print(f'Starting date: {df["DateTime"].min()}')
+        print(f'Ending date: {df["DateTime"].max()}')
+        print(f'Number of Images: \t{df.shape[0]}\n')
+        print(f'Possible False Positives: \n{name_counts[name_counts <= 150]}')
+        print('')
+        print(f'Remaining Species: \n{name_counts[name_counts > 150]}')
+        return
+
     def about_page(self) -> None:
         """
         formats the about page that describes the app and the site
