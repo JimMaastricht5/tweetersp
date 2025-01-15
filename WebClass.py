@@ -446,7 +446,7 @@ class WebPages:
     def analysis_2024_page(self) -> None:
         """
         load 2024 data and allow for visual analysis
-        :return:
+        :return: None
         """
         df_file_name = 'archive-jpg-list.csv'
         df_raw = pd.read_csv(df_file_name)
