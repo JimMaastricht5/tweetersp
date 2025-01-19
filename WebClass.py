@@ -444,7 +444,7 @@ class WebPages:
         self.publish_first_image()  # just want one image
         return
 
-    def analysis_2024_page(self) -> None:
+    def image_analysis_2024_page(self) -> None:
         """
         load 2024 data and allow for visual analysis
         :return: None
@@ -458,7 +458,7 @@ class WebPages:
         # ****************** format page ********************
         st.set_page_config(layout="wide")
         st.header('Species Classified: 2024')
-        st.write(f'Historical analysis of {df.shape[0]} bird classifications in 2024 by the Madison feeder.')
+        st.write(f'Historical analysis of {df.shape[0]} bird classifications by the Madison feeder in 2024.')
 
         # select date range for images
         default_start_date = dtdate(2024, 1, 1)

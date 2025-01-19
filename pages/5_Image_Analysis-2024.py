@@ -26,4 +26,4 @@ import WebClass
 
 # init class and call main page
 webpage = WebClass.WebPages()
-webpage.analysis_2024_page()
+webpage.image_analysis_2024_page()
