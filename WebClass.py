@@ -454,6 +454,8 @@ class WebPages:
         df_raw = pd.read_csv(df_file_name)
         df_raw['DateTime'] = pd.to_datetime(df_raw['DateTime'], errors='raise')
         df = df_raw[df_raw['DateTime'].dt.year == 2024].copy()  # .copy() avoids warnings about setting values on slice
+        df.index.name = 'Image Number'
+        df = df.rename(columns={'Name : Species'})
 
         # ****************** format page ********************
         st.set_page_config(layout="wide")
@@ -466,12 +468,11 @@ class WebPages:
         if start_date > end_date:
             st.error("Start date must be before end date.")
             filtered_df = df
-        else:
+        else:  # filter inclusive of last date
             st.write(f"Selected date range: {start_date} to {end_date}")
             filtered_df = df[(df['DateTime'] >= pd.to_datetime(start_date)) &
                              (df['DateTime'] <= pd.to_datetime(end_date) + pd.Timedelta(days=1))]
 
-        # filtered_df.set_index('DateTime')
         df_display = filtered_df.drop(['Number', 'Year', 'Month', 'Day', 'Hour'], axis=1)
 
         st.write(df_display.columns)
