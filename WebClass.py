@@ -469,7 +469,7 @@ class WebPages:
         else:
             st.write(f"Selected date range: {start_date} to {end_date}")
             filtered_df = df[(df['DateTime'] >= pd.to_datetime(start_date)) &
-                             (df['DateTime'] < pd.to_datetime(end_date) + pd.Timedelta(days=1))]
+                             (df['DateTime'] <= pd.to_datetime(end_date) + pd.Timedelta(days=1))]
 
         # filtered_df.set_index('DateTime')
         df_display = filtered_df.drop(['Number', 'Year', 'Month', 'Day', 'Hour'], axis=1)
