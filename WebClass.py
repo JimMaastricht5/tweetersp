@@ -455,7 +455,7 @@ class WebPages:
         df_raw['DateTime'] = pd.to_datetime(df_raw['DateTime'], errors='raise')
         df = df_raw[df_raw['DateTime'].dt.year == 2024].copy()  # .copy() avoids warnings about setting values on slice
         df.index.name = 'Image Number'
-        df = df.rename(columns={'Name : Species'})
+        # df = df.rename(columns={'Name : Species'})
 
         # ****************** format page ********************
         st.set_page_config(layout="wide")
