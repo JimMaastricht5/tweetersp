@@ -459,6 +459,8 @@ class WebPages:
         st.set_page_config(layout="wide")
         st.header('Species Classified: 2024')
         st.write(f'Historical analysis of {df.shape[0]} bird classifications in 2024 by the Madison feeder.')
+
+        # select date range for images
         default_start_date = dtdate(2024, 1, 1)
         default_end_date = dtdate(2024, 12, 31)
         start_date = st.date_input("Start Date", value=default_start_date)
@@ -471,6 +473,12 @@ class WebPages:
             filtered_df = df[(df['DateTime'] >= pd.to_datetime(start_date)) &
                              (df['DateTime'] <= pd.to_datetime(end_date) + pd.Timedelta(days=1))]
 
+        # species selection
+        unique_species = df['Species'].unique().tolist()
+        selected_species = st.selectbox("Select a Species", unique_species)
+        filtered_df = df[df['Species'] == selected_species]
+
+        # display filtered df
         df_display = filtered_df.drop(['Image Number', 'Year', 'Month', 'Day', 'Hour'], axis=1)
         df_display.index.name = 'Image Number'
         st.dataframe(data=df_display, use_container_width=True)
