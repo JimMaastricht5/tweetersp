@@ -471,7 +471,7 @@ class WebPages:
             filtered_df = df[(df['DateTime'] >= pd.to_datetime(start_date)) &
                              (df['DateTime'] <= pd.to_datetime(end_date) + pd.Timedelta(days=1))]
 
-        df_display = filtered_df.drop(['Number', 'Year', 'Month', 'Day', 'Hour'], axis=1)
+        df_display = filtered_df.drop(['Year', 'Month', 'Day', 'Hour'], axis=1)
         st.dataframe(data=df_display, use_container_width=True)
         # print(f'Possible False Positives: \n{name_counts[name_counts <= 150]}')
         # print(f'Remaining Species: \n{name_counts[name_counts > 150]}')
