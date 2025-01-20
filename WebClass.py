@@ -461,10 +461,11 @@ class WebPages:
             if "Data Set Selection" not in df_raw.columns:
                 df_raw["Data Set Selection"] = False  # Initialize all checkboxes to False
             df = df_raw[df_raw['DateTime'].dt.year == 2024].copy()  # .copy() avoids warnings about setting values on slice
-            unique_species = df['Species'].unique().tolist()
             st.session_state.df = df
         else:
             df = st.session_state.df
+        unique_species = df['Species'].unique().tolist()
+
         # ****************** format page ********************
         st.set_page_config(layout="wide")
         st.header('Data Management for Species Classification Training')
