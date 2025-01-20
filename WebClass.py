@@ -449,6 +449,11 @@ class WebPages:
         return
 
     @staticmethod
+    def make_clickable_image(val, link):
+        """Makes an image clickable in a DataFrame."""
+        return f'<a href="{link}" target="_blank"><img src="{val}" width="100"></a>'  # adjust width as needed
+
+    @staticmethod
     def image_to_base64(image_path_or_bytes):
         """Converts an image to a base64 encoded string.
         :param image_path_or_bytes: a string with the location of the file or bytes representing the image
@@ -503,7 +508,7 @@ class WebPages:
                 st.warning(f'Image not found at path: {url_prefix}{row["Image Name"]}')
             except Exception as e:
                 st.error(f'Exception occurred in fetch_thumbnail: {e} {url_prefix}{row["Image Name"]}')
-        return svg_image
+        return self.make_clickable_image(val=svg_image, link=url_prefix + row['Image Name'])
 
     def training_data_management_2024_page(self) -> None:
         """
