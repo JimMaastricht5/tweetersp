@@ -516,8 +516,18 @@ class WebPages:
         load 2024 data and allow for management of training data
         :return: None
         """
+        # ****************** format page ********************
+        st.set_page_config(layout="wide")
+        st.header('Data Management for Species Classification Training')
+        st.write(f'The bird feeder currently uses a pre-built ElasticNet model.  That model classified '
+                 f'74,849 images in 2024 bird. The classifications performed then will provide the '
+                 f'image data to train a new custom model. \n\n  This page allows for the random samples to be '
+                 f'generated for the training data set.  '
+                 f'Images can be excluded from the sample if they are not high quality.')
+
         # load data and format df
         if "df" not in st.session_state:
+            st.warning('Setting session state')
             st.session_state.df = None
             df_raw = pd.read_csv('archive-jpg-list.csv')
             df_raw['DateTime'] = pd.to_datetime(df_raw['DateTime'], errors='raise')
@@ -535,18 +545,10 @@ class WebPages:
             # df_raw['_image_thumbnail'] = df_filtered.apply(self.fetch_thumbnail, axis=1)
             st.session_state.df = df
         else:
+            st.warning('Using session state')
             df = st.session_state.df
         unique_species = df['Species'].unique().tolist()
         name_counts = df['Species'].value_counts()
-
-        # ****************** format page ********************
-        st.set_page_config(layout="wide")
-        st.header('Data Management for Species Classification Training')
-        st.write(f'The bird feeder currently uses a pre-built ElasticNet model.  That model classified '
-                 f'{df.shape[0]} images in 2024 bird. The classifications performed then will provide the '
-                 f'image data to train a new custom model. \n\n  This page allows for the random samples to be '
-                 f'generated for the training data set.  '
-                 f'Images can be excluded from the sample if they are not high quality.')
 
         # select date range for images and species for images (filtered)
         default_start_date = dtdate(2024, 1, 1)
