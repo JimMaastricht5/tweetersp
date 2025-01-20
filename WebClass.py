@@ -446,7 +446,7 @@ class WebPages:
 
     def training_data_management_2024_page(self) -> None:
         """
-        load 2024 data and allow for visual analysis
+        load 2024 data and allow for management of training data
         :return: None
         """
         # load data and format df
