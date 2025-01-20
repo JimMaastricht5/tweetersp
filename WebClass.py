@@ -519,7 +519,7 @@ class WebPages:
 
         selected_species = st.selectbox('Select a Species', unique_species)
         df_filtered = filtered_df[filtered_df['Species'] == selected_species]
-        # df_filtered['_image_thumbnail'] = df_filtered.apply(self.fetch_thumbnail)
+        df_filtered['_image_thumbnail'] = df_filtered.apply(self.fetch_thumbnail)
 
         # select random samples
         num_samples = int(st.slider("Select a sample size:", min_value=10, max_value=100, value=25, step=5))
