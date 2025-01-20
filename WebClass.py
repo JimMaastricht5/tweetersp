@@ -460,7 +460,7 @@ class WebPages:
 
     def fetch_thumbnail(self, row):
         base64_image = ''
-        print(row)
+        st.warning(row)
         if row['Image Name'] != '' and row['Rejected'] is False and (row['Random Sample'] is True or row['Data Set Selection'] is True):
             try:  # catch missing image
                 urllib.request.urlretrieve(self.url_prefix + row['Image Name'], 'temp.jpg')
