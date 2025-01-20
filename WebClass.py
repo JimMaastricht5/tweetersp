@@ -460,7 +460,7 @@ class WebPages:
 
     def fetch_thumbnail(self, row):
         base64_image = ''
-        st.warning(row)
+        # st.warning(row)
         if row['Image Name'] != '' and row['Rejected'] is False and (row['Random Sample'] is True or row['Data Set Selection'] is True):
             try:  # catch missing image
                 urllib.request.urlretrieve(self.url_prefix + row['Image Name'], 'temp.jpg')
@@ -539,8 +539,7 @@ class WebPages:
                  f'\tRejected: {df_filtered["Rejected"].sum()}'
                  f'\tImage Count: {df_filtered.shape[0]}')
         if '_image_thumbnail' in df_filtered.columns:  # Use write with raw HTML for the image column
-            df_edited = st.data_editor(df_filtered, write_data=True,
-                                       html=df_filtered['_image_thumbnail'].tolist(),
+            df_edited = st.data_editor(df_filtered, html=df_filtered['_image_thumbnail'].tolist(),
                                        disabled=['Image Number', 'Species', 'DateTime', 'Image Name',
                                                  '_image_thumbnail'])
         else:
