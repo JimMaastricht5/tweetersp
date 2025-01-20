@@ -456,10 +456,10 @@ class WebPages:
             df_raw['DateTime'] = pd.to_datetime(df_raw['DateTime'], errors='raise')
             df_raw = df_raw.drop(['Image Number', 'Year', 'Month', 'Day', 'Hour'], axis=1)
             df_raw.index.name = 'Image Number'
-            if "Random Sample" not in df_raw.columns:
+            if 'Random Sample' not in df_raw.columns:
                 df_raw["Random Sample"] = False  # Initialize all checkboxes to False
-            if "Data Set Selection" not in df_raw.columns:
-                df_raw["Data Set Selection"] = False  # Initialize all checkboxes to False
+            if 'Data Set Selection' not in df_raw.columns:
+                df_raw['Data Set Selection'] = False  # Initialize all checkboxes to False
             df = df_raw[df_raw['DateTime'].dt.year == 2024].copy()  # .copy() avoids warnings about setting values on slice
             st.session_state.df = df
         else:
@@ -475,7 +475,7 @@ class WebPages:
                  f'generated for the training data set.  '
                  f'Images can be excluded from the sample if they are not high quality.')
 
-        # select date range for images
+        # select date range for images and species for images (filtered)
         default_start_date = dtdate(2024, 1, 1)
         default_end_date = dtdate(2024, 12, 31)
         start_date = st.date_input("Start Date", value=default_start_date)
@@ -488,11 +488,10 @@ class WebPages:
             filtered_df = df[(df['DateTime'] >= pd.to_datetime(start_date)) &
                              (df['DateTime'] <= pd.to_datetime(end_date) + pd.Timedelta(days=1))]
 
-        # species selection
         selected_species = st.selectbox("Select a Species", unique_species)
         df_filtered = filtered_df[filtered_df['Species'] == selected_species]
 
-        # random samples to select
+        # select random samples
         num_samples = int(st.slider("Select a sample size:", min_value=10, max_value=100, value=25, step=5))
         if st.button("Generate Sample for Species"):  # The "Sample" button
             df_sampled = df_filtered.sample(n=(num_samples if num_samples <= df.shape[0] else df.shape[0])).copy()
@@ -502,11 +501,14 @@ class WebPages:
                 for index in df_sampled.index:
                     df_filtered.loc[index, 'Random Sample'] = True
 
-        # st.dataframe(data=df_display, use_container_width=True)
+        df_edited = st.data_editor(df_filtered, disabled=['Image Number', 'Species', 'DateTime', 'Image Name'])
+        for index in df_edited.index:
+            df.loc[index, 'Random Sample'] = df_edited.loc[index, 'Random Sample']
+            df.loc[index, 'Data Set Selection'] = df_edited.loc[index, 'Data Set Selection']
+        st.session_state.df = df
+
         # print(f'Possible False Positives: \n{name_counts[name_counts <= 150]}')
         # print(f'Remaining Species: \n{name_counts[name_counts > 150]}')
-        edited_df = st.data_editor(df_filtered, disabled=['Image Number', 'Species', 'DateTime', 'Image Name'])
-        st.session_state.df = edited_df
         return
 
     def about_page(self) -> None:
