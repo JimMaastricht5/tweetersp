@@ -501,6 +501,7 @@ class WebPages:
         if row['Image Name'] != '' and row['Rejected'] is False and (row['Random Sample'] is True or row['Data Set Selection'] is True):
             try:  # catch missing image
                 urllib.request.urlretrieve(self.url_prefix + row['Image Name'], 'imgfile')
+                st.warning('grabbed url request, reteiving imgfile')
                 base64_image = self.jpg_to_svg_data_url('imgfile')
             except FileNotFoundError:
                 st.warning(f'Image not found at path: {self.url_prefix}{row["Image Name"]}')
