@@ -529,8 +529,6 @@ class WebPages:
             if 'Rejected' not in df_raw.columns:
                 df_raw['Rejected'] = False # Initialize all checkboxes to False
             df = df_raw[df_raw['DateTime'].dt.year == 2024].copy()  # .copy() avoids warnings setting values on slice
-            if 'Image Link' not in df_raw.columns:
-                df_raw['Image Link'] = df_raw['Image Name'].apply(self.make_clickable)
             st.session_state.df = df
         else:
             df = st.session_state.df
@@ -561,6 +559,8 @@ class WebPages:
 
         selected_species = st.selectbox('Select a Species', unique_species)
         df_filtered = filtered_df[filtered_df['Species'] == selected_species]
+        df_filtered['Image Link'] = df_filtered['Image Name'].apply(self.make_clickable)
+        df_filtered['_image_thumbnail'] = ''
         # df_filtered['_image_thumbnail'] = df_filtered.apply(self.fetch_thumbnail, axis=1)
 
         # select random samples
@@ -583,7 +583,7 @@ class WebPages:
             column_config = {'_image_thumbnail': st.column_config.ImageColumn('Preview Image', width='medium')}
             df_edited = st.data_editor(df_filtered, column_config=column_config,
                                        disabled=['Image Number', 'Species', 'DateTime', 'Image Name',
-                                                 '_image_thumbnail'])
+                                                 '_image_thumbnail', 'Image Link'])
         else:
             df_edited = st.data_editor(df_filtered, disabled=['Image Number', 'Species', 'DateTime', 'Image Name'])
 
