@@ -463,8 +463,10 @@ class WebPages:
         try:  # catch missing image
             urllib.request.urlretrieve(self.url_prefix + image_name, 'temp.jpg')
             base64_image = self.image_to_base64('temp.jpg')
-        except FileNotFoundError:  # missing file
-            print(f'File not found {image_name}')
+        except FileNotFoundError:
+            st.warning(f'Image not found at path: {image_name}')
+        except Exception as e:
+            st.error(f'Error converting image to base64: {e}')
         return f'<img src="data:image/png;base64,{base64_image}" width="50">'
 
     def training_data_management_2024_page(self) -> None:
