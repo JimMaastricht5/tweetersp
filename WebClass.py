@@ -497,16 +497,17 @@ class WebPages:
             return None
 
     def fetch_thumbnail(self, row):
+        url_prefix_archive = 'https://storage.googleapis.com/archive_jpg_from_birdclassifier/'
         base64_image = ''
         if row['Image Name'] != '' and row['Rejected'] is False and (row['Random Sample'] is True or row['Data Set Selection'] is True):
             try:  # catch missing image
-                urllib.request.urlretrieve(self.url_prefix + row['Image Name'], 'imgfile')
+                urllib.request.urlretrieve(url_prefix_archive + row['Image Name'], 'imgfile')
                 st.warning('grabbed url request, reteiving imgfile')
                 base64_image = self.jpg_to_svg_data_url('imgfile')
             except FileNotFoundError:
-                st.warning(f'Image not found at path: {self.url_prefix}{row["Image Name"]}')
+                st.warning(f'Image not found at path: {url_prefix_archive}{row["Image Name"]}')
             except Exception as e:
-                st.error(f'Exception occurred in fetch_thumbnail: {e} {self.url_prefix}{row["Image Name"]}')
+                st.error(f'Exception occurred in fetch_thumbnail: {e} {url_prefix_archive}{row["Image Name"]}')
         return f'<img src="data:image/png;base64,{base64_image}" width="50">'
 
     def training_data_management_2024_page(self) -> None:

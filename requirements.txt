@@ -6,3 +6,4 @@ pytz
 streamlit-aggrid
 matplotlib
 svglib
+pillow
