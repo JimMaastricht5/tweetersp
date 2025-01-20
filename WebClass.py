@@ -458,15 +458,16 @@ class WebPages:
             st.error(f'Error converting image to base64: {e}')
         return encoded_string
 
-    def fetch_thumbnail(self, image_name):
+    def fetch_thumbnail(self, row):
         base64_image = ''
-        try:  # catch missing image
-            urllib.request.urlretrieve(self.url_prefix + image_name, 'temp.jpg')
-            base64_image = self.image_to_base64('temp.jpg')
-        except FileNotFoundError:
-            st.warning(f'Image not found at path: {image_name}')
-        except Exception as e:
-            st.error(f'Error converting image to base64: {e}')
+        if row['Image Name'] != '' and row['Rejected'] is False and (row['Random Sample'] is True or row['Data Set Selection'] is True):
+            try:  # catch missing image
+                urllib.request.urlretrieve(self.url_prefix + row['Image Name'], 'temp.jpg')
+                base64_image = self.image_to_base64('temp.jpg')
+            except FileNotFoundError:
+                st.warning(f'Image not found at path: {row["Image Name"]}')
+            except Exception as e:
+                st.error(f'Error converting image to base64: {e}')
         return f'<img src="data:image/png;base64,{base64_image}" width="50">'
 
     def training_data_management_2024_page(self) -> None:
@@ -482,7 +483,7 @@ class WebPages:
             df_raw = df_raw.drop(['Image Number', 'Year', 'Month', 'Day', 'Hour'], axis=1)
             df_raw.index.name = 'Image Number'
             if 'Random Sample' not in df_raw.columns:
-                df_raw["Random Sample"] = False  # Initialize all checkboxes to False
+                df_raw['Random Sample'] = False  # Initialize all checkboxes to False
             if 'Data Set Selection' not in df_raw.columns:
                 df_raw['Data Set Selection'] = False  # Initialize all checkboxes to False
             if 'Rejected' not in df_raw.columns:
@@ -518,7 +519,7 @@ class WebPages:
 
         selected_species = st.selectbox('Select a Species', unique_species)
         df_filtered = filtered_df[filtered_df['Species'] == selected_species]
-        # df_filtered['_image_thumbnail'] = df_filtered['Image Name'].apply(self.fetch_thumbnail)
+        # df_filtered['_image_thumbnail'] = df_filtered.apply(self.fetch_thumbnail)
 
         # select random samples
         num_samples = int(st.slider("Select a sample size:", min_value=10, max_value=100, value=25, step=5))
@@ -552,7 +553,7 @@ class WebPages:
 
         # st.write(f'\n\nSpecies with more than 150 occurrences (likely true visitors): \n'
         #          f'\n{name_counts[name_counts > 150]}')
-        st.write(f'n\nSpecies with less than 150 occurrences (false positives): \n'
+        st.write(f'\n\nSpecies with less than 150 occurrences (false positives): \n'
                  f'{name_counts[name_counts <= 150]}')
 
         return
