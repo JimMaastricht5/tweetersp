@@ -485,7 +485,7 @@ class WebPages:
 
         # species selection
         selected_species = st.selectbox("Select a Species", unique_species)
-        filtered_df = filtered_df[filtered_df['Species'] == selected_species]
+        df_filtered = filtered_df[filtered_df['Species'] == selected_species]
 
         # random samples to select
         num_samples = int(st.slider("Select a sample size:", min_value=10, max_value=100, value=25, step=5))
@@ -493,11 +493,14 @@ class WebPages:
             df_sampled = df.sample(n=(num_samples if num_samples <= df.shape[0] else df.shape[0])).copy()
             if df_sampled is None:
                 st.error("Error during sampling. Please check the number of samples.")
+            else:
+                for index in df_sampled.index:
+                    df_filtered.loc[index, 'Random Sample'] = True
 
         # st.dataframe(data=df_display, use_container_width=True)
         # print(f'Possible False Positives: \n{name_counts[name_counts <= 150]}')
         # print(f'Remaining Species: \n{name_counts[name_counts > 150]}')
-        edited_df = st.data_editor(df_sampled, disabled=['Image Number', 'Species', 'DateTime', 'Image Name'])
+        edited_df = st.data_editor(df_filtered, disabled=['Image Number', 'Species', 'DateTime', 'Image Name'])
         return
 
     def about_page(self) -> None:
