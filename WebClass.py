@@ -449,9 +449,9 @@ class WebPages:
         return
 
     @staticmethod
-    def make_clickable_image(val, link):
-        """Makes an image clickable in a DataFrame."""
-        return f'<a href="{link}" target="_blank"><img src="{val}" width="100"></a>'  # adjust width as needed
+    def make_clickable(file_name, url_prefix='https://storage.googleapis.com/archive_jpg_from_birdclassifier/'):
+        """Makes a text value clickable in a DataFrame."""
+        return f'<a target="_blank" href="{url_prefix+file_name}">{file_name}</a>'
 
     @staticmethod
     def image_to_base64(image_path_or_bytes):
@@ -500,15 +500,15 @@ class WebPages:
         :return: svg data
         """
         svg_image = ''
-        if row['Image Name'] != '' and row['Rejected'] is False and (row['Random Sample'] is True or row['Data Set Selection'] is True):
-            try:  # catch missing image
-                urllib.request.urlretrieve(url_prefix + row['Image Name'], 'imgfile')
-                svg_image = self.jpg_to_svg_data_url('imgfile')
-            except FileNotFoundError:
-                st.warning(f'Image not found at path: {url_prefix}{row["Image Name"]}')
-            except Exception as e:
-                st.error(f'Exception occurred in fetch_thumbnail: {e} {url_prefix}{row["Image Name"]}')
-        return self.make_clickable_image(val=svg_image, link=url_prefix + row['Image Name'])
+        # if row['Image Name'] != '' and row['Rejected'] is False and (row['Random Sample'] is True or row['Data Set Selection'] is True):
+        try:  # catch missing image
+            urllib.request.urlretrieve(url_prefix + row['Image Name'], 'imgfile')
+            svg_image = self.jpg_to_svg_data_url('imgfile')
+        except FileNotFoundError:
+            st.warning(f'Image not found at path: {url_prefix}{row["Image Name"]}')
+        except Exception as e:
+            st.error(f'Exception occurred in fetch_thumbnail: {e} {url_prefix}{row["Image Name"]}')
+        return svg_image
 
     def training_data_management_2024_page(self) -> None:
         """
@@ -528,7 +528,9 @@ class WebPages:
                 df_raw['Data Set Selection'] = False  # Initialize all checkboxes to False
             if 'Rejected' not in df_raw.columns:
                 df_raw['Rejected'] = False # Initialize all checkboxes to False
-            df = df_raw[df_raw['DateTime'].dt.year == 2024].copy()  # .copy() avoids warnings about setting values on slice
+            df = df_raw[df_raw['DateTime'].dt.year == 2024].copy()  # .copy() avoids warnings setting values on slice
+            if 'Image Link' not in df_raw.columns:
+                df_raw['Image Link'] = df_raw['Image Name'].apply(self.make_clickable)
             st.session_state.df = df
         else:
             df = st.session_state.df
