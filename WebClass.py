@@ -460,6 +460,8 @@ class WebPages:
                 df_raw["Random Sample"] = False  # Initialize all checkboxes to False
             if 'Data Set Selection' not in df_raw.columns:
                 df_raw['Data Set Selection'] = False  # Initialize all checkboxes to False
+            if 'Rejected' not in df_raw.columns:
+                df_raw['Rejected'] = False # Initialize all checkboxes to False
             df = df_raw[df_raw['DateTime'].dt.year == 2024].copy()  # .copy() avoids warnings about setting values on slice
             st.session_state.df = df
         else:
@@ -478,22 +480,22 @@ class WebPages:
         # select date range for images and species for images (filtered)
         default_start_date = dtdate(2024, 1, 1)
         default_end_date = dtdate(2024, 12, 31)
-        start_date = st.date_input("Start Date", value=default_start_date)
-        end_date = st.date_input("End Date", value=default_end_date)
+        start_date = st.date_input('Start Date', value=default_start_date)
+        end_date = st.date_input('End Date', value=default_end_date)
         if start_date > end_date:
-            st.error("Start date must be before end date.")
+            st.error('Start date must be before end date.')
             filtered_df = df
         else:  # filter inclusive of last date
-            st.write(f"Selected date range: {start_date} to {end_date}")
+            st.write(f'Selected date range: {start_date} to {end_date}')
             filtered_df = df[(df['DateTime'] >= pd.to_datetime(start_date)) &
                              (df['DateTime'] <= pd.to_datetime(end_date) + pd.Timedelta(days=1))]
 
-        selected_species = st.selectbox("Select a Species", unique_species)
+        selected_species = st.selectbox('Select a Species', unique_species)
         df_filtered = filtered_df[filtered_df['Species'] == selected_species]
 
         # select random samples
         num_samples = int(st.slider("Select a sample size:", min_value=10, max_value=100, value=25, step=5))
-        if st.button("Generate Sample for Species"):  # The "Sample" button
+        if st.button(f'Generate Sample for {selected_species}'):  # The Sample button
             df_sampled = df_filtered.sample(n=(num_samples if num_samples <= df.shape[0] else df.shape[0])).copy()
             if df_sampled is None:
                 st.error("Error during sampling. Please check the number of samples.")
