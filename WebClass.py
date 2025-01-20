@@ -481,11 +481,14 @@ class WebPages:
         # display filtered df
         df_display = filtered_df.drop(['Image Number', 'Year', 'Month', 'Day', 'Hour'], axis=1)
         df_display.index.name = 'Image Number'
-        st.dataframe(data=df_display, use_container_width=True)
+        # st.dataframe(data=df_display, use_container_width=True)
         # print(f'Possible False Positives: \n{name_counts[name_counts <= 150]}')
         # print(f'Remaining Species: \n{name_counts[name_counts > 150]}')
 
-        edited_df = st.data_editor(df_display)
+        # Add the checkbox column if it doesn't exist
+        if "Selected" not in df_display.columns:
+            df_display["Selected"] = False  # Initialize all checkboxes to False
+        edited_df = st.data_editor(df_display, disabled=['Image Number', 'Species', 'DateTime', 'Image Name'])
         return
 
     def about_page(self) -> None:
