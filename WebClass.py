@@ -518,6 +518,7 @@ class WebPages:
         """
         # load data and format df
         if "df" not in st.session_state:
+            st.warning('creating session state')
             st.session_state.df = None
             df_raw = pd.read_csv('archive-jpg-list.csv')
             df_raw['DateTime'] = pd.to_datetime(df_raw['DateTime'], errors='raise')
