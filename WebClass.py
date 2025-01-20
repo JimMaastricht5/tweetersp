@@ -505,6 +505,9 @@ class WebPages:
         if st.checkbox("Order by 'Sample and Selection' (True first)"):  # Order the DataFrame based random sample
             df_filtered = df_filtered.sort_values(by=['Random Sample', 'Data Set Selection'], ascending=False)
 
+        st.write(f'Random selections: {df_filtered['Random Sample'].sum()}')
+        st.write(f'Selected for Dataset: {df_filtered['Data Set Selection'].sum()}')
+        st.write(f'Rejected: {df_filtered['Rejected'].sum()}')
         if "_image_thumbnail" in df_filtered.columns:  # Use write with raw HTML for the image column
             df_edited = st.data_editor(df_filtered, write_data=True,
                                        html=df_filtered['_image_thumbnail'].tolist(),
@@ -515,6 +518,7 @@ class WebPages:
         for index in df_edited.index:
             df.loc[index, 'Random Sample'] = df_edited.loc[index, 'Random Sample']
             df.loc[index, 'Data Set Selection'] = df_edited.loc[index, 'Data Set Selection']
+            df.loc[index, 'Rejected'] = df_edited.loc[index, 'Rejected']
         st.session_state.df = df
 
         # print(f'Possible False Positives: \n{name_counts[name_counts <= 150]}')
