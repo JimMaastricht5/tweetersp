@@ -508,7 +508,8 @@ class WebPages:
 
         st.write(f'Random selections: {df_filtered["Random Sample"].sum()}'
                  f'\tSelected for Dataset: {df_filtered["Data Set Selection"].sum()}'
-                 f'\tRejected: {df_filtered["Rejected"].sum()}')
+                 f'\tRejected: {df_filtered["Rejected"].sum()}'
+                 f'\tImage Count: {df_filtered.shape[0]}')
         if "_image_thumbnail" in df_filtered.columns:  # Use write with raw HTML for the image column
             df_edited = st.data_editor(df_filtered, write_data=True,
                                        html=df_filtered['_image_thumbnail'].tolist(),
@@ -522,8 +523,10 @@ class WebPages:
             df.loc[index, 'Rejected'] = df_edited.loc[index, 'Rejected']
         st.session_state.df = df
 
-        st.write(f'\nSpecies with more than 150 occurrences (likely true visitors): \n{name_counts[name_counts > 150]}')
-        st.write(f'\nSpecies with less than 150 occurrences (false positives): \n{name_counts[name_counts <= 150]}')
+        st.write(f'\nSpecies with more than 150 occurrences (likely true visitors): \n'
+                 f'\n{name_counts[name_counts > 150]}')
+        # st.write(f'\nSpecies with less than 150 occurrences (false positives): \n'
+        #          f'\n{name_counts[name_counts <= 150]}')
 
         return
 
