@@ -500,12 +500,12 @@ class WebPages:
         base64_image = ''
         if row['Image Name'] != '' and row['Rejected'] is False and (row['Random Sample'] is True or row['Data Set Selection'] is True):
             try:  # catch missing image
-                urllib.request.urlretrieve(self.url_prefix + row['Image Name'], 'temp.jpg')
-                base64_image = self.jpg_to_svg_data_url('temp.jpg')
+                urllib.request.urlretrieve(self.url_prefix + row['Image Name'], 'imgfile')
+                base64_image = self.jpg_to_svg_data_url('imgfile')
             except FileNotFoundError:
-                st.warning(f'Image not found at path: {row["Image Name"]}')
+                st.warning(f'Image not found at path: {self.url_prefix}{row["Image Name"]}')
             except Exception as e:
-                st.error(f'Exception occurred in fetch_thumbnail: {e} {row["Image Name"]}')
+                st.error(f'Exception occurred in fetch_thumbnail: {e} {self.url_prefix}{row["Image Name"]}')
         return f'<img src="data:image/png;base64,{base64_image}" width="50">'
 
     def training_data_management_2024_page(self) -> None:
