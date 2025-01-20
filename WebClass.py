@@ -500,14 +500,14 @@ class WebPages:
         :return: svg data
         """
         svg_image = ''
-        # if row['Image Name'] != '' and row['Rejected'] is False and (row['Random Sample'] is True or row['Data Set Selection'] is True):
-        try:  # catch missing image
-            urllib.request.urlretrieve(url_prefix + row['Image Name'], 'imgfile')
-            svg_image = self.jpg_to_svg_data_url('imgfile')
-        except FileNotFoundError:
-            st.warning(f'Image not found at path: {url_prefix}{row["Image Name"]}')
-        except Exception as e:
-            st.error(f'Exception occurred in fetch_thumbnail: {e} {url_prefix}{row["Image Name"]}')
+        if row['Image Name'] != '' and row['Rejected'] is False and (row['Random Sample'] is True or row['Data Set Selection'] is True):
+            try:  # catch missing image
+                urllib.request.urlretrieve(url_prefix + row['Image Name'], 'imgfile')
+                svg_image = self.jpg_to_svg_data_url('imgfile')
+            except FileNotFoundError:
+                st.warning(f'Image not found at path: {url_prefix}{row["Image Name"]}')
+            except Exception as e:
+                st.error(f'Exception occurred in fetch_thumbnail: {e} {url_prefix}{row["Image Name"]}')
         return svg_image
 
     def training_data_management_2024_page(self) -> None:
@@ -579,13 +579,14 @@ class WebPages:
                  f'\tSelected for Dataset: {df_filtered["Data Set Selection"].sum()}'
                  f'\tRejected: {df_filtered["Rejected"].sum()}'
                  f'\tImage Count: {df_filtered.shape[0]}')
-        if '_image_thumbnail' in df_filtered.columns:  # Use write with raw HTML for the image column
-            column_config = {'_image_thumbnail': st.column_config.ImageColumn('Preview Image', width='medium')}
-            df_edited = st.data_editor(df_filtered, column_config=column_config,
-                                       disabled=['Image Number', 'Species', 'DateTime', 'Image Name',
-                                                 '_image_thumbnail', 'Image Link'])
-        else:
-            df_edited = st.data_editor(df_filtered, disabled=['Image Number', 'Species', 'DateTime', 'Image Name'])
+        # if '_image_thumbnail' in df_filtered.columns:  # Use write with raw HTML for the image column
+        column_config = {'_image_thumbnail': st.column_config.ImageColumn('Preview Image', width='medium'),
+                         'Image Link': st.column_config.LinkColumn()}
+        df_edited = st.data_editor(df_filtered, column_config=column_config,
+                                   disabled=['Image Number', 'Species', 'DateTime', 'Image Name',
+                                             '_image_thumbnail', 'Image Link'])
+        # else:
+        #     df_edited = st.data_editor(df_filtered, disabled=['Image Number', 'Species', 'DateTime', 'Image Name', 'Image Link'])
 
         for index in df_edited.index:
             df.loc[index, 'Random Sample'] = df_edited.loc[index, 'Random Sample']
