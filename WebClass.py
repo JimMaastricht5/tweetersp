@@ -477,7 +477,6 @@ class WebPages:
             else:
                 img = Image.open(jpg_path_or_bytes).convert("RGB")
             width, height = img.size
-            st.warning(f'width height {width} {height}')
             svg_io = io.StringIO()  # Create a temporary SVG file in memory
             svg_io.write(f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}">')
             svg_io.write(f'<image href="data:image/jpeg;base64,{self.image_to_base64(jpg_path_or_bytes)}" width="{width}" height="{height}" />')
@@ -486,9 +485,7 @@ class WebPages:
             svg_data_url = f"data:image/svg+xml;utf8,{svg_string}"
         except Exception as e:
             st.error(f"Error converting JPG to SVG: {e}")
-        # st.warning(svg_data_url)
-        # return svg_data_url
-        return svg_string  # base 64 bare for testing
+        return svg_data_url
 
     def fetch_thumbnail(self, row, url_prefix='https://storage.googleapis.com/archive_jpg_from_birdclassifier/'):
         """
