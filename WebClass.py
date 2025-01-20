@@ -485,6 +485,7 @@ class WebPages:
         # print(f'Possible False Positives: \n{name_counts[name_counts <= 150]}')
         # print(f'Remaining Species: \n{name_counts[name_counts > 150]}')
 
+        edited_df = st.data_editor(df_display)
         return
 
     def about_page(self) -> None:
