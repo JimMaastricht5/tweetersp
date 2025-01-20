@@ -539,7 +539,8 @@ class WebPages:
         if '_image_thumbnail' in df_filtered.columns:  # Use write with raw HTML for the image column
             df_edited = st.data_editor(df_filtered, write_data=True,
                                        html=df_filtered['_image_thumbnail'].tolist(),
-                                       disabled=['Image Number', 'Species', 'DateTime', 'Image Name'])
+                                       disabled=['Image Number', 'Species', 'DateTime', 'Image Name',
+                                                 '_image_thumbnail'])
         else:
             df_edited = st.data_editor(df_filtered, disabled=['Image Number', 'Species', 'DateTime', 'Image Name'])
 
