@@ -458,7 +458,7 @@ class WebPages:
         except FileNotFoundError:
             st.warning(f'Image not found at path: {image_path}')
         except Exception as e:
-            st.error(f'Error converting image to base64: {e}')
+            st.error(f'Error converting image to base64: {e} for {image_path}')
         return encoded_string
 
     def jpg_to_svg_data_url(self, jpg_path_or_bytes):
@@ -503,7 +503,7 @@ class WebPages:
             except FileNotFoundError:
                 st.warning(f'Image not found at path: {row["Image Name"]}')
             except Exception as e:
-                st.error(f'Error converting image to base64: {e}')
+                st.error(f'Exception occurred in fetch_thumbnail: {e} {row["Image Name"]}')
         return f'<img src="data:image/png;base64,{base64_image}" width="50">'
 
     def training_data_management_2024_page(self) -> None:
