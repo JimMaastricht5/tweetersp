@@ -526,7 +526,7 @@ class WebPages:
                  f'Images can be excluded from the sample if they are not high quality.')
 
         # load data and format df
-        if "df" not in st.session_state:
+        if "df" not in st.session_state or st.session_state.df is None:
             st.warning('Setting session state')
             st.session_state.df = None
             df_raw = pd.read_csv('archive-jpg-list.csv')
@@ -598,7 +598,6 @@ class WebPages:
         st.session_state.df = df
         if st.button('Reload Data'):
             st.session_state.df = None
-            st.experimental_rerun()
         # st.write(f'\n\nSpecies with more than 150 occurrences (likely true visitors): \n'
         #          f'\n{name_counts[name_counts > 150]}')
         st.write(f'\n\nSpecies with less than 150 occurrences (false positives): \n'
