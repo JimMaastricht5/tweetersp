@@ -486,8 +486,10 @@ class WebPages:
         # print(f'Remaining Species: \n{name_counts[name_counts > 150]}')
 
         # Add the checkbox column if it doesn't exist
-        if "Selected" not in df_display.columns:
-            df_display["Selected"] = False  # Initialize all checkboxes to False
+        if "Random Sample" not in df_display.columns:
+            df_display["Random Sample"] = False  # Initialize all checkboxes to False
+        if "Data Set Selection":
+            df_display["Data Set Selection"] = False  # Initialize all checkboxes to False
         edited_df = st.data_editor(df_display, disabled=['Image Number', 'Species', 'DateTime', 'Image Name'])
         return
 
