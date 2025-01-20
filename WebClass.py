@@ -450,6 +450,9 @@ class WebPages:
         :return: None
         """
         # load data and format df
+        if "df" not in st.session_state:
+            st.session_state.df = None
+
         df_raw = pd.read_csv('archive-jpg-list.csv')
         df_raw['DateTime'] = pd.to_datetime(df_raw['DateTime'], errors='raise')
         df_raw = df_raw.drop(['Image Number', 'Year', 'Month', 'Day', 'Hour'], axis=1)
@@ -460,6 +463,7 @@ class WebPages:
             df_raw["Data Set Selection"] = False  # Initialize all checkboxes to False
         df = df_raw[df_raw['DateTime'].dt.year == 2024].copy()  # .copy() avoids warnings about setting values on slice
         unique_species = df['Species'].unique().tolist()
+        st.session_state.df = df
 
         # ****************** format page ********************
         st.set_page_config(layout="wide")
@@ -501,6 +505,7 @@ class WebPages:
         # print(f'Possible False Positives: \n{name_counts[name_counts <= 150]}')
         # print(f'Remaining Species: \n{name_counts[name_counts > 150]}')
         edited_df = st.data_editor(df_filtered, disabled=['Image Number', 'Species', 'DateTime', 'Image Name'])
+        st.session_state.df = edited_df
         return
 
     def about_page(self) -> None:
