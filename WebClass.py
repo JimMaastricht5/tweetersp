@@ -486,8 +486,9 @@ class WebPages:
             svg_data_url = f"data:image/svg+xml;utf8,{svg_string}"
         except Exception as e:
             st.error(f"Error converting JPG to SVG: {e}")
-        st.warning(svg_data_url)
-        return svg_data_url
+        # st.warning(svg_data_url)
+        # return svg_data_url
+        return svg_string  # base 64 bare for testing
 
     def fetch_thumbnail(self, row, url_prefix='https://storage.googleapis.com/archive_jpg_from_birdclassifier/'):
         """
@@ -575,7 +576,7 @@ class WebPages:
                  f'\tRejected: {df_filtered["Rejected"].sum()}'
                  f'\tImage Count: {df_filtered.shape[0]}')
         if '_image_thumbnail' in df_filtered.columns:  # Use write with raw HTML for the image column
-            column_config = {'_image_thumbnail': st.column_config.ImageColumn('Preview Image', width='large')}
+            column_config = {'_image_thumbnail': st.column_config.ImageColumn('Preview Image', width='medium')}
             df_edited = st.data_editor(df_filtered, column_config=column_config,
                                        disabled=['Image Number', 'Species', 'DateTime', 'Image Name',
                                                  '_image_thumbnail'])
