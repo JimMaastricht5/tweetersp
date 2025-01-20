@@ -503,7 +503,13 @@ class WebPages:
         if st.checkbox("Order by 'Sample and Selection' (True first)"):  # Order the DataFrame based random sample
             df_filtered = df_filtered.sort_values(by=['Random Sample', 'Data Set Selection'], ascending=False)
 
-        df_edited = st.data_editor(df_filtered, disabled=['Image Number', 'Species', 'DateTime', 'Image Name'])
+        if "_image_thumbnail" in df_filtered.columns:  # Use write with raw HTML for the image column
+            df_edited = st.data_editor(df_filtered, write_data=True,
+                                       html=df_filtered['_image_thumbnail'].tolist(),
+                                       disabled=['Image Number', 'Species', 'DateTime', 'Image Name'])
+        else:
+            df_edited = st.data_editor(df_filtered, disabled=['Image Number', 'Species', 'DateTime', 'Image Name'])
+
         for index in df_edited.index:
             df.loc[index, 'Random Sample'] = df_edited.loc[index, 'Random Sample']
             df.loc[index, 'Data Set Selection'] = df_edited.loc[index, 'Data Set Selection']
