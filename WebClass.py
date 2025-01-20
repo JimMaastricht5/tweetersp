@@ -502,12 +502,12 @@ class WebPages:
             else:
                 for index in df_sampled.index:
                     df_filtered.loc[index, 'Random Sample'] = True
-        if st.checkbox("Order by 'Sample and Selection' (True first)"):  # Order the DataFrame based random sample
+        if st.checkbox("Order by 'Sample and Selection' (True first)", value=True):  # Order the DataFrame based random sample
             df_filtered = df_filtered.sort_values(by=['Random Sample', 'Data Set Selection'], ascending=False)
 
-        st.write(f'Random selections: {df_filtered["Random Sample"].sum()}')
-        st.write(f'Selected for Dataset: {df_filtered["Data Set Selection"].sum()}')
-        st.write(f'Rejected: {df_filtered["Rejected"].sum()}')
+        st.write(f'Random selections: {df_filtered["Random Sample"].sum()  }'
+                 f'Selected for Dataset: {df_filtered["Data Set Selection"].sum()  }'
+                 f'Rejected: {df_filtered["Rejected"].sum()}  ')
         if "_image_thumbnail" in df_filtered.columns:  # Use write with raw HTML for the image column
             df_edited = st.data_editor(df_filtered, write_data=True,
                                        html=df_filtered['_image_thumbnail'].tolist(),
