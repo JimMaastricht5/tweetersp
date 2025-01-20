@@ -467,7 +467,7 @@ class WebPages:
         else:
             df = st.session_state.df
         unique_species = df['Species'].unique().tolist()
-        name_counts = df['Name'].value_counts()
+        name_counts = df['Species'].value_counts()
 
         # ****************** format page ********************
         st.set_page_config(layout="wide")
