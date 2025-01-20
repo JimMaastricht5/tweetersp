@@ -496,11 +496,10 @@ class WebPages:
 
     def fetch_thumbnail(self, row):
         base64_image = ''
-        st.warning(row)
         if row['Image Name'] != '' and row['Rejected'] is False and (row['Random Sample'] is True or row['Data Set Selection'] is True):
             try:  # catch missing image
                 urllib.request.urlretrieve(self.url_prefix + row['Image Name'], 'temp.jpg')
-                base64_image = self.image_to_base64('temp.jpg')
+                base64_image = self.jpg_to_svg_data_url('temp.jpg')
             except FileNotFoundError:
                 st.warning(f'Image not found at path: {row["Image Name"]}')
             except Exception as e:
