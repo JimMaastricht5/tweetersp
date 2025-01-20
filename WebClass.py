@@ -465,22 +465,16 @@ class WebPages:
 
     def jpg_to_svg_data_url(self, jpg_path_or_bytes):
         """Converts a JPG image to an SVG data URL.
-
-        Args:
-            jpg_path_or_bytes: Path to the JPG file or bytes of the JPG image.
-
-        Returns:
-            An SVG data URL string, or None if an error occurs.
+        Args: jpg_path_or_bytes: Path to the JPG file or bytes of the JPG image
+        Returns: An SVG data URL string, or None if an error occurs.
         """
         try:
             if isinstance(jpg_path_or_bytes, bytes):
                 img = Image.open(io.BytesIO(jpg_path_or_bytes)).convert("RGB")
             else:
                 img = Image.open(jpg_path_or_bytes).convert("RGB")
-
             # Create a temporary SVG file in memory
             svg_io = io.StringIO()
-
             # Create a simple SVG representation (using a rectangle as a placeholder)
             width, height = img.size
             svg_io.write(f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}">')
@@ -498,17 +492,16 @@ class WebPages:
 
     def fetch_thumbnail(self, row):
         url_prefix_archive = 'https://storage.googleapis.com/archive_jpg_from_birdclassifier/'
-        base64_image = ''
+        svg_image = ''
         if row['Image Name'] != '' and row['Rejected'] is False and (row['Random Sample'] is True or row['Data Set Selection'] is True):
             try:  # catch missing image
                 urllib.request.urlretrieve(url_prefix_archive + row['Image Name'], 'imgfile')
-                st.warning('grabbed url request, reteiving imgfile')
-                base64_image = self.jpg_to_svg_data_url('imgfile')
+                svg_image = self.jpg_to_svg_data_url('imgfile')
             except FileNotFoundError:
                 st.warning(f'Image not found at path: {url_prefix_archive}{row["Image Name"]}')
             except Exception as e:
                 st.error(f'Exception occurred in fetch_thumbnail: {e} {url_prefix_archive}{row["Image Name"]}')
-        return f'<img src="data:image/png;base64,{base64_image}" width="50">'
+        return svg_image
 
     def training_data_management_2024_page(self) -> None:
         """
