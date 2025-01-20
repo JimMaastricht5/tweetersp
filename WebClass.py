@@ -444,21 +444,26 @@ class WebPages:
         self.publish_first_image()  # just want one image
         return
 
-    def image_analysis_2024_page(self) -> None:
+    def training_data_management_2024_page(self) -> None:
         """
         load 2024 data and allow for visual analysis
         :return: None
         """
-        # load data
-        df_file_name = 'archive-jpg-list.csv'
-        df_raw = pd.read_csv(df_file_name)
+        # load data and format df
+        df_raw = pd.read_csv('archive-jpg-list.csv')
         df_raw['DateTime'] = pd.to_datetime(df_raw['DateTime'], errors='raise')
+        if "Random Sample" not in df_raw.columns:
+            df_raw["Random Sample"] = False  # Initialize all checkboxes to False
+        if "Data Set Selection" not in df_raw.columns:
+            df_raw["Data Set Selection"] = False  # Initialize all checkboxes to False
         df = df_raw[df_raw['DateTime'].dt.year == 2024].copy()  # .copy() avoids warnings about setting values on slice
 
         # ****************** format page ********************
         st.set_page_config(layout="wide")
-        st.header('Species Classified: 2024')
-        st.write(f'Historical analysis of {df.shape[0]} bird classifications by the Madison feeder in 2024.')
+        st.header('Data Management for Species Classification Training')
+        st.write(f'Manage the data used by the classification training jobs. '
+                 f'The {df.shape[0]} images are from 2024 bird classifications using pre-built ElasticNet model.'
+                 f'The image data will be used to train a new custom model')
 
         # select date range for images
         default_start_date = dtdate(2024, 1, 1)
@@ -473,6 +478,16 @@ class WebPages:
             filtered_df = df[(df['DateTime'] >= pd.to_datetime(start_date)) &
                              (df['DateTime'] <= pd.to_datetime(end_date) + pd.Timedelta(days=1))]
 
+        # random samples to select
+        num_samples = int(st.slider("Select a number between 10 and 100:", min_value=10, max_value=100, value=25, step=5))
+        if st.button("Generate Sample"):  # The "Sample" button
+            sampled_df = df.sample(n=(num_samples if num_samples <= df.shape[0] else df.shape[0])).copy()
+            if sampled_df is not None:
+                st.write("Sampled DataFrame:")
+                st.dataframe(sampled_df)
+            else:
+                st.error("Error during sampling. Please check the number of samples.")
+
         # species selection
         unique_species = df['Species'].unique().tolist()
         selected_species = st.selectbox("Select a Species", unique_species)
@@ -485,11 +500,7 @@ class WebPages:
         # print(f'Possible False Positives: \n{name_counts[name_counts <= 150]}')
         # print(f'Remaining Species: \n{name_counts[name_counts > 150]}')
 
-        # Add the checkbox column if it doesn't exist
-        if "Random Sample" not in df_display.columns:
-            df_display["Random Sample"] = False  # Initialize all checkboxes to False
-        if "Data Set Selection":
-            df_display["Data Set Selection"] = False  # Initialize all checkboxes to False
+
         edited_df = st.data_editor(df_display, disabled=['Image Number', 'Species', 'DateTime', 'Image Name'])
         return
 
