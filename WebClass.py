@@ -36,6 +36,9 @@ import plotly.express as px
 from plotly.express import colors
 import matplotlib.colors as mcolors
 import base64
+# from svglib.svglib import svg2rlg
+from PIL import Image
+import io
 
 # list of birds to exclude that prior model displayed and are not valid results
 FILTER_BIRD_NAMES = ['Rock Pigeon', 'Pine Grosbeak', 'Indigo Bunting', 'Eurasian Collared-Dove',
@@ -458,19 +461,51 @@ class WebPages:
             st.error(f'Error converting image to base64: {e}')
         return encoded_string
 
+    def jpg_to_svg_data_url(self, jpg_path_or_bytes):
+        """Converts a JPG image to an SVG data URL.
+
+        Args:
+            jpg_path_or_bytes: Path to the JPG file or bytes of the JPG image.
+
+        Returns:
+            An SVG data URL string, or None if an error occurs.
+        """
+        try:
+            if isinstance(jpg_path_or_bytes, bytes):
+                img = Image.open(io.BytesIO(jpg_path_or_bytes)).convert("RGB")
+            else:
+                img = Image.open(jpg_path_or_bytes).convert("RGB")
+
+            # Create a temporary SVG file in memory
+            svg_io = io.StringIO()
+
+            # Create a simple SVG representation (using a rectangle as a placeholder)
+            width, height = img.size
+            svg_io.write(f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}">')
+            svg_io.write(
+                f'<image href="data:image/jpeg;base64,{self.image_to_base64(jpg_path_or_bytes)}" width="{width}" height="{height}" />')
+            svg_io.write('</svg>')
+
+            svg_string = svg_io.getvalue()
+            svg_data_url = f"data:image/svg+xml;utf8,{svg_string}"
+            return svg_data_url
+
+        except Exception as e:
+            st.error(f"Error converting JPG to SVG: {e}")
+            return None
+
     def fetch_thumbnail(self, row):
         base64_image = ''
-        # st.warning(row)
-        # if row['Image Name'] != '' and row['Rejected'] is False and (row['Random Sample'] is True or row['Data Set Selection'] is True):
-        #     try:  # catch missing image
-        #         urllib.request.urlretrieve(self.url_prefix + row['Image Name'], 'temp.jpg')
-        #         base64_image = self.image_to_base64('temp.jpg')
-        #     except FileNotFoundError:
-        #         st.warning(f'Image not found at path: {row["Image Name"]}')
-        #     except Exception as e:
-        #         st.error(f'Error converting image to base64: {e}')
-        # return f'<img src="data:image/png;base64,{base64_image}" width="50">'
-        return self.url_prefix + row['Image Name']
+        st.warning(row)
+        if row['Image Name'] != '' and row['Rejected'] is False and (row['Random Sample'] is True or row['Data Set Selection'] is True):
+            try:  # catch missing image
+                urllib.request.urlretrieve(self.url_prefix + row['Image Name'], 'temp.jpg')
+                base64_image = self.image_to_base64('temp.jpg')
+            except FileNotFoundError:
+                st.warning(f'Image not found at path: {row["Image Name"]}')
+            except Exception as e:
+                st.error(f'Error converting image to base64: {e}')
+        return f'<img src="data:image/png;base64,{base64_image}" width="50">'
 
     def training_data_management_2024_page(self) -> None:
         """
