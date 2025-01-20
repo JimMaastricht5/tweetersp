@@ -461,9 +461,11 @@ class WebPages:
         # ****************** format page ********************
         st.set_page_config(layout="wide")
         st.header('Data Management for Species Classification Training')
-        st.write(f'Manage the data used by the classification training jobs. '
-                 f'The {df.shape[0]} images are from 2024 bird classifications using pre-built ElasticNet model.'
-                 f'The image data will be used to train a new custom model')
+        st.write(f'The bird feeder currently uses a pre-built ElasticNet model.  That model classified '
+                 f'{df.shape[0]} images in 2024 bird. The classifications performed then will provide the '
+                 f'image data to train a new custom model. \n\n  This page allows for the random samples to be '
+                 f'generated for the training data set.  '
+                 f'Images can be excluded from the sample if they are not high quality.')
 
         # select date range for images
         default_start_date = dtdate(2024, 1, 1)
