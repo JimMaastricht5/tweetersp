@@ -461,15 +461,16 @@ class WebPages:
     def fetch_thumbnail(self, row):
         base64_image = ''
         # st.warning(row)
-        if row['Image Name'] != '' and row['Rejected'] is False and (row['Random Sample'] is True or row['Data Set Selection'] is True):
-            try:  # catch missing image
-                urllib.request.urlretrieve(self.url_prefix + row['Image Name'], 'temp.jpg')
-                base64_image = self.image_to_base64('temp.jpg')
-            except FileNotFoundError:
-                st.warning(f'Image not found at path: {row["Image Name"]}')
-            except Exception as e:
-                st.error(f'Error converting image to base64: {e}')
-        return f'<img src="data:image/png;base64,{base64_image}" width="50">'
+        # if row['Image Name'] != '' and row['Rejected'] is False and (row['Random Sample'] is True or row['Data Set Selection'] is True):
+        #     try:  # catch missing image
+        #         urllib.request.urlretrieve(self.url_prefix + row['Image Name'], 'temp.jpg')
+        #         base64_image = self.image_to_base64('temp.jpg')
+        #     except FileNotFoundError:
+        #         st.warning(f'Image not found at path: {row["Image Name"]}')
+        #     except Exception as e:
+        #         st.error(f'Error converting image to base64: {e}')
+        # return f'<img src="data:image/png;base64,{base64_image}" width="50">'
+        return self.url_prefix + row['Image Name']
 
     def training_data_management_2024_page(self) -> None:
         """
