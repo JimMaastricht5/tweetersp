@@ -501,14 +501,14 @@ class WebPages:
         :return: svg data
         """
         svg_image = ''
-        if row['Image Name'] != '' and row['Rejected'] is False and (row['Random Sample'] is True or row['Data Set Selection'] is True):
-            try:  # catch missing image
-                urllib.request.urlretrieve(url_prefix + row['Image Name'], 'imgfile')
-                svg_image = self.jpg_to_svg_data_url('imgfile')
-            except FileNotFoundError:
-                st.warning(f'Image not found at path: {url_prefix}{row["Image Name"]}')
-            except Exception as e:
-                st.error(f'Exception occurred in fetch_thumbnail: {e} {url_prefix}{row["Image Name"]}')
+        # if row['Image Name'] != '' and row['Rejected'] is False and (row['Random Sample'] is True or row['Data Set Selection'] is True):
+        try:  # catch missing image
+            urllib.request.urlretrieve(url_prefix + row['Image Name'], 'imgfile')
+            svg_image = self.jpg_to_svg_data_url('imgfile')
+        except FileNotFoundError:
+            st.warning(f'Image not found at path: {url_prefix}{row["Image Name"]}')
+        except Exception as e:
+            st.error(f'Exception occurred in fetch_thumbnail: {e} {url_prefix}{row["Image Name"]}')
         return svg_image
 
     def training_data_management_2024_page(self) -> None:
@@ -530,6 +530,9 @@ class WebPages:
             if 'Rejected' not in df_raw.columns:
                 df_raw['Rejected'] = False # Initialize all checkboxes to False
             df = df_raw[df_raw['DateTime'].dt.year == 2024].copy()  # .copy() avoids warnings setting values on slice
+            df_raw['Image Link'] = self.url_prefix_archive + df_raw['Image Name']
+            df_raw['_image_thumbnail'] = ''
+            # df_raw['_image_thumbnail'] = df_filtered.apply(self.fetch_thumbnail, axis=1)
             st.session_state.df = df
         else:
             df = st.session_state.df
@@ -560,9 +563,6 @@ class WebPages:
 
         selected_species = st.selectbox('Select a Species', unique_species)
         df_filtered = filtered_df[filtered_df['Species'] == selected_species]
-        df_filtered['Image Link'] = self.url_prefix_archive + df_filtered['Image Name']
-        df_filtered['_image_thumbnail'] = ''
-        # df_filtered['_image_thumbnail'] = df_filtered.apply(self.fetch_thumbnail, axis=1)
 
         # select random samples
         num_samples = int(st.slider("Select a sample size:", min_value=10, max_value=100, value=25, step=5))
