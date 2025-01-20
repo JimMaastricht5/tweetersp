@@ -35,6 +35,7 @@ import pytz
 import plotly.express as px
 from plotly.express import colors
 import matplotlib.colors as mcolors
+import base64
 
 # list of birds to exclude that prior model displayed and are not valid results
 FILTER_BIRD_NAMES = ['Rock Pigeon', 'Pine Grosbeak', 'Indigo Bunting', 'Eurasian Collared-Dove',
@@ -444,6 +445,28 @@ class WebPages:
         self.publish_first_image()  # just want one image
         return
 
+    @staticmethod
+    def image_to_base64(image_path):
+        """Converts an image to a base64 encoded string."""
+        encoded_string = ''
+        try:
+            with open(image_path, 'rb') as image_file:
+                encoded_string = base64.b64encode(image_file.read()).decode()
+        except FileNotFoundError:
+            st.warning(f'Image not found at path: {image_path}')
+        except Exception as e:
+            st.error(f'Error converting image to base64: {e}')
+        return encoded_string
+
+    def fetch_thumbnail(self, image_name):
+        base64_image = ''
+        try:  # catch missing image
+            urllib.request.urlretrieve(self.url_prefix + image_name, 'temp.jpg')
+            base64_image = self.image_to_base64('temp.jpg')
+        except FileNotFoundError:  # missing file
+            print(f'File not found {image_name}')
+        return f'<img src="data:image/png;base64,{base64_image}" width="50">'
+
     def training_data_management_2024_page(self) -> None:
         """
         load 2024 data and allow for management of training data
@@ -493,6 +516,7 @@ class WebPages:
 
         selected_species = st.selectbox('Select a Species', unique_species)
         df_filtered = filtered_df[filtered_df['Species'] == selected_species]
+        df_filtered['_image_thumbnail'] = df_filtered['Image Name'].apply(self.fetch_thumbnail)
 
         # select random samples
         num_samples = int(st.slider("Select a sample size:", min_value=10, max_value=100, value=25, step=5))
@@ -510,7 +534,7 @@ class WebPages:
                  f'\tSelected for Dataset: {df_filtered["Data Set Selection"].sum()}'
                  f'\tRejected: {df_filtered["Rejected"].sum()}'
                  f'\tImage Count: {df_filtered.shape[0]}')
-        if "_image_thumbnail" in df_filtered.columns:  # Use write with raw HTML for the image column
+        if '_image_thumbnail' in df_filtered.columns:  # Use write with raw HTML for the image column
             df_edited = st.data_editor(df_filtered, write_data=True,
                                        html=df_filtered['_image_thumbnail'].tolist(),
                                        disabled=['Image Number', 'Species', 'DateTime', 'Image Name'])
@@ -523,10 +547,10 @@ class WebPages:
             df.loc[index, 'Rejected'] = df_edited.loc[index, 'Rejected']
         st.session_state.df = df
 
-        st.write(f'\nSpecies with more than 150 occurrences (likely true visitors): \n'
-                 f'\n{name_counts[name_counts > 150]}')
-        # st.write(f'\nSpecies with less than 150 occurrences (false positives): \n'
-        #          f'\n{name_counts[name_counts <= 150]}')
+        # st.write(f'\n\nSpecies with more than 150 occurrences (likely true visitors): \n'
+        #          f'\n{name_counts[name_counts > 150]}')
+        st.write(f'n\nSpecies with less than 150 occurrences (false positives): \n'
+                 f'{name_counts[name_counts <= 150]}')
 
         return
 
