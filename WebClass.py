@@ -500,6 +500,8 @@ class WebPages:
             else:
                 for index in df_sampled.index:
                     df_filtered.loc[index, 'Random Sample'] = True
+        if st.checkbox("Order by 'Random Sample' (True first)"):  # Order the DataFrame based random sample
+            df_filtered = df_filtered.sort_values(by='Random Sample', ascending=False)
 
         df_edited = st.data_editor(df_filtered, disabled=['Image Number', 'Species', 'DateTime', 'Image Name'])
         for index in df_edited.index:
