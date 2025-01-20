@@ -535,6 +535,7 @@ class WebPages:
             # df_raw['_image_thumbnail'] = df_filtered.apply(self.fetch_thumbnail, axis=1)
             st.session_state.df = df
         else:
+            st.warning('using session state')
             df = st.session_state.df
         unique_species = df['Species'].unique().tolist()
         name_counts = df['Species'].value_counts()
