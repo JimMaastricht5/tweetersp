@@ -467,6 +467,7 @@ class WebPages:
         else:
             df = st.session_state.df
         unique_species = df['Species'].unique().tolist()
+        name_counts = df['Name'].value_counts()
 
         # ****************** format page ********************
         st.set_page_config(layout="wide")
@@ -505,9 +506,9 @@ class WebPages:
         if st.checkbox("Order by 'Sample and Selection' (True first)", value=True):  # Order the DataFrame based random sample
             df_filtered = df_filtered.sort_values(by=['Random Sample', 'Data Set Selection'], ascending=False)
 
-        st.write(f'Random selections: {df_filtered["Random Sample"].sum()  }'
-                 f'Selected for Dataset: {df_filtered["Data Set Selection"].sum()  }'
-                 f'Rejected: {df_filtered["Rejected"].sum()}  ')
+        st.write(f'Random selections: {df_filtered["Random Sample"].sum()}'
+                 f'\tSelected for Dataset: {df_filtered["Data Set Selection"].sum()}'
+                 f'\tRejected: {df_filtered["Rejected"].sum()}')
         if "_image_thumbnail" in df_filtered.columns:  # Use write with raw HTML for the image column
             df_edited = st.data_editor(df_filtered, write_data=True,
                                        html=df_filtered['_image_thumbnail'].tolist(),
@@ -521,8 +522,9 @@ class WebPages:
             df.loc[index, 'Rejected'] = df_edited.loc[index, 'Rejected']
         st.session_state.df = df
 
-        # print(f'Possible False Positives: \n{name_counts[name_counts <= 150]}')
-        # print(f'Remaining Species: \n{name_counts[name_counts > 150]}')
+        st.write(f'\nSpecies with more than 150 occurrences (likely true visitors): \n{name_counts[name_counts > 150]}')
+        st.write(f'\nSpecies with less than 150 occurrences (false positives): \n{name_counts[name_counts <= 150]}')
+
         return
 
     def about_page(self) -> None:
