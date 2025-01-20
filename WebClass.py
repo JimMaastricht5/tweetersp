@@ -490,7 +490,7 @@ class WebPages:
         # random samples to select
         num_samples = int(st.slider("Select a sample size:", min_value=10, max_value=100, value=25, step=5))
         if st.button("Generate Sample for Species"):  # The "Sample" button
-            df_sampled = df.sample(n=(num_samples if num_samples <= df.shape[0] else df.shape[0])).copy()
+            df_sampled = df_filtered.sample(n=(num_samples if num_samples <= df.shape[0] else df.shape[0])).copy()
             if df_sampled is None:
                 st.error("Error during sampling. Please check the number of samples.")
             else:
