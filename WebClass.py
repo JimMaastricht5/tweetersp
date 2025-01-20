@@ -476,7 +476,7 @@ class WebPages:
         # species selection
         unique_species = df['Species'].unique().tolist()
         selected_species = st.selectbox("Select a Species", unique_species)
-        filtered_df = df[df['Species'] == selected_species]
+        filtered_df = filtered_df[filtered_df['Species'] == selected_species]
 
         # display filtered df
         df_display = filtered_df.drop(['Image Number', 'Year', 'Month', 'Day', 'Hour'], axis=1)
