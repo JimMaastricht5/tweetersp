@@ -449,16 +449,18 @@ class WebPages:
         return
 
     @staticmethod
-    def image_to_base64(image_path):
+    def image_to_base64(image_path_or_bytes):
         """Converts an image to a base64 encoded string."""
         encoded_string = ''
         try:
-            with open(image_path, 'rb') as image_file:
+            if isinstance(image_path_or_bytes, bytes):
+                encoded_string = base64.b64encode(image_path_or_bytes).decode()
+            with open(image_path_or_bytes, 'rb') as image_file:
                 encoded_string = base64.b64encode(image_file.read()).decode()
         except FileNotFoundError:
-            st.warning(f'Image not found at path: {image_path}')
+            st.warning(f'Image not found at path: {image_path_or_bytes}')
         except Exception as e:
-            st.error(f'Error converting image to base64: {e} for {image_path}')
+            st.error(f'Error converting image to base64: {e} for {image_path_or_bytes}')
         return encoded_string
 
     def jpg_to_svg_data_url(self, jpg_path_or_bytes):
