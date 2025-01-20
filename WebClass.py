@@ -596,7 +596,9 @@ class WebPages:
             df.loc[index, 'Data Set Selection'] = df_edited.loc[index, 'Data Set Selection']
             df.loc[index, 'Rejected'] = df_edited.loc[index, 'Rejected']
         st.session_state.df = df
-
+        if st.button('Reload Data'):
+            st.session_state.df = None
+            st.experimental_rerun()
         # st.write(f'\n\nSpecies with more than 150 occurrences (likely true visitors): \n'
         #          f'\n{name_counts[name_counts > 150]}')
         st.write(f'\n\nSpecies with less than 150 occurrences (false positives): \n'
