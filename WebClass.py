@@ -66,6 +66,7 @@ class WebPages:
         self.min_hr = min_hr
         self.max_hr = max_hr
         self.url_prefix = url_prefix
+        self.url_prefix_archive = 'https://storage.googleapis.com/archive_jpg_from_birdclassifier/'
         self.num_image_cols = num_image_cols
         # load date range for web data, currently 3 days of data retained
         self.dates = []
@@ -451,7 +452,7 @@ class WebPages:
     @staticmethod
     def make_clickable(file_name, url_prefix='https://storage.googleapis.com/archive_jpg_from_birdclassifier/'):
         """Makes a text value clickable in a DataFrame."""
-        return f'<a target="_blank" href="{url_prefix+file_name}">{file_name}</a>'
+        return f'{url_prefix+file_name}{file_name}'
 
     @staticmethod
     def image_to_base64(image_path_or_bytes):
@@ -559,7 +560,7 @@ class WebPages:
 
         selected_species = st.selectbox('Select a Species', unique_species)
         df_filtered = filtered_df[filtered_df['Species'] == selected_species]
-        df_filtered['Image Link'] = df_filtered['Image Name'].apply(self.make_clickable)
+        df_filtered['Image Link'] = self.url_prefix_archive + df_filtered['Image Name']
         df_filtered['_image_thumbnail'] = ''
         # df_filtered['_image_thumbnail'] = df_filtered.apply(self.fetch_thumbnail, axis=1)
 
