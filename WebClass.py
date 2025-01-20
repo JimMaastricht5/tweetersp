@@ -573,7 +573,8 @@ class WebPages:
                  f'\tRejected: {df_filtered["Rejected"].sum()}'
                  f'\tImage Count: {df_filtered.shape[0]}')
         if '_image_thumbnail' in df_filtered.columns:  # Use write with raw HTML for the image column
-            df_edited = st.data_editor(df_filtered, column_config={'_image_thumbnail': st.column_config.ImageColumn('Preview Image')},
+            column_config = {'_image_thumbnail': st.column_config.ImageColumn('Preview Image', width='large')}
+            df_edited = st.data_editor(df_filtered, column_config=column_config,
                                        disabled=['Image Number', 'Species', 'DateTime', 'Image Name',
                                                  '_image_thumbnail'])
         else:
