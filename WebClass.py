@@ -464,7 +464,7 @@ class WebPages:
             unique_species = df['Species'].unique().tolist()
             st.session_state.df = df
         else:
-            df = st.session_state
+            df = st.session_state.df
         # ****************** format page ********************
         st.set_page_config(layout="wide")
         st.header('Data Management for Species Classification Training')
