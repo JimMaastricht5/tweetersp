@@ -518,7 +518,6 @@ class WebPages:
         """
         # load data and format df
         if "df" not in st.session_state:
-            st.warning('creating session state')
             st.session_state.df = None
             df_raw = pd.read_csv('archive-jpg-list.csv')
             df_raw['DateTime'] = pd.to_datetime(df_raw['DateTime'], errors='raise')
@@ -536,7 +535,6 @@ class WebPages:
             # df_raw['_image_thumbnail'] = df_filtered.apply(self.fetch_thumbnail, axis=1)
             st.session_state.df = df
         else:
-            st.warning('using session state')
             df = st.session_state.df
         unique_species = df['Species'].unique().tolist()
         name_counts = df['Species'].value_counts()
