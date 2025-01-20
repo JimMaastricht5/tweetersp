@@ -452,19 +452,19 @@ class WebPages:
         # load data and format df
         if "df" not in st.session_state:
             st.session_state.df = None
-
-        df_raw = pd.read_csv('archive-jpg-list.csv')
-        df_raw['DateTime'] = pd.to_datetime(df_raw['DateTime'], errors='raise')
-        df_raw = df_raw.drop(['Image Number', 'Year', 'Month', 'Day', 'Hour'], axis=1)
-        df_raw.index.name = 'Image Number'
-        if "Random Sample" not in df_raw.columns:
-            df_raw["Random Sample"] = False  # Initialize all checkboxes to False
-        if "Data Set Selection" not in df_raw.columns:
-            df_raw["Data Set Selection"] = False  # Initialize all checkboxes to False
-        df = df_raw[df_raw['DateTime'].dt.year == 2024].copy()  # .copy() avoids warnings about setting values on slice
-        unique_species = df['Species'].unique().tolist()
-        st.session_state.df = df
-
+            df_raw = pd.read_csv('archive-jpg-list.csv')
+            df_raw['DateTime'] = pd.to_datetime(df_raw['DateTime'], errors='raise')
+            df_raw = df_raw.drop(['Image Number', 'Year', 'Month', 'Day', 'Hour'], axis=1)
+            df_raw.index.name = 'Image Number'
+            if "Random Sample" not in df_raw.columns:
+                df_raw["Random Sample"] = False  # Initialize all checkboxes to False
+            if "Data Set Selection" not in df_raw.columns:
+                df_raw["Data Set Selection"] = False  # Initialize all checkboxes to False
+            df = df_raw[df_raw['DateTime'].dt.year == 2024].copy()  # .copy() avoids warnings about setting values on slice
+            unique_species = df['Species'].unique().tolist()
+            st.session_state.df = df
+        else:
+            df = st.session_state
         # ****************** format page ********************
         st.set_page_config(layout="wide")
         st.header('Data Management for Species Classification Training')
