@@ -452,11 +452,14 @@ class WebPages:
         # load data and format df
         df_raw = pd.read_csv('archive-jpg-list.csv')
         df_raw['DateTime'] = pd.to_datetime(df_raw['DateTime'], errors='raise')
+        df_raw = df_raw.drop(['Image Number', 'Year', 'Month', 'Day', 'Hour'], axis=1)
+        df_raw.index.name = 'Image Number'
         if "Random Sample" not in df_raw.columns:
             df_raw["Random Sample"] = False  # Initialize all checkboxes to False
         if "Data Set Selection" not in df_raw.columns:
             df_raw["Data Set Selection"] = False  # Initialize all checkboxes to False
         df = df_raw[df_raw['DateTime'].dt.year == 2024].copy()  # .copy() avoids warnings about setting values on slice
+        unique_species = df['Species'].unique().tolist()
 
         # ****************** format page ********************
         st.set_page_config(layout="wide")
@@ -480,30 +483,21 @@ class WebPages:
             filtered_df = df[(df['DateTime'] >= pd.to_datetime(start_date)) &
                              (df['DateTime'] <= pd.to_datetime(end_date) + pd.Timedelta(days=1))]
 
-        # random samples to select
-        num_samples = int(st.slider("Select a number between 10 and 100:", min_value=10, max_value=100, value=25, step=5))
-        if st.button("Generate Sample"):  # The "Sample" button
-            sampled_df = df.sample(n=(num_samples if num_samples <= df.shape[0] else df.shape[0])).copy()
-            if sampled_df is not None:
-                st.write("Sampled DataFrame:")
-                st.dataframe(sampled_df)
-            else:
-                st.error("Error during sampling. Please check the number of samples.")
-
         # species selection
-        unique_species = df['Species'].unique().tolist()
         selected_species = st.selectbox("Select a Species", unique_species)
         filtered_df = filtered_df[filtered_df['Species'] == selected_species]
 
-        # display filtered df
-        df_display = filtered_df.drop(['Image Number', 'Year', 'Month', 'Day', 'Hour'], axis=1)
-        df_display.index.name = 'Image Number'
+        # random samples to select
+        num_samples = int(st.slider("Select a sample size:", min_value=10, max_value=100, value=25, step=5))
+        if st.button("Generate Sample for Species"):  # The "Sample" button
+            df_sampled = df.sample(n=(num_samples if num_samples <= df.shape[0] else df.shape[0])).copy()
+            if df_sampled is None:
+                st.error("Error during sampling. Please check the number of samples.")
+
         # st.dataframe(data=df_display, use_container_width=True)
         # print(f'Possible False Positives: \n{name_counts[name_counts <= 150]}')
         # print(f'Remaining Species: \n{name_counts[name_counts > 150]}')
-
-
-        edited_df = st.data_editor(df_display, disabled=['Image Number', 'Species', 'DateTime', 'Image Name'])
+        edited_df = st.data_editor(df_sampled, disabled=['Image Number', 'Species', 'DateTime', 'Image Name'])
         return
 
     def about_page(self) -> None:
