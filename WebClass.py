@@ -608,16 +608,17 @@ class WebPages:
         #          f'\n{name_counts[name_counts > 150]}')
 
         # Plotly histograms
+        df_histogram = df_edited[df_edited['Random Sample']]
         st.subheader("Histogram of Sampled Occurrences by Hour")
-        fig = px.histogram(df_edited, x="Hour", nbins=15, range_x=[5, 20])  # nbins = number of bars
+        fig = px.histogram(df_histogram, x="Hour", nbins=15, range_x=[5, 20])  # nbins = number of bars
         st.plotly_chart(fig)
 
         st.subheader("Histogram of Sampled Occurrences by Month")
-        fig = px.histogram(df_edited, x="Month", nbins=12, range_x=[1, 12])  # nbins = number of bars
+        fig = px.histogram(df_histogram, x="Month", nbins=12, range_x=[1, 12])  # nbins = number of bars
         st.plotly_chart(fig)
 
         st.subheader("Histogram of Sampled Occurrences by Species")
-        fig = px.histogram(df_edited, x="Species", nbins=50)  # nbins = number of bars
+        fig = px.histogram(df_histogram, x="Species", nbins=50)  # nbins = number of bars
         st.plotly_chart(fig)
         return
 
