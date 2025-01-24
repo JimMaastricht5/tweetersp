@@ -563,6 +563,8 @@ class WebPages:
             filtered_df = df[(df['DateTime'] >= pd.to_datetime(start_date)) &
                              (df['DateTime'] <= pd.to_datetime(end_date) + pd.Timedelta(days=1))]
 
+        st.write(f'\nSpecies with less than 150 occurrences are not selected initially '
+                 f'since they may be false positives: \n{name_counts[name_counts <= 150]}')
         selected_species = st.multiselect('Select a Species', options=unique_species, default=name_counts[name_counts > 150].index.tolist())
         df_filtered = filtered_df[filtered_df['Species'].isin(selected_species)]
 
@@ -601,8 +603,7 @@ class WebPages:
             st.session_state.df = None
         # st.write(f'\n\nSpecies with more than 150 occurrences (likely true visitors): \n'
         #          f'\n{name_counts[name_counts > 150]}')
-        st.write(f'\n\nSpecies with less than 150 occurrences (false positives): \n'
-                 f'{name_counts[name_counts <= 150]}')
+
 
         return
 
