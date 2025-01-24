@@ -599,21 +599,14 @@ class WebPages:
             # df.loc[index, 'Data Set Selection'] = df_edited.loc[index, 'Data Set Selection']
             # df.loc[index, 'Rejected'] = df_edited.loc[index, 'Rejected']
         st.session_state.df = df
-        if st.button('Reload Data'):
-            st.session_state.df = None
+        # if st.button('Reload Data'):
+        #     st.session_state.df = None
         # st.write(f'\n\nSpecies with more than 150 occurrences (likely true visitors): \n'
         #          f'\n{name_counts[name_counts > 150]}')
 
-        # Option 2: Using Streamlit's st.bar_chart (simpler)
-        st.subheader("Using Streamlit's st.bar_chart")
-        hour_counts = df['Hour'].value_counts().sort_index()  # Count the occurrences of each hour and sort by hour
-        st.bar_chart(hour_counts)
-
-        # Option 3: Using Plotly (interactive)
-        import plotly.express as px
-        st.subheader("Using Plotly")
-        fig = px.histogram(df, x="Hour", nbins=24,
-                           range_x=[0, 24])  # nbins = number of bars, range_x sets x axis limits
+        # Plotly histogram
+        st.subheader("Histogram of Occurrences by Hour")
+        fig = px.histogram(df_edited, x="Hour", nbins=15, range_x=[5, 20])  # nbins = number of bars
         st.plotly_chart(fig)
         return
 
