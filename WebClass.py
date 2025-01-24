@@ -578,11 +578,11 @@ class WebPages:
         # if st.checkbox("Order by 'Sample and Selection' (True first)", value=True):  # Order the DataFrame based random sample
         #     df_filtered = df_filtered.sort_values(by=['Random Sample', 'Data Set Selection'], ascending=False)
 
-        st.write(f'Random selections: {df_filtered["Random Sample"].sum()}'
-                 f'\tSelected for Dataset: {df_filtered["Data Set Selection"].sum()}'
+        # st.write(f'Random selections: {df_filtered["Random Sample"].sum()}'
+        #          f'\tSelected for Dataset: {df_filtered["Data Set Selection"].sum()}'
                  # f'\tRejected: {df_filtered["Rejected"].sum()}'
                  # f'\tImage Count: {df_filtered.shape[0]}'
-                 )
+                 # )
         # if '_image_thumbnail' in df_filtered.columns:  # Use write with raw HTML for the image column
         column_config = {'_image_thumbnail': st.column_config.ImageColumn('Preview Image', width='medium'),
                          'Image Link': st.column_config.LinkColumn()}
