@@ -575,8 +575,8 @@ class WebPages:
             else:
                 for index in df_sampled.index:
                     df_filtered.loc[index, 'Random Sample'] = True
-        # if st.checkbox("Order by 'Sample and Selection' (True first)", value=True):  # Order the DataFrame based random sample
-        #     df_filtered = df_filtered.sort_values(by=['Random Sample', 'Data Set Selection'], ascending=False)
+        if st.checkbox("Order by 'Sample Selection' (True first)", value=True):  # Order the DataFrame based random sample
+            df_filtered = df_filtered.sort_values(by=['Random Sample'], ascending=False)
 
         # st.write(f'Random selections: {df_filtered["Random Sample"].sum()}'
         #          f'\tSelected for Dataset: {df_filtered["Data Set Selection"].sum()}'
