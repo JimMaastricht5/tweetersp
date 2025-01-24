@@ -604,7 +604,17 @@ class WebPages:
         # st.write(f'\n\nSpecies with more than 150 occurrences (likely true visitors): \n'
         #          f'\n{name_counts[name_counts > 150]}')
 
+        # Option 2: Using Streamlit's st.bar_chart (simpler)
+        st.subheader("Using Streamlit's st.bar_chart")
+        hour_counts = df['Hour'].value_counts().sort_index()  # Count the occurrences of each hour and sort by hour
+        st.bar_chart(hour_counts)
 
+        # Option 3: Using Plotly (interactive)
+        import plotly.express as px
+        st.subheader("Using Plotly")
+        fig = px.histogram(df, x="Hour", nbins=24,
+                           range_x=[0, 24])  # nbins = number of bars, range_x sets x axis limits
+        st.plotly_chart(fig)
         return
 
     def about_page(self) -> None:
