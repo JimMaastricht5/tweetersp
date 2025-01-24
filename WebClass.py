@@ -553,8 +553,10 @@ class WebPages:
         # select date range for images and species for images (filtered)
         default_start_date = dtdate(2024, 1, 1)
         default_end_date = dtdate(2024, 12, 31)
-        start_date = st.date_input('Start Date', value=default_start_date)
-        end_date = st.date_input('End Date', value=default_end_date)
+        start_date = st.date_input('Start Date', value=default_start_date, min_value=default_start_date,
+                                   max_value=default_end_date)
+        end_date = st.date_input('End Date', value=default_end_date, min_value=default_start_date,
+                                 max_value=default_end_date)
         if start_date > end_date:
             st.error('Start date must be before end date.')
             filtered_df = df
@@ -565,7 +567,8 @@ class WebPages:
 
         st.write(f'\nSpecies with less than 150 occurrences are not selected initially '
                  f'since they may be false positives: \n\n{name_counts[name_counts <= 150]}')
-        selected_species = st.multiselect('Select a Species', options=unique_species, default=name_counts[name_counts > 150].index.tolist())
+        selected_species = st.multiselect('Select a Species', options=unique_species,
+                                          default=name_counts[name_counts > 150].index.tolist())
         df_filtered = filtered_df[filtered_df['Species'].isin(selected_species)]
 
         # select random samples
@@ -604,9 +607,17 @@ class WebPages:
         # st.write(f'\n\nSpecies with more than 150 occurrences (likely true visitors): \n'
         #          f'\n{name_counts[name_counts > 150]}')
 
-        # Plotly histogram
-        st.subheader("Histogram of Occurrences by Hour")
+        # Plotly histograms
+        st.subheader("Histogram of Sampled Occurrences by Hour")
         fig = px.histogram(df_edited, x="Hour", nbins=15, range_x=[5, 20])  # nbins = number of bars
+        st.plotly_chart(fig)
+
+        st.subheader("Histogram of Sampled Occurrences by Month")
+        fig = px.histogram(df_edited, x="Month", nbins=12, range_x=[1, 12])  # nbins = number of bars
+        st.plotly_chart(fig)
+
+        st.subheader("Histogram of Sampled Occurrences by Species")
+        fig = px.histogram(df_edited, x="Species", nbins=50)  # nbins = number of bars
         st.plotly_chart(fig)
         return
 
