@@ -575,13 +575,14 @@ class WebPages:
             else:
                 for index in df_sampled.index:
                     df_filtered.loc[index, 'Random Sample'] = True
-        if st.checkbox("Order by 'Sample and Selection' (True first)", value=True):  # Order the DataFrame based random sample
-            df_filtered = df_filtered.sort_values(by=['Random Sample', 'Data Set Selection'], ascending=False)
+        # if st.checkbox("Order by 'Sample and Selection' (True first)", value=True):  # Order the DataFrame based random sample
+        #     df_filtered = df_filtered.sort_values(by=['Random Sample', 'Data Set Selection'], ascending=False)
 
         st.write(f'Random selections: {df_filtered["Random Sample"].sum()}'
                  f'\tSelected for Dataset: {df_filtered["Data Set Selection"].sum()}'
-                 f'\tRejected: {df_filtered["Rejected"].sum()}'
-                 f'\tImage Count: {df_filtered.shape[0]}')
+                 # f'\tRejected: {df_filtered["Rejected"].sum()}'
+                 # f'\tImage Count: {df_filtered.shape[0]}'
+                 )
         # if '_image_thumbnail' in df_filtered.columns:  # Use write with raw HTML for the image column
         column_config = {'_image_thumbnail': st.column_config.ImageColumn('Preview Image', width='medium'),
                          'Image Link': st.column_config.LinkColumn()}
@@ -593,8 +594,8 @@ class WebPages:
 
         for index in df_edited.index:
             df.loc[index, 'Random Sample'] = df_edited.loc[index, 'Random Sample']
-            df.loc[index, 'Data Set Selection'] = df_edited.loc[index, 'Data Set Selection']
-            df.loc[index, 'Rejected'] = df_edited.loc[index, 'Rejected']
+            # df.loc[index, 'Data Set Selection'] = df_edited.loc[index, 'Data Set Selection']
+            # df.loc[index, 'Rejected'] = df_edited.loc[index, 'Rejected']
         st.session_state.df = df
         if st.button('Reload Data'):
             st.session_state.df = None
