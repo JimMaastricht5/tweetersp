@@ -564,13 +564,13 @@ class WebPages:
                              (df['DateTime'] <= pd.to_datetime(end_date) + pd.Timedelta(days=1))]
 
         st.write(f'\nSpecies with less than 150 occurrences are not selected initially '
-                 f'since they may be false positives: \n{name_counts[name_counts <= 150]}')
+                 f'since they may be false positives: \n\n{name_counts[name_counts <= 150]}')
         selected_species = st.multiselect('Select a Species', options=unique_species, default=name_counts[name_counts > 150].index.tolist())
         df_filtered = filtered_df[filtered_df['Species'].isin(selected_species)]
 
         # select random samples
         num_samples = int(st.slider("Select a sample size:", min_value=10, max_value=100, value=25, step=5))
-        if st.button(f'Generate Sample for {selected_species}'):  # The Sample button
+        if st.button(f'Generate Sample for selected_species'):  # The Sample button
             df_sampled = df_filtered.sample(n=(num_samples if num_samples <= df.shape[0] else df.shape[0])).copy()
             if df_sampled is None:
                 st.error("Error during sampling. Please check the number of samples.")
