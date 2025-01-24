@@ -518,7 +518,7 @@ class WebPages:
         """
         # ****************** format page ********************
         st.set_page_config(layout="wide")
-        st.header('Data Management for Species Classification Training')
+        st.header('2024 Bird Feeder Data: Management for Species Classification Testing')
         st.write(f'The bird feeder currently uses a pre-built ElasticNet model.  That model classified '
                  f'74,849 images in 2024 bird. The classifications performed then will provide the '
                  f'image data to train a new custom model. \n\n  This page allows for the random samples to be '
@@ -620,6 +620,10 @@ class WebPages:
         st.subheader("Histogram of Sampled Occurrences by Species")
         fig = px.histogram(df_histogram, x="Species", nbins=50)  # nbins = number of bars
         st.plotly_chart(fig)
+
+        # publish images
+        self.image_names = df_edited[df_edited['Random Sample']]['Image Name'].tolist()
+        self.publish_row_of_images()
         return
 
     def about_page(self) -> None:
