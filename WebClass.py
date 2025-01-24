@@ -564,7 +564,7 @@ class WebPages:
                              (df['DateTime'] <= pd.to_datetime(end_date) + pd.Timedelta(days=1))]
 
         selected_species = st.multiselect('Select a Species', options=unique_species, default=name_counts[name_counts > 150].index.tolist())
-        df_filtered = filtered_df[filtered_df['Species'] == selected_species]
+        df_filtered = filtered_df[filtered_df['Species'].isin(selected_species)]
 
         # select random samples
         num_samples = int(st.slider("Select a sample size:", min_value=10, max_value=100, value=25, step=5))
