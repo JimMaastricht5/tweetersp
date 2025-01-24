@@ -531,24 +531,24 @@ class WebPages:
             st.session_state.df = None
             df_raw = pd.read_csv('archive-jpg-list.csv')
             df_raw['DateTime'] = pd.to_datetime(df_raw['DateTime'], errors='raise')
-            df_raw = df_raw.drop(['Image Number', 'Year', 'Month', 'Day', 'Hour'], axis=1)
+            df_raw = df_raw.drop(['Image Number', 'Year', 'Day'], axis=1)
             df_raw.index.name = 'Image Number'
             if 'Random Sample' not in df_raw.columns:
                 df_raw['Random Sample'] = False  # Initialize all checkboxes to False
-            if 'Data Set Selection' not in df_raw.columns:
-                df_raw['Data Set Selection'] = False  # Initialize all checkboxes to False
-            if 'Rejected' not in df_raw.columns:
-                df_raw['Rejected'] = False # Initialize all checkboxes to False
+            # if 'Data Set Selection' not in df_raw.columns:
+            #     df_raw['Data Set Selection'] = False  # Initialize all checkboxes to False
+            # if 'Rejected' not in df_raw.columns:
+            #     df_raw['Rejected'] = False # Initialize all checkboxes to False
             df = df_raw[df_raw['DateTime'].dt.year == 2024].copy()  # .copy() avoids warnings setting values on slice
             df_raw['Image Link'] = self.url_prefix_archive + df_raw['Image Name']
             df_raw['_image_thumbnail'] = ''
             # df_raw['_image_thumbnail'] = df_filtered.apply(self.fetch_thumbnail, axis=1)
             st.session_state.df = df
         else:
-            st.warning('Using session state')
+            # st.warning('Using session state')
             df = st.session_state.df
         unique_species = df['Species'].unique().tolist()
-        name_counts = df['Species'].value_counts()
+        name_counts = df['Species'].value_counts()  # pandas series
 
         # select date range for images and species for images (filtered)
         default_start_date = dtdate(2024, 1, 1)
@@ -563,7 +563,7 @@ class WebPages:
             filtered_df = df[(df['DateTime'] >= pd.to_datetime(start_date)) &
                              (df['DateTime'] <= pd.to_datetime(end_date) + pd.Timedelta(days=1))]
 
-        selected_species = st.selectbox('Select a Species', unique_species)
+        selected_species = st.multiselect('Select a Species', options=unique_species, default=name_counts[name_counts > 150].index.tolist())
         df_filtered = filtered_df[filtered_df['Species'] == selected_species]
 
         # select random samples
