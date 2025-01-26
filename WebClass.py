@@ -535,17 +535,12 @@ class WebPages:
             df_raw.index.name = 'Image Number'
             if 'Random Sample' not in df_raw.columns:
                 df_raw['Random Sample'] = False  # Initialize all checkboxes to False
-            # if 'Data Set Selection' not in df_raw.columns:
-            #     df_raw['Data Set Selection'] = False  # Initialize all checkboxes to False
-            # if 'Rejected' not in df_raw.columns:
-            #     df_raw['Rejected'] = False # Initialize all checkboxes to False
             df = df_raw[df_raw['DateTime'].dt.year == 2024].copy()  # .copy() avoids warnings setting values on slice
             df_raw['Image Link'] = self.url_prefix_archive + df_raw['Image Name']
             df_raw['_image_thumbnail'] = ''
             # df_raw['_image_thumbnail'] = df_filtered.apply(self.fetch_thumbnail, axis=1)
             st.session_state.df = df
         else:
-            # st.warning('Using session state')
             df = st.session_state.df
         unique_species = df['Species'].unique().tolist()
         name_counts = df['Species'].value_counts()  # pandas series
@@ -583,29 +578,15 @@ class WebPages:
         if st.checkbox("Order by 'Sample Selection' (True first)", value=True):  # Order the DataFrame based random sample
             df_filtered = df_filtered.sort_values(by=['Random Sample'], ascending=False)
 
-        # st.write(f'Random selections: {df_filtered["Random Sample"].sum()}'
-        #          f'\tSelected for Dataset: {df_filtered["Data Set Selection"].sum()}'
-                 # f'\tRejected: {df_filtered["Rejected"].sum()}'
-                 # f'\tImage Count: {df_filtered.shape[0]}'
-                 # )
-        # if '_image_thumbnail' in df_filtered.columns:  # Use write with raw HTML for the image column
         column_config = {'_image_thumbnail': st.column_config.ImageColumn('Preview Image', width='medium'),
                          'Image Link': st.column_config.LinkColumn()}
         df_edited = st.data_editor(df_filtered, column_config=column_config,
                                    disabled=['Image Number', 'Species', 'DateTime', 'Image Name',
                                              '_image_thumbnail', 'Image Link'])
-        # else:
-        #     df_edited = st.data_editor(df_filtered, disabled=['Image Number', 'Species', 'DateTime', 'Image Name', 'Image Link'])
 
         for index in df_edited.index:
             df.loc[index, 'Random Sample'] = df_edited.loc[index, 'Random Sample']
-            # df.loc[index, 'Data Set Selection'] = df_edited.loc[index, 'Data Set Selection']
-            # df.loc[index, 'Rejected'] = df_edited.loc[index, 'Rejected']
         st.session_state.df = df
-        # if st.button('Reload Data'):
-        #     st.session_state.df = None
-        # st.write(f'\n\nSpecies with more than 150 occurrences (likely true visitors): \n'
-        #          f'\n{name_counts[name_counts > 150]}')
 
         # Plotly histograms
         df_histogram = df_edited[df_edited['Random Sample']]
