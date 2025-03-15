@@ -607,7 +607,7 @@ class WebPages:
         # publish images
         self.image_names = df_edited[df_edited['Random Sample']]['Image Name'].tolist()
         print(self.image_names)
-        self.publish_row_of_images()
+        self.publish_row_of_images(url_prefix=self.url_prefix_archive)
         return
 
     def about_page(self) -> None:
