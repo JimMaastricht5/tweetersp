@@ -246,8 +246,8 @@ class WebPages:
                 except FileNotFoundError:  # missing file
                     cols[col].write(f'missing file {self.image_names[col+starting_col]}')
                 except Exception as e:  # missing file
-                    print(self.image_names[col+starting_col])
-                    print(e)
+                    st.write(self.image_names[col+starting_col])
+                    st.write(e)
         except IndexError:  # less than x images for row skip the error
             pass
         except Exception as e:
@@ -606,6 +606,7 @@ class WebPages:
 
         # publish images
         self.image_names = df_edited[df_edited['Random Sample']]['Image Name'].tolist()
+        print(self.image_names)
         self.publish_row_of_images()
         return
 
