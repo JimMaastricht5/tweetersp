@@ -39,6 +39,7 @@ import base64
 # from svglib.svglib import svg2rlg
 from PIL import Image
 import io
+import math
 
 # list of birds to exclude that prior model displayed and are not valid results
 FILTER_BIRD_NAMES = ['Rock Pigeon', 'Pine Grosbeak', 'Indigo Bunting', 'Eurasian Collared-Dove',
@@ -513,9 +514,9 @@ class WebPages:
             st.error(f'Exception occurred in fetch_thumbnail: {e} {url_prefix}{row["Image Name"]}')
         return svg_image
 
-    def training_data_management_2024_page(self) -> None:
+    def model_test_data_management_2024_page(self) -> None:
         """
-        load 2024 data and allow for management of training data
+        load 2024 data and allow for management of testing data for new models
         :return: None
         """
         # ****************** format page ********************
@@ -606,8 +607,9 @@ class WebPages:
 
         # publish images
         self.image_names = df_edited[df_edited['Random Sample']]['Image Name'].tolist()
-        print(self.image_names)
-        self.publish_row_of_images(url_prefix=self.url_prefix_archive)
+        num_of_rows = math.ceil(len(self.image_names) / self.num_image_cols)
+        for row in range(num_of_rows):
+            self.publish_row_of_images(starting_col=row * 5, url_prefix=self.url_prefix_archive)
         return
 
     def about_page(self) -> None:
