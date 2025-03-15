@@ -26,4 +26,4 @@ import WebClass
 
 # init class and call main page
 webpage = WebClass.WebPages()
-webpage.model_test_data_management_2024_page()
+# webpage.model_test_data_management_2024_page()
