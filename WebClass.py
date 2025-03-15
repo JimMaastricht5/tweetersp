@@ -567,7 +567,7 @@ class WebPages:
                  f'since they may be false positives: \n\n{name_counts[name_counts <= 150]}')
         selected_species = st.selectbox('Select a Species', options=name_counts[name_counts > 150].index.tolist(),
                                                             index=0)
-        df_filtered = filtered_df[filtered_df['Species'].isin(selected_species)]
+        df_filtered = filtered_df[filtered_df['Species'] == selected_species]
 
         # select random samples
         num_samples = int(st.slider("Select a sample size:", min_value=10, max_value=100, value=25, step=5))
