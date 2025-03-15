@@ -525,7 +525,7 @@ class WebPages:
         st.write(f'The bird feeder currently uses a pre-built ElasticNet model.  That model classified '
                  f'74,849 images in 2024 bird. The classifications performed then will provide the '
                  f'image data to train a new custom model. \n\n  This page allows for the random samples to be '
-                 f'generated for the training data set.  '
+                 f'generated for a model testing data set.  '
                  f'Images can be excluded from the sample if they are not high quality.')
 
         # load data and format df
@@ -545,7 +545,7 @@ class WebPages:
             st.session_state.df = df
         else:
             df = st.session_state.df
-        unique_species = df['Species'].unique().tolist()
+        # unique_species = df['Species'].unique().tolist()
         name_counts = df['Species'].value_counts()  # pandas series
 
         # select date range for images and species for images (filtered)
@@ -565,8 +565,8 @@ class WebPages:
 
         st.write(f'\nSpecies with less than 150 occurrences are not selected initially '
                  f'since they may be false positives: \n\n{name_counts[name_counts <= 150]}')
-        selected_species = st.multiselect('Select a Species', options=unique_species,
-                                          default=name_counts[name_counts > 150].index.tolist())
+        selected_species = st.selectbox('Select a Species', options=name_counts[name_counts > 150].index.tolist(),
+                                                            index=0)
         df_filtered = filtered_df[filtered_df['Species'].isin(selected_species)]
 
         # select random samples
