@@ -225,22 +225,24 @@ class WebPages:
         caption = f'date: {image_date}  time: {image_time}'
         return caption
 
-    def publish_row_of_images(self, starting_col: int = 0) -> None:
+    def publish_row_of_images(self, starting_col: int = 0, url_prefix: str=None) -> None:
         """
         publish a row of images with a set number of images per row in num_image_cols
         :param starting_col: starting position in list
+        :param url_prefix: string containing url_prefix will be set to self.url_prefix is not passed
         :return: None
         """
+        url_prefix = self.url_prefix if url_prefix is None else url_prefix
         try:  # catch error with less than X images for row
             cols = st.columns(self.num_image_cols)  # set web page with x number of images
             for col in range(0, self.num_image_cols):  # cols 0 to 5 for 5 columns
                 try:  # catch missing image
-                    urllib.request.urlretrieve(self.url_prefix + self.image_names[col+starting_col], 'imgfile')
+                    urllib.request.urlretrieve(url_prefix + self.image_names[col+starting_col], 'imgfile')
                     # use alternative method below to open file to get animation instead of Pillow Image.open(url)
                     with cols[col]:
-                        st.image(self.url_prefix + self.image_names[col+starting_col],
+                        st.image(url_prefix + self.image_names[col+starting_col],
                                  caption=self.set_caption(starting_col+col))
-                        st.write(f'{self.url_prefix + self.image_names[col+starting_col]}', unsafe_allow_html=True)
+                        st.write(f'{url_prefix + self.image_names[col+starting_col]}', unsafe_allow_html=True)
                 except FileNotFoundError:  # missing file
                     cols[col].write(f'missing file {self.image_names[col+starting_col]}')
                 except Exception as e:  # missing file
@@ -589,18 +591,18 @@ class WebPages:
         st.session_state.df = df
 
         # Plotly histograms
-        df_histogram = df_edited[df_edited['Random Sample']]
-        st.subheader("Histogram of Sampled Occurrences by Hour")
-        fig = px.histogram(df_histogram, x="Hour", nbins=15, range_x=[5, 20])  # nbins = number of bars
-        st.plotly_chart(fig)
-
-        st.subheader("Histogram of Sampled Occurrences by Month")
-        fig = px.histogram(df_histogram, x="Month", nbins=12, range_x=[1, 12])  # nbins = number of bars
-        st.plotly_chart(fig)
-
-        st.subheader("Histogram of Sampled Occurrences by Species")
-        fig = px.histogram(df_histogram, x="Species", nbins=50)  # nbins = number of bars
-        st.plotly_chart(fig)
+        # df_histogram = df_edited[df_edited['Random Sample']]
+        # st.subheader("Histogram of Sampled Occurrences by Hour")
+        # fig = px.histogram(df_histogram, x="Hour", nbins=15, range_x=[5, 20])  # nbins = number of bars
+        # st.plotly_chart(fig)
+        #
+        # st.subheader("Histogram of Sampled Occurrences by Month")
+        # fig = px.histogram(df_histogram, x="Month", nbins=12, range_x=[1, 12])  # nbins = number of bars
+        # st.plotly_chart(fig)
+        #
+        # st.subheader("Histogram of Sampled Occurrences by Species")
+        # fig = px.histogram(df_histogram, x="Species", nbins=50)  # nbins = number of bars
+        # st.plotly_chart(fig)
 
         # publish images
         self.image_names = df_edited[df_edited['Random Sample']]['Image Name'].tolist()
