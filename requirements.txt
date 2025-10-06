@@ -5,5 +5,5 @@ plotly
 pytz
 streamlit-aggrid
 matplotlib
-svglib
+# svglib
 pillow
